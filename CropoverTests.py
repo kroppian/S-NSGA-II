@@ -5,24 +5,27 @@ from pymoo.model.problem import Problem
 
 class CropoverTests(Problem):
 
-
-    
     def __init__(self):
-        self.days = 120
-        self.appsCount = 16
-        # Generate the days that won't be zero
-        self.appDays = np.random.randint(0,self.days,self.appsCount)
-        # Generate the optima for each days
-        self.optima = np.random.randint(0,99,self.days)
+        self.fit_min = 1
+        self.fit_max = 100
 
-        self.optima = map(lambda x : 0:q
-                )
+        self.days = 120
+        self.appCount = 16
+
+        self.optima = np.zeros(self.days)
+        self.appDays = np.random.randint(0,self.days-1,self.appCount)
+
+        self.optima[self.appDays] = np.random.randint(self.fit_min, self.fit_max ,len(self.appDays))
+
+        self.fit_l = np.zeros(self.days)
+        
+        self.fit_u = np.ones(self.days)*self.fit_max
 
         super().__init__(n_var=self.days,
                          n_obj=2,
                          n_constr=0,
-                         xl=anp.array([-2,-2]),
-                         xu=anp.array([2,2]))
+                         xl=self.fit_l,
+                         xu=self.fit_u
         
          
             
@@ -30,12 +33,7 @@ class CropoverTests(Problem):
 
 
     def _evaluate(self, x, out, *args, **kwargs):
-        f1 = x[:,0]**2 + x[:,1]**2
-        f2 = (x[:,0]-1)**2 + x[:,1]**2
-
-    
-        
-
+        self.fit_min = 1
 
         out["F"] = anp.column_stack([f1, f2])
         out["G"] = anp.column_stack([g1, g2])
@@ -65,6 +63,6 @@ class CropoverTests(Problem):
 #        a, b = np.column_stack([x1_a, x2]), np.column_stack([x1_b, x2])
 #        return stack(a,b, flatten=flatten)
 
-problem = MyProblem()
+#problem = MyProblem()
 
 
