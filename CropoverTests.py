@@ -9,17 +9,30 @@ class CropoverTests(Problem):
         self.fit_min = 1
         self.fit_max = 100
 
+        self.height_min = 1
+        self.height_max = 300
+
         self.days = 120
         self.appCount = 16
     
         # All optima will be zeros, except...
-        self.optima = np.zeros(self.days)
+        self.optima = np.zeros((1,self.days))
 
-        # The few days that will non-zero
+        # Find the day indices that will be non-zero
         self.appDays = np.random.randint(0,self.days-1,self.appCount)
 
         # Fill in those days
-        self.optima[self.appDays] = np.random.randint(self.fit_min, self.fit_max ,len(self.appDays))
+        self.optima[0,list(self.appDays)] = np.random.randint(  
+                    self.fit_min, 
+                    self.fit_max,
+                    len(self.appDays))
+
+        # Give those peaks to optimize heights
+        self.heights = np.copy(self.optima)
+        self.heights[0,list(self.appDays)] = np.random.randint(
+                    self.height_min, 
+                    self.height_max,     
+                    len(self.appDays))
 
         # Limits
         self.fit_l = np.zeros(self.days)
@@ -31,21 +44,19 @@ class CropoverTests(Problem):
                          xl=self.fit_l,
                          xu=self.fit_u)
 
-    def foo(bar):
-        return bar
 
     def _evaluate(self, x, out, *args, **kwargs):
   
         f1 = np.sum(x, axis=1)
         
-        f_ind = np.power(x + self.optima, 2)
+        f_ind = np.power(x + self.optima, 2) + self.heights
 
         f2 = np.sum(f_ind, axis=1)
 
         out["F"] = anp.column_stack([f1, f2])
 
     def get_optimal(self):
-        return sum(self.optima)
+        return np.sum(self.heights)
 
 
     # --------------------------------------------------
