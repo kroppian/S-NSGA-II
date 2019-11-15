@@ -35,17 +35,17 @@ class CropoverTests(Problem):
         return bar
 
     def _evaluate(self, x, out, *args, **kwargs):
-   
-        print(len(x)) 
-        f1 = np.sum(x)
+  
+        f1 = np.sum(x, axis=1)
         
-        # Treat the 
         f_ind = np.power(x + self.optima, 2)
 
-        f2 = np.sum(f_ind)
+        f2 = np.sum(f_ind, axis=1)
 
         out["F"] = anp.column_stack([f1, f2])
 
+    def get_optimal(self):
+        return sum(self.optima)
 
 
     # --------------------------------------------------
