@@ -1,14 +1,24 @@
 from pymoo.algorithms.nsga2 import NSGA2
 from pymoo.optimize import minimize
 from pymoo.visualization.scatter import Scatter
-from CropoverTests import CropoverTests
 
 from pymoo.configuration import Configuration
+
 Configuration.show_compile_hint = False
 
-prob = CropoverTests()
+# Custom stuff 
+from CropoverTests import CropoverTests
+from AllZeroSampling import AllZeroSampling
 
-algorithm = NSGA2(pop_size=100, eliminate_duplicates=True)
+prob = CropoverTests()
+all_zero = AllZeroSampling()
+
+
+algorithm = NSGA2(pop_size=100, 
+        eliminate_duplicates=True,
+        sampling=all_zero)
+
+
 
 res = minimize(prob,
                algorithm,
