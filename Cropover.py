@@ -2,7 +2,7 @@ from pymoo.model.crossover import Crossover
 from pymoo.operators.crossover.simulated_binary_crossover import SimulatedBinaryCrossover
 import numpy as np
 import sys
-import copy
+import copy, math
 
 class Cropover(Crossover):
     def __init__(self, eta, prob_per_variable=0.5, **kwargs):
@@ -50,6 +50,10 @@ class Cropover(Crossover):
         # Remove the most crowded values
         maxl = nz1 if nz1 < nz2 else nz2
 
+        # If both parents are all zero, just continue
+        if maxl == 0:
+            return p1, p2
+
         # Calculate how crowded they are 
         dists1 = Cropover.crowding_ranking(p1stripd[0,:])
         dists2 = Cropover.crowding_ranking(p2stripd[0,:])
@@ -58,6 +62,18 @@ class Cropover(Crossover):
         # under maxl with respects to crowding
         best1 = np.argpartition(dists1, -maxl)[-maxl:]
         best2 = np.argpartition(dists2, -maxl)[-maxl:]
+
+        # If the sparsity doesn't match, save half of the overflow
+        num2save = math.floor(abs(nz1 - nz2)/2)
+
+        if num2save:
+            worst1 = [val for val in range(nz1) if not val in best1]
+            to_save_ind = np.argpartition(worst1, -num2save)[-num2save:]
+            to_save1 = p1stripd[:,to_save_ind]
+
+            worst2 = [val for val in range(nz2) if not val in best2]
+            to_save_ind = np.argpartition(worst2, -num2save)[-num2save:]
+            to_save2 = p2stripd[:,to_save_ind]
 
         # Format the arrays to function within sbx
         dense_parents = np.zeros([2,1,problem.n_var])
@@ -75,11 +91,19 @@ class Cropover(Crossover):
         # in the children at their original spaces 
         c1 = np.zeros_like(p1) 
         c2 = np.zeros_like(p2) 
-        #p1stripd[0,:][best1] 
-        c1[p1stripd[0,:][best1].astype(int)] = dense_children[0,:,:]
-        c2[p2stripd[0,:][best2].astype(int)] = dense_children[1,:,:]
+      
+        # Put the values back into the children where they were in the parents
+        if np.size(dense_children[0,:,:]) != 0:
+            c1[p1stripd[0,:][best1].astype(int)] = dense_children[0,:,:]
+        if np.size(dense_children[1,:,:]) != 0:
+            c2[p2stripd[0,:][best2].astype(int)] = dense_children[1,:,:]
 
-        bar = 1
+        # Put the values to save into their respective places 
+        if num2save:
+            c1[to_save1[0,:].astype(int)] = p1[to_save1[1,:].astype(int)]
+            c2[to_save2[0,:].astype(int)] = p2[to_save2[1,:].astype(int)]
+
+        return c1, c2 
 
     @staticmethod
     def crowding_ranking(positions):
