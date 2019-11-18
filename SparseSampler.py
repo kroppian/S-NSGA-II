@@ -20,7 +20,5 @@ class SparseSampler(Sampling):
             # Put those samples in!
             X[row,indices]  = problem.xl[indices] + ranges[indices]*np.random.ranf(self.n)
 
-        
-
         return X
 

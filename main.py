@@ -8,16 +8,16 @@ Configuration.show_compile_hint = False
 
 # Custom stuff 
 from CropoverTests import CropoverTests
-from AllZeroSampling import AllZeroSampling
+from SparseSampler import SparseSampler
 from Cropover import Cropover
 
 prob = CropoverTests()
-all_zero = AllZeroSampling()
+s_sampler = SparseSampler(16)
 cropover = Cropover(eta=30, prob=1.0)
 
 algorithm = NSGA2(pop_size=100, 
         eliminate_duplicates=True,
-#        sampling=all_zero,
+        sampling=s_sampler,
         crossover=cropover)
 
 res = minimize(prob,
