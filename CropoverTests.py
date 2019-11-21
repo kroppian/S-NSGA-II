@@ -5,7 +5,7 @@ from pymoo.model.problem import Problem
 
 class CropoverTests(Problem):
 
-    def __init__(self):
+    def __init__(self, seed=0):
         self.fit_min = 1
         self.fit_max = 100
 
@@ -14,7 +14,9 @@ class CropoverTests(Problem):
 
         self.days = 120
         self.appCount = 16
-    
+   
+        np.random.seed(seed) 
+
         # All optima will be zeros, except...
         self.optima = np.zeros((1,self.days))
 
