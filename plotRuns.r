@@ -5,20 +5,18 @@ png(filename="plot.png", width = 960, height = 960, units = "px", pointsize = 20
 
 #x11()
 
-minSparsity = 0
-maxSparsity = 19 
+minSparsity = 16
+maxSparsity = 16
 
 
 #layout(matrix(minSparsity:maxSparsity, ncol = 5))
 
-old.par <- par(mfrow=c(4,5))
-
 currentMax1 = 0
 currentMax2 = 0
 
-xmax = 8200
-ymax = 800000
-
+xmax = 600
+ymax = 1800
+ymin = -4000
 
 for(sparsity in minSparsity:maxSparsity){
 
@@ -53,7 +51,7 @@ for(sparsity in minSparsity:maxSparsity){
   for (file in withFiles){
     data = read.csv(file)
     if (i == 0)
-      plot(data[,1],data[,2],col = "red", xlab=xlabel, ylab=ylabel, main=title, xlim=c(0,xmax), ylim=c(0,ymax))
+      plot(data[,1],data[,2],col = "red", xlab=xlabel, ylab=ylabel, main=title, xlim=c(0,xmax), ylim=c(ymin,ymax))
     else
       points(data[,1],data[,2],col = "red")
     i = i + 1
@@ -77,8 +75,4 @@ for(sparsity in minSparsity:maxSparsity){
 
 print(paste("Max 1:", currentMax1))
 print(paste("Max 2:", currentMax2))
-
-par(old.par)
-
-dev.off()
 
