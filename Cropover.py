@@ -85,13 +85,25 @@ class Cropover(Crossover):
         dense_children = sbx._do(problem, dense_parents)
 
         # Pull the data out from the boilerplate
-        dense_children =dense_children[:,:,0:maxl]
+        dense_children = dense_children[:,:,0:maxl]
+
+        # We need to find out the new position of the non-zeros in the parents
+        # So we need to calculate SBX on the positions
+
+        dense_parents[0,0,0:maxl] = p1stripd[0,best1]
+        dense_parents[1,0,0:maxl] = p2stripd[0,best2]
+        # TODO we might need to tweak eta to do more of spread
+        new_positions = sbx._do(problem, dense_parents)
+        new_positions = np.round(new_positions)
+       
+        p1stripd[0,best1] = new_positions[0,0,0:maxl] 
+        p2stripd[0,best2] = new_positions[1,0,0:maxl] 
 
         # Now we need to place these values back 
         # in the children at their original spaces 
         c1 = np.zeros_like(p1) 
         c2 = np.zeros_like(p2) 
-      
+
         # Put the values back into the children where they were in the parents
         if np.size(dense_children[0,:,:]) != 0:
             c1[p1stripd[0,:][best1].astype(int)] = dense_children[0,:,:]
