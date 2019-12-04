@@ -5,16 +5,21 @@ from pymoo.model.problem import Problem
 
 class CropoverTests(Problem):
 
-    def __init__(self):
+    def __init__(self, seed=0):
+
+        seed = 20191126
+
         self.fit_min = 1
         self.fit_max = 100
 
         self.height_min = 1
         self.height_max = 300
 
-        self.days = 120
+        self.days = 40 
         self.appCount = 16
-    
+   
+        np.random.seed(seed) 
+
         # All optima will be zeros, except...
         self.optima = np.zeros((1,self.days))
 
@@ -49,7 +54,7 @@ class CropoverTests(Problem):
   
         f1 = np.sum(x, axis=1)
         
-        f_ind = -np.power(x - self.optima, 2) + self.heights
+        f_ind = -(-0.1*np.power(x - self.optima, 2) + self.heights)
 
         f2 = np.sum(f_ind, axis=1)
 

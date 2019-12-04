@@ -13,7 +13,7 @@ class SparseSampler(Sampling):
         for row in range(np.size(X,0)):
 
             # Where to put the samples 
-            indices = np.random.randint(0, len(X), self.n)
+            indices = np.random.randint(0,  np.shape(X)[1], self.n)
 
             ranges = problem.xu - problem.xl
 

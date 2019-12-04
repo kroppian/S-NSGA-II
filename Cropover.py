@@ -100,8 +100,8 @@ class Cropover(Crossover):
 
         # Put the values to save into their respective places 
         if num2save:
-            c1[to_save1[0,:].astype(int)] = p1[to_save1[1,:].astype(int)]
-            c2[to_save2[0,:].astype(int)] = p2[to_save2[1,:].astype(int)]
+            c1[to_save1[0,:].astype(int)] = p1[to_save1[0,:].astype(int)]
+            c2[to_save2[0,:].astype(int)] = p2[to_save2[0,:].astype(int)]
 
         return c1, c2 
 
