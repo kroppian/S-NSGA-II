@@ -41,7 +41,9 @@ class Cropover(Crossover):
 
         # number of non-zeros
         nz1, nz2 = np.sum(p1 != 0), np.sum(p2 != 0)
-   
+  
+        length = np.size(p1)
+
         # Genotype with zeros removed, and the position 
         # of the non-zeros in the second row
         p1stripd, p2stripd = Cropover._stripzs(p1), Cropover._stripzs(p2)
@@ -60,8 +62,8 @@ class Cropover(Crossover):
 
         # Find the indices of the top solutions 
         # under maxl with respects to crowding
-        best1 = np.argpartition(dists1, -maxl)[-maxl:]
-        best2 = np.argpartition(dists2, -maxl)[-maxl:]
+        best1 = np.sort(np.argpartition(dists1, -maxl)[-maxl:])
+        best2 = np.sort(np.argpartition(dists2, -maxl)[-maxl:])
 
         # If the sparsity doesn't match, save half of the overflow
         num2save = math.floor(abs(nz1 - nz2)/2)
@@ -92,10 +94,23 @@ class Cropover(Crossover):
 
         dense_parents[0,0,0:maxl] = p1stripd[0,best1]
         dense_parents[1,0,0:maxl] = p2stripd[0,best2]
+
+
         # TODO we might need to tweak eta to do more of spread
-        new_positions = sbx._do(problem, dense_parents)
-        new_positions = np.round(new_positions)
+        eta = length
+        sbx = SimulatedBinaryCrossover(eta, prob_per_variable)
+        new_positions_raw = sbx._do(problem, dense_parents)
+        new_positions = np.round(new_positions_raw)
+
+        if np.isnan(new_positions_raw).any():
+            print("Error...")
+            exit(1)
+     
+        # set any out of indexs back in index 
+        overs = new_positions > (length - 1)
+        new_positions[overs] = (length - 1)
        
+
         p1stripd[0,best1] = new_positions[0,0,0:maxl] 
         p2stripd[0,best2] = new_positions[1,0,0:maxl] 
 
