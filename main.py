@@ -15,7 +15,7 @@ from SparseSampler import SparseSampler
 from Cropover import Cropover
 
 
-max_run = 10
+max_run = 50 
 
 dateTimeObj = datetime.now()
 timestamp = "%d-%02d-%02d_%02d-%02d-%02d" % (dateTimeObj.year, dateTimeObj.month, dateTimeObj.day, dateTimeObj.hour, dateTimeObj.minute, dateTimeObj.second)
@@ -38,7 +38,7 @@ for sample_sparsity in range(16,17):
 
         algorithm = NSGA2(pop_size=100, 
                 eliminate_duplicates=True,
-                sampling=s_sampler,
+                #sampling=s_sampler,
                 crossover=cropover)
 
         res = minimize(prob,
@@ -70,8 +70,8 @@ for sample_sparsity in range(16,17):
         cropover = Cropover(eta=30, prob=1.0)
 
         algorithm = NSGA2(pop_size=100, 
-                eliminate_duplicates=True,
-                sampling=s_sampler)
+                eliminate_duplicates=True)#,
+                #sampling=s_sampler)
 
         res = minimize(prob,
                        algorithm,
