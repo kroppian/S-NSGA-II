@@ -14,7 +14,7 @@ maxSparsity = 16
 currentMax1 = 0
 currentMax2 = 0
 
-xmax = 600
+xmax = 850 
 ymax = 1800
 ymin = -4000
 
@@ -29,7 +29,8 @@ for(sparsity in minSparsity:maxSparsity){
 
   xlabel = expression('Y'[1])
   ylabel = expression('Y'[2])
-  title = paste("Sampling Sparsity", sparsity)
+  #title = paste("Sampling Sparsity", sparsity)
+  title = paste("60 Variables, 16 Non-Zero Variables")
   
 
   filesFoundWith = length(withFiles)
@@ -48,7 +49,7 @@ for(sparsity in minSparsity:maxSparsity){
   print(paste(filesFoundWith, " files found with sparsity ", sparsity))
 
   i = 0
-  for (file in withFiles){
+  for (file in withoutFiles){
     data = read.csv(file)
     if (i == 0)
       plot(data[,1],data[,2],col = "red", xlab=xlabel, ylab=ylabel, main=title, xlim=c(0,xmax), ylim=c(ymin,ymax))
@@ -59,7 +60,7 @@ for(sparsity in minSparsity:maxSparsity){
     currentMax2 = max(c(currentMax2, data[,2])) 
   }
 
-  for (file in withoutFiles){
+  for (file in withFiles){
     data = read.csv(file)
     if (i == 0)
       points(data[,1],data[,2],col = "blue")
