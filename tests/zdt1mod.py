@@ -6,11 +6,25 @@ class ZDT(Problem):
     def __init__(self, n_var=30, **kwargs):
         super().__init__(n_var=n_var, n_obj=2, n_constr=0, xl=0, xu=1, type_var=anp.double, **kwargs)
 
-class ZDT1_sparse(ZDT):
+class ZDT_S(ZDT):
+
+    @staticmethod
+    def sparse_penalty(x, target_n): 
+        xz = anp.copy(x)
+
+        xz[xz != 0] = 1
+
+        non_zs = anp.sum(xz,1)
+
+        penalty = anp.abs(non_zs - target_n)
+
+        return penalty
 
     def __init__(self, n_var=30, target_n=30, **kwargs):
         self.target_n = target_n
         super().__init__(n_var=n_var)
+
+class ZDT_S1(ZDT_S):
 
     def _calc_pareto_front(self, n_pareto_points=100):
         x = anp.linspace(0, 1, n_pareto_points)
@@ -18,17 +32,9 @@ class ZDT1_sparse(ZDT):
 
     def _evaluate(self, x, out, *args, **kwargs):
 
-        xz = anp.copy(x)
-
-        xz[xz != 0] = 1
-
-        non_zs = anp.sum(xz,1)
-
-        score = anp.abs(non_zs - self.target_n)
-
         f1 = x[:, 0]
         g = 1 + 9.0 / (self.n_var - 1) * anp.sum(x[:, 1:], axis=1) 
-        g = g + score
+        g = g + self.sparse_penalty(x, self.target_n)
         f2 = g * (1 - anp.power((f1 / g), 0.5))
 
         out["F"] = anp.column_stack([f1, f2])
