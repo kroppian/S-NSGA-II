@@ -10,11 +10,8 @@ class ZDT_S(ZDT):
 
     @staticmethod
     def sparse_penalty(x, target_n): 
-        xz = anp.copy(x)
 
-        xz[xz != 0] = 1
-
-        non_zs = anp.sum(xz,1)
+        non_zs = anp.sum(x != 0, 1) 
 
         penalty = anp.abs(non_zs - target_n)
 
