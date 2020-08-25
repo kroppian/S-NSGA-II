@@ -2,7 +2,7 @@ from pymoo.optimize import minimize
 from pymoo.algorithms.nsga2 import NSGA2
 from SparseSampler import SparseSampler
 from pymoo.visualization.scatter import Scatter
-from tests.zdt1mod import ZDT_S1
+from tests.zdt_s import ZDT_S1
 
 problem = ZDT_S1(n_var=30, target_n=12)
 
