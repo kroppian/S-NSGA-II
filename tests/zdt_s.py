@@ -56,7 +56,7 @@ class ZDT_S2(ZDT_S):
         out["F"] = anp.column_stack([f1, f2])
 
 
-class ZDT3(ZDT):
+class ZDT_S3(ZDT_S):
 
     def _calc_pareto_front(self, n_pareto_points=100):
         regions = [[0, 0.0830015349],
@@ -75,7 +75,8 @@ class ZDT3(ZDT):
     def _evaluate(self, x, out, *args, **kwargs):
         f1 = x[:, 0]
         c = anp.sum(x[:, 1:], axis=1)
-        g = 1.0 + 9.0 * c / (self.n_var - 1)
+        g = 1.0 + 9.0 * c / (self.n_var - 1) 
+        g = g + self.sparse_penalty(x[:, 1:], self.target_n)
         f2 = g * (1 - anp.power(f1 * 1.0 / g, 0.5) - (f1 * 1.0 / g) * anp.sin(10 * anp.pi * f1))
 
         out["F"] = anp.column_stack([f1, f2])
