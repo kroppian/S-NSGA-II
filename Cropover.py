@@ -3,6 +3,8 @@ from pymoo.operators.crossover.simulated_binary_crossover import SimulatedBinary
 import numpy as np
 import sys
 import copy, math
+from pymoo.model.problem import Problem
+
 
 class Cropover(Crossover):
     def __init__(self, eta, prob_per_variable=0.5, **kwargs):
@@ -39,9 +41,10 @@ class Cropover(Crossover):
     @staticmethod
     def cross_try(p1, p2, problem, eta, prob_per_variable):
 
+
         # number of non-zeros
         nz1, nz2 = np.sum(p1 != 0), np.sum(p2 != 0)
-  
+
         length = np.size(p1)
 
         # Genotype with zeros removed, and the position 
@@ -64,6 +67,7 @@ class Cropover(Crossover):
         # under maxl with respects to crowding
         best1 = np.sort(np.argpartition(dists1, -maxl)[-maxl:])
         best2 = np.sort(np.argpartition(dists2, -maxl)[-maxl:])
+
 
         # If the sparsity doesn't match, save half of the overflow
         num2save = math.floor(abs(nz1 - nz2)/2)
@@ -95,15 +99,17 @@ class Cropover(Crossover):
         dense_parents[0,0,0:maxl] = p1stripd[0,best1]
         dense_parents[1,0,0:maxl] = p2stripd[0,best2]
 
-
+        par_size = np.size(dense_parents, 2)
+        position_sbx_prob = Problem(n_var=par_size, xl=0, xu=par_size)
+        
         # TODO we might need to tweak eta to do more of spread
         eta = length
         sbx = SimulatedBinaryCrossover(eta, prob_per_variable)
-        new_positions_raw = sbx._do(problem, dense_parents)
+        new_positions_raw = sbx._do(position_sbx_prob, dense_parents)
         new_positions = np.round(new_positions_raw)
 
         if np.isnan(new_positions_raw).any():
-            print("Error...")
+            print("Error during cropover...")
             exit(1)
      
         # set any out of indexs back in index 
@@ -130,7 +136,7 @@ class Cropover(Crossover):
             c1[to_save1[0,:].astype(int)] = p1[to_save1[0,:].astype(int)]
             c2[to_save2[0,:].astype(int)] = p2[to_save2[0,:].astype(int)]
 
-        return c1, c2 
+        return c1, c2
 
     @staticmethod
     def crowding_ranking(positions):
@@ -174,7 +180,4 @@ class Cropover(Crossover):
 
         # Run SBX on the two newly modified set of parents
         return self.sbx._do(problem, Y)
-
-
-
 
