@@ -35,7 +35,7 @@ class ZDT_S1(ZDT_S):
 
         f1 = x[:, 0]
         g = 1 + 9.0 / (self.n_var - 1) * anp.sum(x[:, 1:], axis=1) 
-        g = g + self.sparse_penalty(x, self.target_n)
+        g = g + self.sparse_penalty(x[:, 1:], self.target_n)
         f2 = g * (1 - anp.power((f1 / g), 0.5))
 
         out["F"] = anp.column_stack([f1, f2])
@@ -50,7 +50,7 @@ class ZDT_S2(ZDT_S):
         f1 = x[:, 0]
         c = anp.sum(x[:, 1:], axis=1)
         g = 1.0 + 9.0 * c / (self.n_var - 1)
-        g = g + self.sparse_penalty(x, self.target_n)
+        g = g + self.sparse_penalty(x[:, 1:], self.target_n)
         f2 = g * (1 - anp.power((f1 * 1.0 / g), 2))
 
         out["F"] = anp.column_stack([f1, f2])
