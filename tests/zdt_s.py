@@ -19,7 +19,6 @@ class ZDT_S(ZDT):
         penalty = anp.abs(non_zs - target_n)
 
         return penalty
-        #return 0
 
     def __init__(self, n_var=30, target_n=30, **kwargs):
         self.target_n = target_n
@@ -50,7 +49,7 @@ class ZDT_S2(ZDT_S):
         f1 = x[:, 0]
         c = anp.sum(x[:, 1:], axis=1)
         g = 1.0 + 9.0 * c / (self.n_var - 1)
-        g = g + self.sparse_penalty(x[:, 1:], self.target_n)
+        g += self.sparse_penalty(x[:, 1:], self.target_n)
         f2 = g * (1 - anp.power((f1 * 1.0 / g), 2))
 
         out["F"] = anp.column_stack([f1, f2])
@@ -82,9 +81,9 @@ class ZDT_S3(ZDT_S):
         out["F"] = anp.column_stack([f1, f2])
 
 
-class ZDT4(ZDT):
-    def __init__(self, n_var=10):
-        super().__init__(n_var)
+class ZDT_S4(ZDT_S):
+    def __init__(self, n_var=10, target_n=3):
+        super().__init__(n_var, target_n=3)
         self.xl = -5 * anp.ones(self.n_var)
         self.xl[0] = 0.0
         self.xu = 5 * anp.ones(self.n_var)
@@ -101,6 +100,9 @@ class ZDT4(ZDT):
         g += 10 * (self.n_var - 1)
         for i in range(1, self.n_var):
             g += x[:, i] * x[:, i] - 10.0 * anp.cos(4.0 * anp.pi * x[:, i])
+    
+        g += self.sparse_penalty(x[:, 1:], self.target_n)
+
         h = 1.0 - anp.sqrt(f1 / g)
         f2 = g * h
 
