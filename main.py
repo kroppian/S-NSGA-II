@@ -7,10 +7,13 @@ from Cropover import Cropover
 import sys
 from numpy import genfromtxt
 
-problem_type = "ZDT_S3"
+# Parameters
+problem_type = "ZDT_S6"
 s_sampling_on = True
 cropover_on = False
-max_run = 10
+# TODO size constraint
+
+max_run = 4
 
 seeds = genfromtxt('seeds.csv', delimiter=',')
 
@@ -34,11 +37,14 @@ for run in range(max_run):
     elif problem_type == "ZDT_S4":
         target_sparsity=3
         problem = ZDT_S4(n_var=10, target_n=target_sparsity)
+    elif problem_type == "ZDT_S6":
+        target_sparsity=2
+        problem = ZDT_S6(n_var=10, target_n=target_sparsity)
     else: 
         print("Invalid option")
         sys.exit(1)
 
-    cropover = Cropover(eta=30, prob=1.0)
+    cropover = Cropover(eta=15, prob=1.0)
 
     if s_sampling_on and cropover_on:
         # Both cropover and s samping
@@ -70,6 +76,7 @@ for run in range(max_run):
 
     plot.add(res.F, color="red")
 
+    print("Completed run %d" % run)
 
 print("Problem: %s" % problem_type)
 print("Sparse sampling: %s" % s_sampling_on)

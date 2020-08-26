@@ -106,7 +106,7 @@ class ZDT_S4(ZDT_S):
         out["F"] = anp.column_stack([f1, f2])
 
 
-class ZDT6(ZDT):
+class ZDT_S6(ZDT_S):
 
     def _calc_pareto_front(self, n_pareto_points=100):
         x = anp.linspace(0.2807753191, 1, n_pareto_points)
@@ -115,6 +115,9 @@ class ZDT6(ZDT):
     def _evaluate(self, x, out, *args, **kwargs):
         f1 = 1 - anp.exp(-4 * x[:, 0]) * anp.power(anp.sin(6 * anp.pi * x[:, 0]), 6)
         g = 1 + 9.0 * anp.power(anp.sum(x[:, 1:], axis=1) / (self.n_var - 1.0), 0.25)
+
+        g += self.sparse_penalty(x[:, 1:], self.target_n)
+
         f2 = g * (1 - anp.power(f1 / g, 2))
 
         out["F"] = anp.column_stack([f1, f2])
