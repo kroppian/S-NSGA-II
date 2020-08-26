@@ -32,6 +32,19 @@ class Cropover(Crossover):
         # No need for anything for zero and zero 
         return c1, c2 
 
+    # Returns an array with the non-zero elements
+    # along with another array of where those elmenents were
+    # originally located
+    # Example:
+    # 
+    # Input
+    # array([ 0.        ,  3.81407747, -3.25857223,  0.        ,  3.53295194,
+    #         0.        ,  0.        ,  0.        ,  0.        ,  0.        ])
+    #
+    # Output
+    # array([[ 1.        ,  2.        ,  4.        ],
+    #        [ 3.81407747, -3.25857223,  3.53295194]])
+    # 
     @staticmethod    
     def _stripzs(X): 
         inds = np.where(X != 0)
@@ -103,7 +116,6 @@ class Cropover(Crossover):
         position_sbx_prob = Problem(n_var=par_size, xl=0, xu=par_size)
         
         # TODO we might need to tweak eta to do more of spread
-        eta = length
         sbx = SimulatedBinaryCrossover(eta, prob_per_variable)
         new_positions_raw = sbx._do(position_sbx_prob, dense_parents)
         new_positions = np.round(new_positions_raw)
