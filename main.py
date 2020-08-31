@@ -5,7 +5,7 @@ from pymoo.visualization.scatter import Scatter
 from tests.zdt_s import *
 from Cropover import Cropover
 import sys
-from numpy import genfromtxt
+import numpy as np
 from plotting.PlotAttainment import plot_attainment
 import matplotlib.pyplot as plt
 
@@ -17,13 +17,20 @@ colors = ["green", "red"]
 labels = ["With Sampling", "Without sampling"]
 # TODO size constraint
 
-max_run = 20
+max_run = 200
 
-seeds = genfromtxt('seeds.csv', delimiter=',')
+seeds = np.genfromtxt('seeds.csv', delimiter=',')
 
 seeds = seeds.astype(int)
 
+maxx = -100000000000
+maxy = -100000000000
+minx =  100000000000
+miny =  100000000000
+
 for config in range(len(s_sampling_on)):
+
+    results = []  
 
     for run in range(max_run):
 
@@ -47,6 +54,8 @@ for config in range(len(s_sampling_on)):
         else: 
             print("Invalid option")
             sys.exit(1)
+
+        plt.plot(problem.pareto_front()[:,0], problem.pareto_front()[:,1], color="black", alpha=0.7, linewidth=1)
 
         cropover = Cropover(eta=15, prob=1.0)
 
@@ -77,7 +86,10 @@ for config in range(len(s_sampling_on)):
                        algorithm,
                        ('n_gen', 200))
 
-        plot_attainment(res.F, plt, color=colors[config]) 
+        if np.size(results) == 0:
+            results = res.F
+        else:
+            results = np.concatenate((results, res.F))
 
         print("Completed run %d" % run)
 
@@ -85,8 +97,20 @@ for config in range(len(s_sampling_on)):
         print("Sparse sampling: %s" % s_sampling_on[config])
         print("Cropover: %s" % cropover_on[config])
 
+    (new_maxx, new_maxy, new_minx, new_miny) = plot_attainment(results, plt, color=colors[config])
+    maxx = max((maxx, new_maxx))   
+    maxy = max((maxy, new_maxy))   
+    minx = min((minx, new_minx))   
+    miny = min((miny, new_miny))   
 
-#plot.add(problem.pareto_front(), plot_type="line", color="black", alpha=0.7)
+
+plt.title(problem_type)
+
+print((minx, maxx))
+print((miny, maxy))
+
+plt.xlim((minx, maxx))
+plt.ylim((miny, maxy))
 
 plt.show()
 
