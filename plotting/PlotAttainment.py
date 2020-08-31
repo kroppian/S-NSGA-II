@@ -7,7 +7,7 @@ def plot_attainment(F, plt, color="grey"):
 
     F = F[F[:,1].argsort()]
 
-    plt.plot(F[:,0], F[:,1], ',', color=color)
+    plt.plot(F[:,0], F[:,1], ',', color=color, linewidth=1)
 
     connectionstyle = "angle,angleA=-90,angleB=180,rad=0"
 
@@ -20,6 +20,7 @@ def plot_attainment(F, plt, color="grey"):
                     xytext=(next_row[0], next_row[1]), textcoords='data',
                     arrowprops=dict(arrowstyle="-", color=color,
                                     patchA=None, patchB=None,
+                                    shrinkA=0, shrinkB=0,
                                     connectionstyle=connectionstyle,
                                     ),
                     )

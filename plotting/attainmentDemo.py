@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # https://matplotlib.org/3.1.1/gallery/userdemo/connectionstyle_demo.html#sphx-glr-gallery-userdemo-connectionstyle-demo-py
 
 F = np.array([[9.99931184e-01, 5.17866533e-04], 
@@ -119,6 +120,7 @@ for (i, row) in enumerate(F[0:-1]):
                 xytext=(next_row[0], next_row[1]), textcoords='data',
                 arrowprops=dict(arrowstyle="-", color="0.5",
                                 patchA=None, patchB=None,
+                                shrinkA=0, shrinkB=0,
                                 connectionstyle=connectionstyle,
                                 ),
                 )
