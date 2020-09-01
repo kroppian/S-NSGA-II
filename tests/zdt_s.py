@@ -15,10 +15,11 @@ class ZDT_S(ZDT):
 
         penalty = anp.abs(non_zs - target_n)
 
-        return penalty
+        return penalty/2
 
-    def __init__(self, n_var=30, target_n=30, **kwargs):
+    def __init__(self, n_var=30, target_n=30, constrained=False, **kwargs):
         self.target_n = target_n
+        self.constrained = constrained
         super().__init__(n_var=n_var)
 
 class ZDT_S1(ZDT_S):
@@ -33,6 +34,9 @@ class ZDT_S1(ZDT_S):
         g = 1 + 9.0 / (self.n_var - 1) * anp.sum(x[:, 1:], axis=1) 
         g = g + self.sparse_penalty(x[:, 1:], self.target_n)
         f2 = g * (1 - anp.power((f1 / g), 0.5))
+
+        if self.constrained: 
+            out["G"] = self.sparse_penalty(x[:, 1:], self.target_n)
 
         out["F"] = anp.column_stack([f1, f2])
 
