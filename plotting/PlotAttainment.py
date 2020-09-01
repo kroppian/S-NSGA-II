@@ -22,10 +22,10 @@ def plot_attainment(F, plt, color="grey"):
     
     _plot_single_front(badFront, plt, color)
 
-    maxx = max(goodFront[:,0])
-    maxy = max(goodFront[:,1])
-    minx = min(goodFront[:,0])
-    miny = min(goodFront[:,1])
+    maxx = max(F[:,0])
+    maxy = max(F[:,1])
+    minx = min(F[:,0])
+    miny = min(F[:,1])
 
     return (maxx, maxy, minx, miny)
 
