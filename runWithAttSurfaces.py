@@ -115,12 +115,11 @@ for config in range(len(s_sampling_on)):
         print("Completed run %d" % run)
 
         print("Problem: %s" % problem_type)
+        print("Constraings: %s" % constraint_on[config])
         print("Sparse sampling: %s" % s_sampling_on[config])
         print("Cropover: %s" % cropover_on[config])
 
     (new_maxx, new_maxy, new_minx, new_miny) = plot_attainment(results, plt, color=colors[config])
-
-    print((new_maxx, new_maxy, new_minx, new_miny))
 
     maxx = max((maxx, new_maxx))   
     maxy = max((maxy, new_maxy))   
@@ -129,9 +128,6 @@ for config in range(len(s_sampling_on)):
 
 
 plt.title(problem_type)
-
-print((minx, maxx))
-print((miny, maxy))
 
 plt.xlim((minx, maxx))
 plt.ylim((miny, maxy))
