@@ -1,6 +1,39 @@
 import autograd.numpy as anp
 from pymop.problem import Problem
 
+def get_problem(problem_type, n_var=-1, target_n=-1):
+
+    # Default values
+    defaults = {
+        "ZDT_S1": { "n_var" : 30, "target_n" : 15},
+        "ZDT_S2": { "n_var" : 30, "target_n" : 12},
+        "ZDT_S3": { "n_var" : 30, "target_n" : 12},
+        "ZDT_S4": { "n_var" : 10, "target_n" : 3},
+        "ZDT_S6": { "n_var" : 10, "target_n" : 2} 
+    }
+
+    if n_var == -1: 
+        n_var = defaults[problem_type]["n_var"]
+       
+    if target_n == -1:
+        target_n = defaults[problem_type]["target_n"]
+
+    if problem_type == "ZDT_S1":
+        problem = ZDT_S1(n_var=n_var, target_n=target_n)
+    elif problem_type == "ZDT_S2":
+        problem = ZDT_S2(n_var=n_var, target_n=target_n)
+    elif problem_type == "ZDT_S3":
+        problem = ZDT_S3(n_var=n_var, target_n=target_n)
+    elif problem_type == "ZDT_S4":
+        problem = ZDT_S4(n_var=n_var, target_n=target_n)
+    elif problem_type == "ZDT_S6":
+        problem = ZDT_S6(n_var=n_var, target_n=target_n)
+    else: 
+        print("Invalid option")
+        sys.exit(1)
+
+    return (problem, target_n)
+
 class ZDT(Problem):
 
     def __init__(self, n_var=30, **kwargs):
