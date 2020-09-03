@@ -1,7 +1,7 @@
 import autograd.numpy as anp
 from pymop.problem import Problem
 
-def get_problem(problem_type, n_var=-1, target_n=-1):
+def get_problem(problem_type, n_var=-1, target_n=-1, constrained=False):
 
     # Default values
     defaults = {
@@ -19,15 +19,15 @@ def get_problem(problem_type, n_var=-1, target_n=-1):
         target_n = defaults[problem_type]["target_n"]
 
     if problem_type == "ZDT_S1":
-        problem = ZDT_S1(n_var=n_var, target_n=target_n)
+        problem = ZDT_S1(n_var=n_var, target_n=target_n, constrained=constrained)
     elif problem_type == "ZDT_S2":
-        problem = ZDT_S2(n_var=n_var, target_n=target_n)
+        problem = ZDT_S2(n_var=n_var, target_n=target_n, constrained=constrained)
     elif problem_type == "ZDT_S3":
-        problem = ZDT_S3(n_var=n_var, target_n=target_n)
+        problem = ZDT_S3(n_var=n_var, target_n=target_n, constrained=constrained)
     elif problem_type == "ZDT_S4":
-        problem = ZDT_S4(n_var=n_var, target_n=target_n)
+        problem = ZDT_S4(n_var=n_var, target_n=target_n, constrained=constrained)
     elif problem_type == "ZDT_S6":
-        problem = ZDT_S6(n_var=n_var, target_n=target_n)
+        problem = ZDT_S6(n_var=n_var, target_n=target_n, constrained=constrained)
     else: 
         print("Invalid option")
         sys.exit(1)
