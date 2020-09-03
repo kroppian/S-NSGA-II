@@ -15,18 +15,22 @@ class SparseSampler(Sampling):
         for row in range(np.size(X,0)):
 
             # Where to put the samples 
-            #indices = np.random.randint(0,  np.shape(X)[1], self.n)
             indices = random.sample(range(np.shape(X)[1]), self.n)
 
-            # Include any indices that alwasy need to be non-zero
+            # Include any indices that always need to be non-zero
             indices = list(set(indices).union(self.sampled_mask))
             indices = np.array(indices) 
 
             ranges = problem.xu - problem.xl
             
             indices_len = np.size(indices,0)
-            # Put those samples in!
-            X[row,indices]  = problem.xl[indices] + ranges[indices]*np.random.ranf(indices_len)
+
+            if indices_len == 0:
+                # If there's nothing to put it, make sure everything is zeros
+                X[row,:] = np.zeros(np.shape(X)[1])
+            else:
+                # Put those samples in!
+                X[row,indices]  = problem.xl[indices] + ranges[indices]*np.random.ranf(indices_len)
 
         return X
 
