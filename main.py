@@ -11,11 +11,13 @@ from plotting.PlotAttainment import plot_attainment
 import matplotlib.pyplot as plt
 from random import *
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting    
+import pathlib
+import datetime
 
 ## Parameters
 # either attainmentSurface, sparsity
-#mode = "attainmentSurface"
-mode = "sparsity"
+mode = "attainmentSurface"
+#mode = "sparsity"
 # ZDT_S[12346]
 problem_type = "ZDT_S1"
 constraint_on = [True, False, False]
@@ -28,9 +30,9 @@ labels = ["Constrained", "With Sampling", "Without sampling"]
 # First value: n_var
 # Second value: target sparsity 
 #sparsities = [(30, 6), (30, 12), (30, 18), (30, 24)]
-sparsities = [(400, a*10) for a in range(40)]
+sparsities = [(400, a*80) for a in range(40)]
 
-max_run = 10
+max_run = 2
 
 ## Functions
 
@@ -61,6 +63,39 @@ def get_algorithm(s_sampling_on, cropover_on, target_sparsity):
 
     return algorithm
 
+def save_results(history, path=""):
+
+    print("Save results? (y/n)")
+
+    responseInvalid = True
+
+    while responseInvalid:
+
+        answer = input()
+
+        if answer == "y":
+            responseInvalid = False
+        else: 
+            return 
+
+        if responseInvalid:
+            print("Try again? (y/n)")
+        
+    dateTimeObj = datetime.datetime.now()
+    timestamp = "%d-%02d-%02d_%02d-%02d-%02d" % (dateTimeObj.year, dateTimeObj.month, dateTimeObj.day, dateTimeObj.hour, dateTimeObj.minute, dateTimeObj.second)
+    
+    for file_name in history.keys():
+        data = history[file_name]
+
+        full_file_path = "%s/%s" % (path, timestamp)
+        pathlib.Path(full_file_path).mkdir(parents=True, exist_ok=True)
+
+        print ("Writing to %s" % full_file_path)
+
+        np.savetxt("%s/%s" % (full_file_path, file_name), data, delimiter=",")
+    
+
+
 def attainment_mode():
 
     # bounds for the chart
@@ -68,6 +103,8 @@ def attainment_mode():
     maxy = -100000000000
     minx =  100000000000
     miny =  100000000000
+
+    history = {}
 
     for config in range(len(s_sampling_on)):
 
@@ -77,7 +114,8 @@ def attainment_mode():
 
             seed = seeds[run] 
 
-            (problem, target_sparsity) = get_problem(problem_type, constrained=constraint_on[config])
+            
+            (problem, target_sparsity) = get_problem(problem_type, n_var=30, target_n=5, constrained=constraint_on[config])
 
             plt.plot(problem.pareto_front()[:,0], problem.pareto_front()[:,1], color="black", alpha=0.7, linewidth=1)
 
@@ -89,6 +127,17 @@ def attainment_mode():
             res = minimize(problem,
                            algorithm,
                            ('n_gen', 200))
+
+            file_name = "%s-run%d%s%s%s" % (
+                        problem_type, 
+                        run,
+                        "-constrained" if constraint_on[config] else "",
+                        "-ssampled" if s_sampling_on[config] else "",
+                        "cropover" if cropover_on[config] else ""
+                        )
+
+            history[file_name + "-X.csv"] = res.X
+            history[file_name + "-F.csv"] = res.F
 
             if np.size(results) == 0:
                 results = res.F
@@ -117,6 +166,9 @@ def attainment_mode():
     plt.ylabel("f2")
 
     plt.show()
+
+    save_results(history, path="./results/")
+
 
 def sparsity_mode():
 
@@ -187,7 +239,6 @@ def sparsity_mode():
                 F = [NonDominatedSorting().do(F)[0]]
     
                 # Calc hypervol
-                
 
                 hv = hvfnc.calc(res.F)
                
@@ -212,8 +263,6 @@ def sparsity_mode():
 
         plt.plot(x, y, linestyle='-', marker='o' ,color=colors[config] ,alpha=0.7, linewidth=1)
 
-    print(results)
-
     plt.show()
 
 ## Main 
@@ -226,5 +275,9 @@ if mode == "attainmentSurface":
     attainment_mode()
 elif mode == "sparsity":
     sparsity_mode()
+
+
+
+
 
 
