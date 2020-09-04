@@ -1,6 +1,7 @@
 import autograd.numpy as anp
 from pymop.problem import Problem
 
+
 def get_problem(problem_type, n_var=-1, target_n=-1, constrained=False):
 
     # Default values
@@ -48,7 +49,7 @@ class ZDT_S(ZDT):
 
         penalty = anp.abs(non_zs - target_n)
 
-        return penalty/2
+        return 60*(penalty/anp.size(x))
 
     def __init__(self, n_var=30, target_n=30, constrained=False, **kwargs):
         self.target_n = target_n
@@ -86,6 +87,10 @@ class ZDT_S2(ZDT_S):
         g += self.sparse_penalty(x[:, 1:], self.target_n)
         f2 = g * (1 - anp.power((f1 * 1.0 / g), 2))
 
+        if self.constrained: 
+            out["G"] = self.sparse_penalty(x[:, 1:], self.target_n)
+
+
         out["F"] = anp.column_stack([f1, f2])
 
 
@@ -111,6 +116,9 @@ class ZDT_S3(ZDT_S):
         g = 1.0 + 9.0 * c / (self.n_var - 1) 
         g = g + self.sparse_penalty(x[:, 1:], self.target_n)
         f2 = g * (1 - anp.power(f1 * 1.0 / g, 0.5) - (f1 * 1.0 / g) * anp.sin(10 * anp.pi * f1))
+
+        if self.constrained: 
+            out["G"] = self.sparse_penalty(x[:, 1:], self.target_n)
 
         out["F"] = anp.column_stack([f1, f2])
 
