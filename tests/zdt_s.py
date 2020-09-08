@@ -1,8 +1,13 @@
 import autograd.numpy as anp
 from pymop.problem import Problem
-
+import sys
 
 def get_problem(problem_type, n_var=-1, target_n=-1, constrained=False):
+
+
+    if(n_var < target_n):
+        print("Error: number of variables (%d) is smaller than the target n (%d)" % (n_var, target_n))
+        sys.exit(1)
 
     # Default values
     defaults = {
