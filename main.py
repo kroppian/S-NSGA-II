@@ -32,7 +32,7 @@ labels = ["Constrained", "With Sampling", "Without sampling"]
 #sparsities = [(30, 6), (30, 12), (30, 18), (30, 24)]
 sparsities = [(400, a*80) for a in range(40)]
 
-max_run = 2
+max_run = 20
 
 ## Functions
 
@@ -115,7 +115,7 @@ def attainment_mode():
             seed = seeds[run] 
 
             
-            (problem, target_sparsity) = get_problem(problem_type, n_var=30, target_n=5, constrained=constraint_on[config])
+            (problem, target_sparsity) = get_problem(problem_type, n_var=200, target_n=10, constrained=constraint_on[config])
 
             plt.plot(problem.pareto_front()[:,0], problem.pareto_front()[:,1], color="black", alpha=0.7, linewidth=1)
 

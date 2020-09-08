@@ -49,7 +49,9 @@ class ZDT_S(ZDT):
 
         penalty = anp.abs(non_zs - target_n)
 
-        return 60*(penalty/anp.size(x))
+        d = 9
+
+        return d*(penalty/anp.size(x))
 
     def __init__(self, n_var=30, target_n=30, constrained=False, **kwargs):
         self.target_n = target_n
@@ -65,7 +67,7 @@ class ZDT_S1(ZDT_S):
     def _evaluate(self, x, out, *args, **kwargs):
 
         f1 = x[:, 0]
-        g = 1 + 9.0 / (self.n_var - 1) * anp.sum(x[:, 1:], axis=1) 
+        g = 1 + 9.0 / (self.n_var - 1) * anp.abs(anp.sum(x[:, 1:], axis=1) - 0.5*self.target_n)
         g = g + self.sparse_penalty(x[:, 1:], self.target_n)
         f2 = g * (1 - anp.power((f1 / g), 0.5))
 
