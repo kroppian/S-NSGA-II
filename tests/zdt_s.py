@@ -1,6 +1,7 @@
 import autograd.numpy as anp
 from pymop.problem import Problem
 import sys
+from random import randint
 
 def get_problem(problem_type, n_var=-1, target_n=-1, constrained=False):
 
@@ -61,6 +62,12 @@ class ZDT_S(ZDT):
     def __init__(self, n_var=30, target_n=30, constrained=False, **kwargs):
         self.target_n = target_n
         self.constrained = constrained
+        lower = 1
+        upper = n_var  -1
+        self.nzs_locales = [randint(lower, upper) for a in range(target_n)]
+        self.zs_locales = list(filter(
+                (lambda a : a not in self.nzs_locales), range(lower, upper+1)
+            ))
         super().__init__(n_var=n_var)
 
 class ZDT_S1(ZDT_S):
@@ -72,8 +79,11 @@ class ZDT_S1(ZDT_S):
     def _evaluate(self, x, out, *args, **kwargs):
 
         f1 = x[:, 0]
-        g = 1 + 9.0 / (self.n_var - 1) * anp.abs(anp.sum(x[:, 1:], axis=1) - 0.5*self.target_n)
-        g = g + self.sparse_penalty(x[:, 1:], self.target_n)
+
+        g_nzs = 9.0 / (self.n_var - 1) * anp.sum(anp.abs(x[:, self.nzs_locales] - 0.5), axis=1)
+        g_zs  = 9.0 / (self.n_var - 1) * anp.sum(x[:, self.zs_locales], axis=1) 
+        g = 1 + g_nzs + g_zs
+
         f2 = g * (1 - anp.power((f1 / g), 0.5))
 
         if self.constrained: 
