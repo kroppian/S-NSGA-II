@@ -16,8 +16,8 @@ import datetime
 
 ## Parameters
 # either attainmentSurface, sparsity
-mode = "attainmentSurface"
-#mode = "sparsity"
+#mode = "attainmentSurface"
+mode = "sparsity"
 # ZDT_S[12346]
 problem_type = "ZDT_S1"
 constraint_on = [True, False, False]
@@ -30,9 +30,9 @@ labels = ["Constrained", "With Sampling", "Without sampling"]
 # First value: n_var
 # Second value: target sparsity 
 #sparsities = [(30, 6), (30, 12), (30, 18), (30, 24)]
-sparsities = [(400, a*80) for a in range(40)]
+sparsities = [(1000, int(a)) for a in np.linspace(0,1000,5)]
 
-max_run = 20
+max_run = 2
 
 ## Functions
 
@@ -194,6 +194,9 @@ def sparsity_mode():
 
     global_opt = -1
 
+    history = {} 
+   
+
     for (sparse_i, (n_var, target_sparsity)) in enumerate(sparsities):
 
         print("--------------------------------")
@@ -206,6 +209,8 @@ def sparsity_mode():
             print("     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
             for run in range(max_run):
+
+                
 
                 print("         ********************************")
                 print("         * Run: %d" % run)
@@ -234,6 +239,20 @@ def sparsity_mode():
                     print("%f greater than %f" % (max(res.F[:,1]), ref_point[1]))
                     print("Pareto front out of bounds of ref")
                     sys.exit(1)
+
+                file_name = "%s-n%d-t%d-run%d%s%s%s" % (
+                    problem_type, 
+                    n_var, 
+                    target_sparsity,
+                    run,
+                    "-constrained" if constraint_on[config] else "",
+                    "-ssampled" if s_sampling_on[config] else "",
+                    "cropover" if cropover_on[config] else ""
+                    )
+
+                
+                history[file_name + "-X.csv"] = res.X
+                history[file_name + "-F.csv"] = res.F
 
                 F = res.F
                 F = [NonDominatedSorting().do(F)[0]]
@@ -264,6 +283,9 @@ def sparsity_mode():
         plt.plot(x, y, linestyle='-', marker='o' ,color=colors[config] ,alpha=0.7, linewidth=1)
 
     plt.show()
+    
+    save_results(history, path="./results/")
+
 
 ## Main 
 
