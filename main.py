@@ -17,7 +17,8 @@ import datetime
 ## Parameters
 # either attainmentSurface, sparsity
 #mode = "attainmentSurface"
-mode = "sparsity"
+mode = "sparsityFlux"
+#mode = "sparsityFlux"
 # ZDT_S[12346]
 problem_type = "ZDT_S1"
 constraint_on = [True, False, False]
@@ -29,15 +30,19 @@ labels = ["Constrained", "With Sampling", "Without sampling"]
 # For sparsity mode only 
 # First value: n_var
 # Second value: target sparsity 
-#sparsities = [(30, 6), (30, 12), (30, 18), (30, 24)]
-sparsities = [(1000, int(a)) for a in np.linspace(0,1000,5)]
+min_n = 30
+max_n = 100
+divisions = 5
+
+algorithm_sparsity_upper = 1
+algorithm_sparsity_lower = 0.51
+true_sparsity = 0.95
+sparsities = [(int(a), int(a*(1-true_sparsity))) for a in  np.linspace(min_n, max_n, divisions)]
 
 max_run = 2
 
 ## Functions
-
 def get_algorithm(s_sampling_on, cropover_on, target_sparsity):
-
     if s_sampling_on and cropover_on:
         # Both cropover and s samping
         s_sampler = SparseSampler(target_sparsity)
@@ -92,7 +97,7 @@ def save_results(history, path=""):
 
         print ("Writing to %s" % full_file_path)
 
-        np.savetxt("%s/%s" % (full_file_path, file_name), data, delimiter=",")
+        np.save("%s/%s" % (full_file_path, file_name), data)
     
 
 
@@ -121,7 +126,11 @@ def attainment_mode():
 
             cropover = Cropover(eta=15, prob=1.0)
 
-            algorithm = get_algorithm(s_sampling_on[config], cropover_on[config], target_sparsity)
+            algorithm = get_algorithm(
+                    s_sampling_on[config], 
+                    cropover_on[config], 
+                    (n_var*(algorithm_sparsity_lower), 
+                    n_var*(algorithm_sparsity_upper)))
             
 
             res = minimize(problem,
@@ -136,8 +145,8 @@ def attainment_mode():
                         "cropover" if cropover_on[config] else ""
                         )
 
-            history[file_name + "-X.csv"] = res.X
-            history[file_name + "-F.csv"] = res.F
+            history[file_name + "-X.npy"] = res.X
+            history[file_name + "-F.npy"] = res.F
 
             if np.size(results) == 0:
                 results = res.F
@@ -224,7 +233,11 @@ def sparsity_mode():
                     global_opt = hvfnc.calc(problem.pareto_front())
                     print("         Global opt: %d" % global_opt)
 
-                algorithm = get_algorithm(s_sampling_on[config], cropover_on[config], target_sparsity)
+                algorithm = get_algorithm(
+                        s_sampling_on[config], 
+                        cropover_on[config], 
+                        (int(n_var*(algorithm_sparsity_lower)), 
+                        int(n_var*(algorithm_sparsity_upper))))
 
                 res = minimize(problem,
                                algorithm,
@@ -251,8 +264,8 @@ def sparsity_mode():
                     )
 
                 
-                history[file_name + "-X.csv"] = res.X
-                history[file_name + "-F.csv"] = res.F
+                history[file_name + "-X.npy"] = res.X
+                history[file_name + "-F.npy"] = res.F
 
                 F = res.F
                 F = [NonDominatedSorting().do(F)[0]]
@@ -277,7 +290,7 @@ def sparsity_mode():
 
     for config in range(3):
 
-        x = [s[1]/s[0] for s in sparsities]
+        x = [s[0] for s in sparsities]
         y = np.mean(results[config,:,:], axis=1)
 
         plt.plot(x, y, linestyle='-', marker='o' ,color=colors[config] ,alpha=0.7, linewidth=1)
@@ -295,9 +308,9 @@ seeds = seeds.astype(int)
 
 if mode == "attainmentSurface":
     attainment_mode()
-elif mode == "sparsity":
+elif mode == "sparsityFlux":
     sparsity_mode()
-
+    
 
 
 
