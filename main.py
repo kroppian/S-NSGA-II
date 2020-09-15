@@ -14,37 +14,14 @@ from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 import pathlib
 import datetime
 
-## Parameters
-# either attainmentSurface, sparsity
-#mode = "attainmentSurface"
-mode = "sparsityFlux"
-#mode = "sparsityFlux"
-# ZDT_S[12346]
-problem_type = "ZDT_S1"
-constraint_on = [True, False, False]
-s_sampling_on = [False, True, False]
-cropover_on =   [False, False, False]
-colors = ["green", "red", "blue"]
-labels = ["Constrained", "With Sampling", "Without sampling"]
+from config import global_config
 
-# For sparsity mode only 
-# First value: n_var
-# Second value: target sparsity 
-min_n = 30
-max_n = 100
-divisions = 5
-
-algorithm_sparsity_upper = 1
-algorithm_sparsity_lower = 0.51
-true_sparsity = 0.95
-sparsities = [(int(a), int(a*(1-true_sparsity))) for a in  np.linspace(min_n, max_n, divisions)]
-
-max_run = 2
 
 ## Functions
 def get_algorithm(s_sampling_on, cropover_on, target_sparsity):
     if s_sampling_on and cropover_on:
         # Both cropover and s samping
+        cropover = Cropover(eta=15, prob=1.0)
         s_sampler = SparseSampler(target_sparsity)
         algorithm = NSGA2(
                 seed=seed,
@@ -59,6 +36,7 @@ def get_algorithm(s_sampling_on, cropover_on, target_sparsity):
                 sampling=s_sampler)
     elif not s_sampling_on and cropover_on: 
         # Just cropover 
+        cropover = Cropover(eta=15, prob=1.0)
         algorithm = NSGA2(
                 pop_size=100, 
                 crossover=cropover)
@@ -101,7 +79,7 @@ def save_results(history, path=""):
     
 
 
-def attainment_mode():
+def attainment_mode(config):
 
     # bounds for the chart
     maxx = -100000000000
@@ -109,9 +87,21 @@ def attainment_mode():
     minx =  100000000000
     miny =  100000000000
 
+
+    s_sampling_on = config["s_sampling_on"]
+    max_run = config["max_run"]
+    problem_type = config["problem_type"]
+    attainment_mode = config["constraint_on"]
+    cropover_on = config["cropover_on"]
+    sparsities = config["sparsities"]
+    algorithm_sparsity_lower = config["algorithm_sparsity_lower"]
+    algorithm_sparsity_upper = config["algorithm_sparsity_upper"]
+    colors = config["colors"]
+
+
     history = {}
 
-    for config in range(len(s_sampling_on)):
+    for config_no in range(len(s_sampling_on)):
 
         results = []  
 
@@ -120,15 +110,15 @@ def attainment_mode():
             seed = seeds[run] 
 
             
-            (problem, target_sparsity) = get_problem(problem_type, n_var=200, target_n=10, constrained=constraint_on[config])
+            (problem, target_sparsity) = get_problem(problem_type, n_var=200, target_n=10, constrained=constraint_on[config_no])
 
             plt.plot(problem.pareto_front()[:,0], problem.pareto_front()[:,1], color="black", alpha=0.7, linewidth=1)
 
             cropover = Cropover(eta=15, prob=1.0)
 
             algorithm = get_algorithm(
-                    s_sampling_on[config], 
-                    cropover_on[config], 
+                    s_sampling_on[config_no], 
+                    cropover_on[config_no], 
                     (n_var*(algorithm_sparsity_lower), 
                     n_var*(algorithm_sparsity_upper)))
             
@@ -140,9 +130,9 @@ def attainment_mode():
             file_name = "%s-run%d%s%s%s" % (
                         problem_type, 
                         run,
-                        "-constrained" if constraint_on[config] else "",
-                        "-ssampled" if s_sampling_on[config] else "",
-                        "cropover" if cropover_on[config] else ""
+                        "-constrained" if constraint_on[config_no] else "",
+                        "-ssampled" if s_sampling_on[config_no] else "",
+                        "cropover" if cropover_on[config_no] else ""
                         )
 
             history[file_name + "-X.npy"] = res.X
@@ -155,11 +145,11 @@ def attainment_mode():
 
             print("Completed run %d" % run)
             print("Problem: %s" % problem_type)
-            print("Constraings: %s" % constraint_on[config])
-            print("Sparse sampling: %s" % s_sampling_on[config])
-            print("Cropover: %s" % cropover_on[config])
+            print("Constraings: %s" % constraint_on[config_no])
+            print("Sparse sampling: %s" % s_sampling_on[config_no])
+            print("Cropover: %s" % cropover_on[config_no])
 
-        (new_maxx, new_maxy, new_minx, new_miny) = plot_attainment(results, plt, color=colors[config])
+        (new_maxx, new_maxy, new_minx, new_miny) = plot_attainment(results, plt, color=colors[config_no])
 
         maxx = max((maxx, new_maxx))   
         maxy = max((maxy, new_maxy))   
@@ -179,9 +169,22 @@ def attainment_mode():
     save_results(history, path="./results/")
 
 
-def sparsity_mode():
+def sparsity_mode(config):
 
     # Plot the global optimal pareto front 
+
+    s_sampling_on = config["s_sampling_on"]
+    max_run = config["max_run"]
+    problem_type = config["problem_type"]
+    constraint_on = config["constraint_on"]
+    cropover_on = config["cropover_on"]
+    sparsities = config["sparsities"]
+    labels = config["labels"]
+    cropover_on = config["cropover_on"]
+    algorithm_sparsity_lower = config["algorithm_sparsity_lower"]
+    algorithm_sparsity_upper = config["algorithm_sparsity_upper"]
+    colors = config["colors"]
+    true_sparsity = config["true_sparsity"]
 
     ref_point = np.array([2, 210])
 
@@ -198,7 +201,6 @@ def sparsity_mode():
     # x21 x22 x23 x24   V        x21 x22 x23 x24   V
     #
 
-    #results = np.ones((len(sparsities), max_run, config_count))*-1
     results = np.ones((config_count, len(sparsities), max_run))*-1
 
     global_opt = -1
@@ -211,10 +213,10 @@ def sparsity_mode():
         print("--------------------------------")
         print("| Sparsity: (%d/%d)          " % (target_sparsity, n_var))
         print("--------------------------------")
-        for config in range(config_count):
+        for config_no in range(config_count):
 
             print("     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-            print("     %% Config: %s" % labels[config])
+            print("     %% Config: %s" % labels[config_no])
             print("     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
 
             for run in range(max_run):
@@ -227,15 +229,15 @@ def sparsity_mode():
            
                 seed = seeds[run] 
                 
-                (problem, target_sparsity) = get_problem(problem_type, n_var=n_var, target_n=target_sparsity, constrained=constraint_on[config])
+                (problem, target_sparsity) = get_problem(problem_type, n_var=n_var, target_n=target_sparsity, constrained=constraint_on[config_no])
 
                 if(global_opt == -1):
                     global_opt = hvfnc.calc(problem.pareto_front())
                     print("         Global opt: %d" % global_opt)
 
                 algorithm = get_algorithm(
-                        s_sampling_on[config], 
-                        cropover_on[config], 
+                        s_sampling_on[config_no], 
+                        cropover_on[config_no], 
                         (int(n_var*(algorithm_sparsity_lower)), 
                         int(n_var*(algorithm_sparsity_upper))))
 
@@ -258,9 +260,9 @@ def sparsity_mode():
                     n_var, 
                     target_sparsity,
                     run,
-                    "-constrained" if constraint_on[config] else "",
-                    "-ssampled" if s_sampling_on[config] else "",
-                    "cropover" if cropover_on[config] else ""
+                    "-constrained" if constraint_on[config_no] else "",
+                    "-ssampled" if s_sampling_on[config_no] else "",
+                    "cropover" if cropover_on[config_no] else ""
                     )
 
                 
@@ -274,26 +276,28 @@ def sparsity_mode():
 
                 hv = hvfnc.calc(res.F)
                
-                results[config, sparse_i, run ] = hv
+                results[config_no, sparse_i, run ] = hv
 
                 print("         Completed run %d" % run)
                 print("         Problem: %s" % problem_type)
-                print("         Constraings: %s" % constraint_on[config])
-                print("         Sparse sampling: %s" % s_sampling_on[config])
-                print("         Cropover: %s" % cropover_on[config])
+                print("         Constraings: %s" % constraint_on[config_no])
+                print("         Sparse sampling: %s" % s_sampling_on[config_no])
+                print("         Cropover: %s" % cropover_on[config_no])
 
     # plot the global optima HVS
-    x = [s[1]/s[0] for s in sparsities]
+    x = [s[0] for s in sparsities]
     y = np.ones(np.shape(x))*global_opt
 
-    plt.plot(x, y, linestyle='-', marker='o' ,color="black",alpha=0.7, linewidth=1)
+    plt.plot(x, y, linestyle='-', marker=',' ,color="black",alpha=0.7, linewidth=1)
 
-    for config in range(3):
+    for config_no in range(3):
 
         x = [s[0] for s in sparsities]
-        y = np.mean(results[config,:,:], axis=1)
+        y = np.mean(results[config_no,:,:], axis=1)
 
-        plt.plot(x, y, linestyle='-', marker='o' ,color=colors[config] ,alpha=0.7, linewidth=1)
+        plt.plot(x, y, linestyle='-', marker='o' ,color=colors[config_no] ,alpha=0.7, linewidth=1)
+
+    plt.title("True sparsity %f" % true_sparsity)
 
     plt.show()
     
@@ -306,10 +310,19 @@ seeds = np.genfromtxt('seeds.csv', delimiter=',')
 
 seeds = seeds.astype(int)
 
-if mode == "attainmentSurface":
-    attainment_mode()
-elif mode == "sparsityFlux":
-    sparsity_mode()
+if len(sys.argv) != 2:
+    print("Usage %s CONFIG_NAME" % sys.argv[0])
+    sys.exit(1) 
+
+
+config_name = sys.argv[1]
+
+config = global_config[config_name]
+
+if config["mode"] == "attainmentSurface":
+    attainment_mode(config)
+elif config["mode"] == "sparsityFlux":
+    sparsity_mode(config)
     
 
 
