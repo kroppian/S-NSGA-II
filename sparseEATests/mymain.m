@@ -8,9 +8,6 @@ addpath(workingDir);
 addpath(strcat(workingDir, '/NSGAII_SS'));
 
 
-% 
-fprintf("%s\n", currentDir);
-
 main('-algorithm',@NSGAII_SS,'-problem',@DTLZ2,'-N',200,'-M',10);
 
 

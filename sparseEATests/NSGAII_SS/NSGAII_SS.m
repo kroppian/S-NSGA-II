@@ -16,7 +16,7 @@ function NSGAII_SS(Global)
 %--------------------------------------------------------------------------
 
     %% Generate random population
-    Population = Global.Initialization();
+    Population = sparseSampler(Global);
     [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Global.N);
 
     %% Optimization
