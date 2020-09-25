@@ -16,7 +16,10 @@ function NSGAII_SS(Global)
 %--------------------------------------------------------------------------
 
     %% Generate random population
-    Population = sparseSampler(Global);
+    sLower = 0.51;
+    sUpper = 1;
+    
+    Population = sparseSampler(Global, Global.N, sLower, sUpper);
     [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Global.N);
 
     %% Optimization
