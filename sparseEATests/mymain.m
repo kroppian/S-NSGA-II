@@ -7,8 +7,15 @@ addpath(platEMOPath);
 addpath(workingDir);
 addpath(strcat(workingDir, '/NSGAII_SS'));
 
+prob = @SMOP8;
 
-main('-algorithm',@NSGAII_SS,'-problem',@DTLZ2,'-N',100,'-M',10);
+main('-algorithm',@NSGAII_SS,'-problem',prob,'-N',100,'-M',2, '-D', 2000);
+
+
+main('-algorithm',@SparseEA,'-problem',prob,'-N',100,'-M',2, '-D', 2000);
+
+
+main('-algorithm',@NSGAII,'-problem',prob,'-N',100,'-M',2, '-D', 2000);
 
 
 cd(workingDir);
