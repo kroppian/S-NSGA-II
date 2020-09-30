@@ -93,11 +93,11 @@ def attainment_mode(config):
     problem_type = config["problem_type"]
     attainment_mode = config["constraint_on"]
     cropover_on = config["cropover_on"]
-    sparsities = config["sparsities"]
     algorithm_sparsity_lower = config["algorithm_sparsity_lower"]
     algorithm_sparsity_upper = config["algorithm_sparsity_upper"]
     colors = config["colors"]
-
+    constraint_on = config["constraint_on"]
+    n_var = config["n_var"]
 
     history = {}
 
