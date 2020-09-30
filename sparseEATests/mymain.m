@@ -9,7 +9,7 @@ addpath(strcat(workingDir, '/NSGAII_SS'));
 
 prob = @SMOP8;
 
-main('-algorithm',@NSGAII_SS,'-problem',prob,'-N',100,'-M',2, '-D', 2000);
+main('-algorithm',@NSGAII_SS,'-problem',prob,'-N',100,'-M',2, '-D', 2000, '-outputFcn', @writeFinalGen);
 
 
 main('-algorithm',@SparseEA,'-problem',prob,'-N',100,'-M',2, '-D', 2000);
