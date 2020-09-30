@@ -1,21 +1,22 @@
 
 
-% Path to the install path of plat EMO 
-platEMOPath = '/Users/iankropp/Projects/platEMO/';
-[workingDir, name, ext]= fileparts(mfilename('fullpath'));
-addpath(platEMOPath);
-addpath(workingDir);
-addpath(strcat(workingDir, '/NSGAII_SS'));
+function  runOpt(algorithm, D)
 
-prob = @SMOP8;
+    % Path to the install path of plat EMO 
+    platEMOPath = '/Users/iankropp/Projects/platEMO/';
+    [workingDir, name, ext]= fileparts(mfilename('fullpath'));
+    addpath(platEMOPath);
+    addpath(workingDir);
+    addpath(strcat(workingDir, '/NSGAII_SS'));
 
-main('-algorithm',@NSGAII_SS,'-problem',prob,'-N',100,'-M',2, '-D', 2000, '-outputFcn', @writeFinalGen);
+    prob = @SMOP8;
+
+    main('-algorithm',algorithm,'-problem',prob,'-N',100,'-M',2, '-D', D, '-outputFcn', @writeFinalGen);
+
+    fprintf("It worked!\n")
+
+    cd(workingDir);
+
+end
 
 
-main('-algorithm',@SparseEA,'-problem',prob,'-N',100,'-M',2, '-D', 2000);
-
-
-main('-algorithm',@NSGAII,'-problem',prob,'-N',100,'-M',2, '-D', 2000);
-
-
-cd(workingDir);
