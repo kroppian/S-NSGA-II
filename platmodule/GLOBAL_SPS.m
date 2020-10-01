@@ -56,6 +56,7 @@ classdef GLOBAL_SPS < GLOBAL
 
                 final_objs(indv,:) = obj.result{final_run, 2}(indv).obj;
             end
+            final_objs = final_objs(NDSort(final_objs,1) == true,:);
         end
     
     end
