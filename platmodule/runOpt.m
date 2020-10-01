@@ -5,7 +5,6 @@ function  runOpt(algorithm, D)
     [workingDir, name, ext]= fileparts(mfilename('fullpath'));
     addpath(genpath(platEMOPath));
     addpath(workingDir);
-    addpath(strcat(workingDir, '/NSGAII_SS'));
 
     prob = @SMOP8;
     
