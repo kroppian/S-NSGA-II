@@ -10,6 +10,8 @@ function  runOpt(algorithm, D)
     
     Global = GLOBAL_SPS('-algorithm',algorithm,'-problem',prob,'-N',100,'-M',2, '-D', D);
 
+    Global.sps_on = true;
+    
     final_objs = Global.Start();
     
     disp(final_objs);

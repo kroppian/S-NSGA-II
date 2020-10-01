@@ -1,5 +1,5 @@
 %% Randomly generate an initial population
-function Population = sparseSampler(obj, N, sLower,sUpper)
+function Population = sparseSampler(obj, N, sLower, sUpper)
 %Initialization - Randomly generate an initial population.
 %
 %   P = obj.Initialization() returns an initial population, i.e.,
