@@ -1,4 +1,4 @@
-function  runOpt(algorithm, D)
+function final_objs = runOpt(algorithm, D, sps_on)
 
     % Path to the install path of plat EMO 
     platEMOPath = '/Users/iankropp/Projects/platEMO/';
@@ -8,16 +8,19 @@ function  runOpt(algorithm, D)
 
     prob = @SMOP8;
     
-    Global = GLOBAL_SPS('-algorithm',algorithm,'-problem',prob,'-N',100,'-M',2, '-D', D);
+    Global = GLOBAL_SPS('-algorithm',algorithm,'-problem',prob,'-N',100,'-M',2, '-D', D, '-outputFcn', @nop);
 
-    Global.sps_on = true;
+    if sps_on
+        Global.sps_on = true;
+    end
     
     final_objs = Global.Start();
     
-    disp(final_objs);
-
+    
     cd(workingDir);
 
+    
+    
 end
 
 
