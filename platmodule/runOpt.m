@@ -8,7 +8,7 @@ function final_objs = runOpt(algorithm, D, sps_on)
 
     prob = @SMOP8;
     
-    Global = GLOBAL_SPS('-algorithm',algorithm,'-problem',prob,'-N',100,'-M',2, '-D', D, '-outputFcn', @nop);
+    Global = GLOBAL_SPS('-algorithm',algorithm,'-evaluation', 50000,'-problem',prob,'-N',100,'-M',2, '-D', D,'-outputFcn', @nop);
 
     if sps_on
         Global.sps_on = true;
