@@ -10,7 +10,7 @@ labels = ["SparseEA", "NSGAII-SPS", "NSGAII"];
 
 
 
-% Outer loop
+% Outer loop (number of decision variables)
 Dz = {100, 500, 1000, 5000};
 
 

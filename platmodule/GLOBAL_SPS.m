@@ -49,14 +49,22 @@ classdef GLOBAL_SPS < GLOBAL
         end
     
         function final_objs = Start(obj)
+            % Start the optimization
             Start@GLOBAL(obj);
+            
+            % Create empty container for our objectives
             final_objs = ones(obj.N,obj.M)*-1;
+            
+            % Place the objectives for each of our final pop in there
             for indv = 1:obj.N
                 final_run = size(obj.result,1);
 
                 final_objs(indv,:) = obj.result{final_run, 2}(indv).obj;
             end
+            
+            % Remove dominated solutions
             final_objs = final_objs(NDSort(final_objs,1) == true,:);
+            
         end
     
     end
