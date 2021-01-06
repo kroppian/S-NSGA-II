@@ -1,0 +1,4 @@
+function nop(obj)
+
+end
+
