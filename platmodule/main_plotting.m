@@ -9,121 +9,98 @@ numAlgorithms = size(HVResults, 3);
 
 algorithmColors = {'black', 'red', 'blue'};
 
+metricLabels = {'HV vs # of decision variables', 'Runtime vs # of decision variables', 'Number of non-dominated solutions vs # of decision variables'};
+
+yLabels = {'HV', 'Runtime (seconds)', 'Number of non-dominated solutions'};
+
+results = {HVResults, timeResults, noNonDoms};
+
+Dz = [100, 500, 1000, 5000];
 
 
 % results
 % dim. two: the number of decision variables
 % dim. one: algorithm
-HVMeans = ones(numDecisionVars, numAlgorithms);
-HVupperInts = ones(numDecisionVars, numAlgorithms);
-HVlowerInts = ones(numDecisionVars, numAlgorithms);
+template = ones(numDecisionVars, numAlgorithms);
 
-timeMeans = ones(numDecisionVars, numAlgorithms);
-timeUpperInts = ones(numDecisionVars, numAlgorithms);
-timelowerInts = ones(numDecisionVars, numAlgorithms);
+globalMeans = {template, template};
+globalUpperInts = {template, template};
+globalLowerInts = {template, template};
 
 
-% For every algorithm
-for alg = 1:numAlgorithms
+% For every metric
+for m = 1:numel(results)
     
-    algHV = HVResults(:,:,alg);
+    label = metricLabels{m};
+    metricResults = results{m};
     
-    algTimes = timeResults(:,:,alg);
+    % For every algorithm
+    for alg = 1:numAlgorithms
+
+
+        algResults = metricResults(:,:,alg);
+
+        % For every number of decision variables
+
+        for decVar = 1:numDecisionVars
+            
+            %% HV processing
+
+            decResults = algResults(:,decVar);
+
+            % Calculate mean
+            decMean = mean(decResults);
+
+            globalMeans{m}(decVar, alg) = decMean;
+
+            % CIs
+            stdErr = std(decResults)/sqrt(length(decResults));
+            ts = tinv([0.025  0.975],length(decResults)-1);
+            CI  = decMean + ts*stdErr;
+
+            globalUpperInts{m}(decVar, alg) = max(CI);
+            globalLowerInts{m}(decVar, alg) = min(CI);
+
+        end
+
+    end
+end
+
+%% Plot  results
+
+% For every metric
+for m = 1:numel(results)
     
-    % For every number of decision variables
+    figure
+        
+    for alg = 1:numAlgorithms
 
-    for decVar = 1:numDecisionVars
-        %% HV processing
+        color = algorithmColors{alg};
 
-        hyperVols = algHV(:,decVar);
-        
-        % Calculate mean
-        meanHV = mean(hyperVols);
-        
-        HVMeans(decVar, alg) = meanHV;
-        
-        % CIs
-        stdErr = std(hyperVols)/sqrt(length(hyperVols));
-        ts = tinv([0.025  0.975],length(hyperVols)-1);
-        CI  = meanHV + ts*stdErr;
-        
-        HVupperInts(decVar, alg) = max(CI);
-        HVlowerInts(decVar, alg) = min(CI);
-         
-        %% time processing
-        times = algTimes(:,decVar);
+        lowerInterval = globalLowerInts{m}(:,alg);
+        upperInterval = globalUpperInts{m}(:,alg);
 
-        % Calculate mean
-        meanTime = mean(times);
+        x = [Dz, fliplr(Dz)];
+        y = [lowerInterval; flipud(upperInterval)]';
+        fill(x,y, 1,....
+            'facecolor',color, ...
+            'edgecolor','none', ...
+            'facealpha', 0.3);
+
+        hold on
         
-        timeMeans(decVar, alg) = meanTime;
+        plot(Dz,globalMeans{m}(:,alg), color);
         
-        % CIs
-        stdErr = std(times)/sqrt(length(times));
-        ts = tinv([0.025  0.975],length(times)-1);
-        CI  = meanTime + ts*stdErr;
-        
-        timeUpperInts(decVar, alg) = max(CI);
-        timelowerInts(decVar, alg) = min(CI);
+        title(metricLabels{m});
+
+        xlabel('Decision variables');
+        ylabel(yLabels{m});
         
     end
+    
+    legend("SparseEA 95% conf. int", "SparseEA mean",  "NSGA-II with SPS 95% conf. int", "NSGA-II with SPS",  "NSGA-II 95% conf. int", "NSGA-II")
 
-end
-
-%% Plot HV results
-for alg = 1:numAlgorithms
-    
-    color = algorithmColors{alg};
-    
-    lowerInterval = HVlowerInts(:,alg);
-    upperInterval = HVupperInts(:,alg);
-    
-    x = [1:numDecisionVars, fliplr(1:numDecisionVars)];
-    y = [lowerInterval; flipud(upperInterval)]';
-    fill(x,y, 1,....
-        'facecolor',color, ...
-        'edgecolor','none', ...
-        'facealpha', 0.3);
-   
-    hold on
-
-    
-    plot(HVMeans(:,alg), color);
     
 end
-
-legend("SparseEA 95% conf. int", "SparseEA mean",  "NSGA-II with SPS 95% conf. int", "NSGA-II with SPS",  "NSGA-II 95% conf. int", "NSGA-II")
-
-figure
-
-%% Plot time results
-
-%timeMeans = ones(numDecisionVars, numAlgorithms);
-%timeUpperInts = ones(numDecisionVars, numAlgorithms);
-%timelowerInts = ones(numDecisionVars, numAlgorithms);
-
-
-for alg = 1:numAlgorithms
-    
-    color = algorithmColors{alg};
-    
-    lowerInterval = timeUpperInts(:,alg);
-    upperInterval = timelowerInts(:,alg);
-    
-    x = [1:numDecisionVars, fliplr(1:numDecisionVars)];
-    y = [lowerInterval; flipud(upperInterval)]';
-    fill(x,y, 1,....
-        'facecolor',color, ...
-        'edgecolor','none', ...
-        'facealpha', 0.3);
-   
-    hold on
-
-    
-    plot(timeMeans(:,alg), color);
-    
-end
-
-legend("SparseEA 95% conf. int", "SparseEA mean",  "NSGA-II with SPS 95% conf. int", "NSGA-II with SPS",  "NSGA-II 95% conf. int", "NSGA-II")
 
 
