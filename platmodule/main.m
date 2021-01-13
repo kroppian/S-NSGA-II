@@ -2,6 +2,8 @@
 
 clear;
 
+globalTimeStart = cputime;
+
 % Path to the install path of plat EMO 
 platEMOPath = '/Users/iankropp/Projects/platEMO/SIBEA/';
 [workingDir, name, ext]= fileparts(mfilename('fullpath'));
@@ -23,7 +25,7 @@ labels = ["SparseEA", "NSGAII-SPS", "NSGAII"];
 
 
 % Number of decision variables
-Dz = {100, 500, 1000, 5000};
+Dz = {100, 500, 1000, 5000, 10000};
 
 % Dimension one:   repetition
 % Dimension two:   # of decision variables
@@ -44,7 +46,9 @@ for i = 1:size(Dz,2)
         
         % for each repetition
        
-        for rep = 1:reps
+        %parpool(4);
+        
+        parfor rep = 1:reps
             
             tStart = cputime;
             final_pop = runOpt(algorithms{a}, Dz{i}, sps_on{a});
@@ -65,11 +69,7 @@ end
 % Save results so we don't have to 
 save('runResults.mat', 'HVResults', 'timeResults', 'noNonDoms');
 
-%% Post processing
+globalTimeEnd = cputime - globalTimeStart;
 
-
-
-
-
-
+fprintf("Took %f seconds\n", globalTimeEnd);
 
