@@ -4,12 +4,6 @@ clear;
 
 globalTimeStart = cputime;
 
-% Path to the install path of plat EMO 
-platEMOPath = '/Users/iankropp/Projects/platEMO/SIBEA/';
-[workingDir, name, ext]= fileparts(mfilename('fullpath'));
-addpath(genpath(platEMOPath));
-addpath(workingDir);
-
 %% Parameters
 % Number of repetitions for each run configuration
 reps = 60;
