@@ -52,14 +52,18 @@ classdef GLOBAL_SPS < GLOBAL
             % Start the optimization
             Start@GLOBAL(obj);
             
+            % Get the last generation's results
+            final_gen = obj.result{end};
+            
+            % Count the number of population members
+            pop_count = numel(final_gen);
+            
             % Create empty container for our objectives
-            final_objs = ones(obj.N,obj.M)*-1;
+            final_objs = ones(pop_count,obj.M)*-1;
             
             % Place the objectives for each of our final pop in there
-            for indv = 1:obj.N
-                final_run = size(obj.result,1);
-
-                final_objs(indv,:) = obj.result{final_run, 2}(indv).obj;
+            for indv = 1:pop_count
+                final_objs(indv,:) = final_gen(indv).obj;
             end
             
             % Remove dominated solutions
