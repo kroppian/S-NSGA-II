@@ -5,7 +5,7 @@ clear;
 globalTimeStart = cputime;
 
 % Path to the install path of plat EMO 
-platEMOPath = '/Users/iankropp/Projects/platEMO/SIBEA/';
+platEMOPath = '/Users/iankropp/Projects/platEMO/';
 [workingDir, name, ext]= fileparts(mfilename('fullpath'));
 addpath(genpath(platEMOPath));
 addpath(workingDir);
@@ -22,10 +22,17 @@ algorithms = {@SparseEA, @NSGAII, @NSGAII};
 colors = ["red", "blue", "green"];
 sps_on = {false, true, false};
 labels = ["SparseEA", "NSGAII-SPS", "NSGAII"];
+%algorithms = {@MOPSO};
+%colors = ["red"];
+%sps_on = {false};
+%labels = ["MOPSO"];
+
+
+prob = @SMOP2;
 
 
 % Number of decision variables
-Dz = {100, 500, 1000, 5000, 10000};
+Dz = {100, 500, 1000, 2500, 5000, 7500};
 
 % Dimension one:   repetition
 % Dimension two:   # of decision variables
@@ -48,10 +55,10 @@ for i = 1:size(Dz,2)
        
         %parpool(4);
         
-        parfor rep = 1:reps
+        for rep = 1:reps
             
             tStart = cputime;
-            final_pop = runOpt(algorithms{a}, Dz{i}, sps_on{a});
+            final_pop = runOpt(algorithms{a}, Dz{i}, prob, sps_on{a});
             tEnd = cputime - tStart;
 
             hv = CalHV(final_pop, refPoint);
