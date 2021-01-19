@@ -18,15 +18,16 @@ reps = 60;
 refPoint = [7,7];
 
 % Algorithms
-algorithms = {@SparseEA, @NSGAII, @NSGAII};
-colors = ["red", "blue", "green"];
-sps_on = {false, true, false};
-labels = ["SparseEA", "NSGAII-SPS", "NSGAII"];
-%algorithms = {@MOPSO};
-%colors = ["red"];
-%sps_on = {false};
-%labels = ["MOPSO"];
+%algorithms = {@SparseEA, @NSGAII, @NSGAII};
+% colors = ["red", "blue", "green"];
+% sps_on = {false, true, false};
+% labels = ["SparseEA", "NSGAII-SPS", "NSGAII"];
+algorithms = {@MOPSO, @MOPSO};
+colors = ["red", "blue"];
+sps_on = {false, true};
+labels = ["MOPSO", "MOPSO-SPS"];
 
+run_label = "MOPSO";
 
 prob = @SMOP2;
 
@@ -55,7 +56,7 @@ for i = 1:size(Dz,2)
        
         %parpool(4);
         
-        for rep = 1:reps
+        parfor rep = 1:reps
             
             tStart = cputime;
             final_pop = runOpt(algorithms{a}, Dz{i}, prob, sps_on{a});
@@ -72,6 +73,8 @@ for i = 1:size(Dz,2)
     end
 
 end
+
+file_name = strcat('runResults_', run_label, '_', strrep(char(prob),'@(x)',''), '.mat');
 
 % Save results so we don't have to 
 save('runResults.mat', 'HVResults', 'timeResults', 'noNonDoms');
