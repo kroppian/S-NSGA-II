@@ -77,7 +77,7 @@ end
 file_name = strcat('runResults_', run_label, '_', strrep(char(prob),'@(x)',''), '.mat');
 
 % Save results so we don't have to 
-save('runResults.mat', 'HVResults', 'timeResults', 'noNonDoms');
+save(file_name, 'HVResults', 'timeResults', 'noNonDoms');
 
 globalTimeEnd = cputime - globalTimeStart;
 
