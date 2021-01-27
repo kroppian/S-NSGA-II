@@ -24,10 +24,9 @@ reps = 60;
 % labels = ["SparseEA", "NSGAII-SPS", "NSGAII"];
 
 %% Parameters for effective runs
-algorithms = {@MOPSO, @MOPSO};
-colors = ["red", "blue"];
-sps_on = {false, true};
-labels = ["MOPSO", "MOPSO-SPS"];
+algorithms = {@MOPSO, @MOPSO, @MOEADDE, @MOEADDE, @NSGAII, @NSGAII};
+sps_on = {false, true, false, true, false, true};
+labels = ["MOPSO", "MOPSO-SPS", "MOEADDE", "MOEADDE-SPS", "NSGAII", "NSGAII-SPS"];
 
 %% Remaining parameters
 run_label = "effective";
