@@ -1,4 +1,4 @@
-function final_objs = runOpt(algorithm, D, prob, sps_on)
+function final_objs = runOpt(algorithm, D, sparsity, prob,sps_on)
 
     % Path to the install path of plat EMO 
     addpath(genpath('/Users/iankropp/Projects/platEMO/'));
@@ -9,7 +9,7 @@ function final_objs = runOpt(algorithm, D, prob, sps_on)
     addpath(workingDir);
 
     
-    Global = GLOBAL_SPS('-algorithm',algorithm,'-evaluation', 20000,'-problem',prob,'-N',100,'-M',2, '-D', D,'-outputFcn', @nop);
+    Global = GLOBAL_SPS('-algorithm',algorithm,'-evaluation', 20000,'-problem',{prob, sparsity},'-N',100,'-M',2, '-D', D,'-outputFcn', @nop);
 
     if sps_on
         Global.sps_on = true;
