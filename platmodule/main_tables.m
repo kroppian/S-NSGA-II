@@ -1,23 +1,31 @@
 clear;
 
+%% Comparative runs parameters (uncomment/comment to use/not use)
 algorithmsUsed = {'SparseEA', 'NSGAII-SPS'};
-
-load('runResultsSMOP3.mat')
-
+load('data/runResultsSMOP1.mat');
 decVarsUsed = decVars;
+fileNames = {'data/runResultsSMOP1.mat', 'data/runResultsSMOP2.mat', ...
+ 'data/runResultsSMOP3.mat', 'data/runResultsSMOP4.mat', 'data/runResultsSMOP5.mat', ...
+ 'data/runResultsSMOP6.mat', 'data/runResultsSMOP7.mat', 'data/runResultsSMOP8.mat'};
 
-% cols = {'# of decision vars', 'Algorithm', 'Average HV', ...
-%     'Lower within 95% conf', 'Highest within 95% conf', ...
-%     'Run time', 'Number of non-dom. solution'};
+label = "comparative";
 
-fileNames = {'runResultsSMOP1.mat', 'runResultsSMOP2.mat', ...
-    'runResultsSMOP3.mat', 'runResultsSMOP4.mat', 'runResultsSMOP5.mat',...
-    'runResultsSMOP6.mat','runResultsSMOP7.mat', 'runResultsSMOP8.mat'};
+%% Effective run parameters (uncomment/comment to use/not use)
+% algorithmsUsed = {'MOPSO', 'MOPSO-SPS', 'MOEADDE', 'MOEADDE-SPS', 'NSGAII', 'NSGAII-SPS'};
+% decVarsUsed = [100, 500, 1000, 2500, 5000, 7500];
+% fileNames = {'data/runResults_comparative_SMOP1.mat', 'data/runResults_comparative_SMOP2.mat', ...
+%  'data/runResults_comparative_SMOP3.mat', 'data/runResults_comparative_SMOP4.mat', ...
+%  'data/runResults_comparative_SMOP5.mat', 'data/runResults_comparative_SMOP6.mat', ...
+%  'data/runResults_comparative_SMOP7.mat', 'data/runResults_comparative_SMOP8.mat'};
+% load(fileNames{1});
+% label = "effective";
+
+%% Remaining parameters
 
 testProblemsUsed = {'SMOP1','SMOP2','SMOP3','SMOP4','SMOP5','SMOP6','SMOP7','SMOP8'};
 
 numRepetitions = size(HVResults,1);
-numPossibleDecVars = numel(decVars);
+numPossibleDecVars = numel(decVarsUsed);
 numTestProbs = numel(fileNames);
 numAlgorithms = numel(algorithmsUsed);
 
@@ -55,7 +63,7 @@ for t = 1:numTestProbs
                 testProbs{row} = testProblemsUsed{t};
 
                 % Decision variables
-                decVar = decVars(d);
+                decVar = decVarsUsed(d);
 
                 numDecVars(row) = decVar;
 
@@ -87,6 +95,8 @@ end
 
 resultsTable = table(numDecVars, algorithm, testProbs, repetition, hv, runTimes, numNonDom);
 
-save('resultsTable.mat', 'resultsTable', 'algorithmsUsed', 'testProblemsUsed', 'decVarsUsed')
+filename = strcat(label, '_resultsTable.mat');
+
+save(filename, 'resultsTable', 'algorithmsUsed', 'testProblemsUsed', 'decVarsUsed');
 
 
