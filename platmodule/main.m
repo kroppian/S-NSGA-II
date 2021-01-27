@@ -48,7 +48,7 @@ defaultSparsity = 0.1;
 Dz = {100, 500, 1000, 2500, 5000, 7500};
 
 % Sparsity options
-sparsities = (1:4)*0.1;
+sparsities = linspace(0.05, 0.45,9);
 
 if indep_var_dec_vars
     sparsities = [defaultSparsity];
@@ -83,14 +83,15 @@ for s = 1:numel(sparsities)
 
             %parpool(4);
 
-            for rep = 1:reps
-
-                if indep_var_dec_vars
-                    index = i;
-                else
-                    index = s;
-                end
+            
+            if indep_var_dec_vars
+                index = i;
+            else
+                index = s;
+            end
                 
+            parfor rep = 1:reps
+
                 tStart = cputime;
                 final_pop = runOpt(algorithms{a}, Dz{i}, sparsities(s), prob, sps_on{a});
                 tEnd = cputime - tStart;
