@@ -1,6 +1,3 @@
-
-
-
 %% Setup 
 clear
 
@@ -37,32 +34,34 @@ plot_no = 1;
 
 row = 1;
 %% Iterate through every decision variable, test prob, and performance metric
-for d = 1:numel(decVarsUsed)
-    
-    % For every base method
-    for m_baseMethods = 1:numel(baseMethods)
-        
-        
-        % For every test problem
-        for test_prob_i = 1:numTestProbs
 
-            currentBaseMethod = baseMethods{m_baseMethods};
-            currentTestProb = testProblemsUsed{test_prob_i};
-            currentDecVars = decVarsUsed(d);
-            
-            sigTable.numDecVars(row) = currentDecVars;
-            sigTable.baseMethod{row} = currentBaseMethod;
-            sigTable.testProb{row} = currentTestProb;
-            
-            test_prob_mask = strcmp(resultsTable.testProbs, currentTestProb);
-            dec_var_mask = resultsTable.numDecVars == currentDecVars;
-            
-            % For every metric
-            for m_metric = 1:numel(metrics)
-                
+
+% For every metric
+for m_metric = 1:numel(metrics)
+
+    for d = 1:numel(decVarsUsed)
+
+        % For every base method
+        for m_baseMethods = 1:numel(baseMethods)
+
+            % For every test problem
+            for test_prob_i = 1:numTestProbs
+
+
+                currentBaseMethod = baseMethods{m_baseMethods};
+                currentTestProb = testProblemsUsed{test_prob_i};
+                currentDecVars = decVarsUsed(d);
+
+                sigTable.numDecVars(row) = currentDecVars;
+                sigTable.baseMethod{row} = currentBaseMethod;
+                sigTable.testProb{row} = currentTestProb;
+
+                test_prob_mask = strcmp(resultsTable.testProbs, currentTestProb);
+                dec_var_mask = resultsTable.numDecVars == currentDecVars;
+
                 %% Perform significance testing
                 metric = metrics{m_metric};
-                
+
                 % Retrieve the data for the proposed method
                 method_mask = strcmp(resultsTable.algorithm, proposedMethod);
                 mask = method_mask & test_prob_mask & dec_var_mask;
@@ -82,23 +81,20 @@ for d = 1:numel(decVarsUsed)
                 sigTable.(strcat('sig_',metric))(row) = alpha >= pVal;
 
                 %% Plot outcome
-                %subplot(numDecVars, )
+
+                %% Move on to next row, or go back to the beginning
+                
+                if (row + 1) > numRows
+                    row = 1;
+                else
+                    row = row + 1;
+                end
+                
             end
-            
-            row = row + 1;
-
-        end
-        
-
-    end % End - every metric
-    
-end % Decision var
 
 
-function pVal = calc05PVal(data)
-           
-    standardPVal = tinv(0.05,numel(data)-1);
-    stdErr = std(data)/sqrt(length(data));
-    pVal = mean(data) + stdErr*standardPVal;
-    
+        end % End - every metric
+
+    end % Decision var
+
 end
