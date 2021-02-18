@@ -6,6 +6,9 @@ load('comparative_resultsTable.mat')
 
 %% Run setup 
 
+plotting_on = false;
+print_latex_table = true;
+
 % Analysis metrics
 metrics = {'hv', 'numNonDom', 'runTimes'};
 baseMethods = {'SparseEA'};
@@ -18,17 +21,25 @@ numbaseMeths = numel(baseMethods);
 numTestProbs = numel(testProblemsUsed);
 numRows = numDecVar*numbaseMeths*numTestProbs;
 
+% Allocate space for the data
 numDecVars = ones(numRows, 1)*-1;
 testProb = cell(numRows, 1);
 baseMethod = cell(numRows, 1);
+median_hv_base = ones(numRows, 1)*-1;
+median_hv_prop = ones(numRows, 1)*-1;
 sig_hv = ones(numRows, 1)*-1;
+median_runTimes_base = ones(numRows, 1)*-1;
+median_runTimes_prop = ones(numRows, 1)*-1;
 sig_runTimes = ones(numRows, 1)*-1;
+median_numNonDom_base = ones(numRows, 1)*-1;
+median_numNonDom_prop = ones(numRows, 1)*-1;
 sig_numNonDom = ones(numRows, 1);
 
 
-sigTable = table(numDecVars, baseMethod, testProb, sig_hv, sig_runTimes, sig_numNonDom);
-
-disp('************');
+sigTable = table(numDecVars, baseMethod, testProb,  ... 
+    median_hv_prop, median_hv_base, sig_hv, ...
+    median_runTimes_prop, median_runTimes_base, sig_runTimes, ...
+    median_numNonDom_prop, median_numNonDom_base, sig_numNonDom);
 
 plot_no = 1;
 
@@ -39,6 +50,12 @@ row = 1;
 % For every metric
 for m_metric = 1:numel(metrics)
 
+    if plotting_on 
+        figure 
+    end
+    
+    metric = metrics{m_metric};
+    
     for d = 1:numel(decVarsUsed)
 
         % For every base method
@@ -60,7 +77,7 @@ for m_metric = 1:numel(metrics)
                 dec_var_mask = resultsTable.numDecVars == currentDecVars;
 
                 %% Perform significance testing
-                metric = metrics{m_metric};
+
 
                 % Retrieve the data for the proposed method
                 method_mask = strcmp(resultsTable.algorithm, proposedMethod);
@@ -74,16 +91,44 @@ for m_metric = 1:numel(metrics)
                 baseMethRaw = resultsTable.(metric);
                 baseMethRaw = baseMethRaw(mask,:);
 
-                alpha = 0.05;
+                alpha = 0.025;
                 pVal = ranksum(propMethRaw, baseMethRaw);
-
-                % Record outcome
-                sigTable.(strcat('sig_',metric))(row) = alpha >= pVal;
-
-                %% Plot outcome
-
-                %% Move on to next row, or go back to the beginning
                 
+                
+                if isnan(pVal)
+                    difference = false;
+                else
+                    difference = alpha >= pVal;                
+                end
+                % If there's a population difference, test whether it's
+                % better or worse
+                if difference
+                    if median(baseMethRaw) > median(propMethRaw)
+                        result = -1;
+                    else
+                        result = 1;
+                    end
+                        
+                else
+                    result = 0;
+                end
+                
+                %% Record outcome
+                
+                % Record whether or not there was a significant difference
+                sigTable.(strcat('sig_',metric))(row) = result;
+                
+                sigTable.(strcat('median_', metric,'_base'))(row) = median(baseMethRaw);
+                sigTable.(strcat('median_', metric,'_prop'))(row) = median(propMethRaw);
+                
+                %% Plot outcome
+                if plotting_on
+                    subplot(numDecVar, numTestProbs, row);
+                    boxplot([baseMethRaw, propMethRaw])
+                    title(strcat('D.V.=', num2str(currentDecVars), ' and ', currentTestProb));
+                end
+
+                %% Move on to next row, or go back to the beginning of next row
                 if (row + 1) > numRows
                     row = 1;
                 else
@@ -93,8 +138,53 @@ for m_metric = 1:numel(metrics)
             end
 
 
-        end % End - every metric
+        end % End
 
     end % Decision var
 
+    if plotting_on
+        sgtitle(strcat(metric,' for SparseEA vs NSGA-II with SPS'))
+    end
+  
+end % End - for every metric
+
+
+if print_latex_table
+    for row = 1:numRows
+        % decision variables
+        fprintf("%d & ", sigTable(row,:).numDecVars);  
+        % test problem
+        fprintf("%s & ", sigTable(row,:).testProb{1});  
+        % HV                         
+        fprintf("%.4f(%.4f)%s & ", sigTable(row,:).median_hv_prop, ...
+                            sigTable(row,:).median_hv_base, ...
+                            sig_number_2_char(sigTable(row,:).sig_hv));
+        
+        % Run times
+        fprintf("%.4f(%.4f)%s & ", sigTable(row,:).median_runTimes_prop, ...
+                               sigTable(row,:).median_runTimes_base, ...
+                               sig_number_2_char(sigTable(row,:).sig_runTimes));
+
+        % Number of non-dominated points 
+        fprintf("%d(%d)%s", sigTable(row,:).median_numNonDom_prop, ...
+                         round(sigTable(row,:).median_numNonDom_base), ...
+                               sig_number_2_char(sigTable(row,:).sig_numNonDom));
+                        
+                        
+        fprintf(" \\\\\n");  
+
+        
+    end
 end
+
+function new_character = sig_number_2_char(sig_num)
+    if sig_num == -1 
+        new_character = '$^-$';
+    elseif sig_num == 1
+        new_character = '$^+$'; 
+    else
+        new_character = '$^\approx$';
+    end
+end
+
+
