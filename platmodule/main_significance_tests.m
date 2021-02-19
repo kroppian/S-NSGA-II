@@ -1,7 +1,6 @@
 %% Setup 
 clear
 
-load('comparative_resultsTable.mat')
 
 
 %% Run setup 
@@ -11,8 +10,29 @@ print_latex_table = true;
 
 % Analysis metrics
 metrics = {'hv', 'numNonDom', 'runTimes'};
-baseMethods = {'SparseEA'};
-proposedMethod = 'NSGAII-SPS';
+
+% Uncomment for comparative decision variable runs
+% load('comparative_resultsTable.mat')
+% baseMethods = {'SparseEA'};
+% proposedMethod = 'NSGAII-SPS';
+% include_hv = true;
+% include_runTime = true;
+% include_numNonDom = true;
+% end -- comparative decision variable runs
+
+% Uncomment for effective decision variable runs
+load('effective_resultsTable.mat')
+baseMethods = {'MOEADDE'};
+proposedMethod = 'MOEADDE-SPS';
+include_dec_vars = false;
+include_test_prob = false;
+include_hv = true;
+include_runTime = false;
+include_numNonDom = true;
+include_backslash = true;
+% end -- effective decision variable runs
+
+
 
 % Result set up
 
@@ -152,26 +172,45 @@ end % End - for every metric
 if print_latex_table
     for row = 1:numRows
         % decision variables
-        fprintf("%d & ", sigTable(row,:).numDecVars);  
+        if include_dec_vars
+            fprintf("%d & ", sigTable(row,:).numDecVars);  
+        end
         % test problem
-        fprintf("%s & ", sigTable(row,:).testProb{1});  
-        % HV                         
-        fprintf("%.4f(%.4f)%s & ", sigTable(row,:).median_hv_prop, ...
-                            sigTable(row,:).median_hv_base, ...
-                            sig_number_2_char(sigTable(row,:).sig_hv));
+        if include_test_prob
+            fprintf("%s & ", sigTable(row,:).testProb{1});  
+        end
+
+
+        % HV      
+        if include_hv 
+            fprintf("%.4f(%.4f)%s & ", sigTable(row,:).median_hv_prop, ...
+                    sigTable(row,:).median_hv_base, ...
+                    sig_number_2_char(sigTable(row,:).sig_hv));
+        end
+
         
         % Run times
-        fprintf("%.4f(%.4f)%s & ", sigTable(row,:).median_runTimes_prop, ...
-                               sigTable(row,:).median_runTimes_base, ...
-                               sig_number_2_char(sigTable(row,:).sig_runTimes));
+        if include_runTime
+            fprintf("%.4f(%.4f)%s & ", sigTable(row,:).median_runTimes_prop, ...
+                       sigTable(row,:).median_runTimes_base, ...
+                       sig_number_2_char_opp(sigTable(row,:).sig_runTimes));
+        end
 
+
+        if include_numNonDom
+            fprintf("%d(%d)%s", sigTable(row,:).median_numNonDom_prop, ...
+                 round(sigTable(row,:).median_numNonDom_base), ...
+                 sig_number_2_char(sigTable(row,:).sig_numNonDom));
+        end
         % Number of non-dominated points 
-        fprintf("%d(%d)%s", sigTable(row,:).median_numNonDom_prop, ...
-                         round(sigTable(row,:).median_numNonDom_base), ...
-                               sig_number_2_char(sigTable(row,:).sig_numNonDom));
+
                         
-                        
-        fprintf(" \\\\\n");  
+        if include_backslash
+            fprintf(" \\\\\n"); 
+        else
+            fprintf(" \n"); 
+
+        end
 
         
     end
@@ -181,6 +220,17 @@ function new_character = sig_number_2_char(sig_num)
     if sig_num == -1 
         new_character = '$^-$';
     elseif sig_num == 1
+        new_character = '$^+$'; 
+    else
+        new_character = '$^\approx$';
+    end
+end
+
+
+function new_character = sig_number_2_char_opp(sig_num)
+    if sig_num == 1 
+        new_character = '$^-$';
+    elseif sig_num == -1
         new_character = '$^+$'; 
     else
         new_character = '$^\approx$';
