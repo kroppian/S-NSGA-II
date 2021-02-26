@@ -3,20 +3,27 @@ clear
 
 %% Global controls 
 
+% CHANGE ME 1
 % true to make the dependent variable # of decision variables
 % false to make the dependent variable sparsity % 
 indep_var_dec_vars = false;
 
+% CHANGE ME 2
 % true to plot for comparative runs
 % false to plot effective runs
-comparative_runs = true;
+comparative_runs = false;
+
+% CHANGE ME 3
+input_file = 'data/runResults_effective_sparsity_SMOP7.mat';
+load(input_file);
+
+% CHANGE ME 4
+save_to_file = true;
 
 %% Comparative versus effective options
 if comparative_runs
 
-    %% Comparative runs parameters (uncomment/comment to use/not use)
-    % Pull just one of these result files to get a bit of metadata on the run
-    load('data/runResults_comparative_sparsity_SMOP1.mat');
+    %% Comparative runs parameters 
 
     % Generate the number of colors needed automatically 
 
@@ -28,9 +35,7 @@ if comparative_runs
         'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS'};
 
 else
-    %% Effective runs parameters (uncomment/comment to use/not use)
-    % Pull which test cases to run
-    load('data/runResults_comparative_SMOP8.mat');
+    %% Effective runs parameters 
     
     % Generate the number of colors needed automatically 
     alg_count = 6;
@@ -66,6 +71,7 @@ end
 
 
 metricLabels = {'HV vs # of decision variables', 'Runtime vs # of decision variables', 'Number of non-dominated solutions vs # of decision variables'};
+abbrMetricLabels = {'hv', 'runtime', 'NNDS'};
 yLabels = {'HV', 'Runtime (seconds)', 'Number of non-dominated solutions'};
 results = {HVResults, timeResults, noNonDoms};
 
@@ -93,7 +99,6 @@ for m = 1:numel(results)
     % For every algorithm
     for alg = 1:numAlgorithms
 
-
         algResults = metricResults(:,:,alg);
 
         % For every number of decision variables
@@ -110,9 +115,10 @@ for m = 1:numel(results)
             globalMeans{m}(decVar, alg) = decMean;
 
             % CIs
-            stdErr = std(decResults)/sqrt(length(decResults));
-            ts = tinv([0.025  0.975],length(decResults)-1);
-            CI  = decMean + ts*stdErr;
+%             stdErr = std(decResults)/sqrt(length(decResults));
+%             ts = tinv([0.025  0.975],length(decResults)-1);
+%             CI  = decMean + ts*stdErr;
+            CI = bootci(30, @mean, decResults);
 
             globalUpperInts{m}(decVar, alg) = max(CI);
             globalLowerInts{m}(decVar, alg) = min(CI);
@@ -147,16 +153,22 @@ for m = 1:numel(results)
         
         plot(dependentVars,globalMeans{m}(:,alg), 'Color', color);
         
-        title(metricLabels{m});
+        %title(metricLabels{m});
 
         xlabel(x_label);
         ylabel(yLabels{m});
+        
+
         
     end
     
     
     legend(legend_entries);
-
+    if save_to_file
+        png_file = replace(input_file, '.mat', strcat('_', abbrMetricLabels{m},'.png'));
+        set(gcf,'PaperUnits','inches','PaperSize',[5,5],'PaperPosition',[0 0 6 6]);
+        print('-dpng','-r400',png_file);
+    end
     
 end
 
