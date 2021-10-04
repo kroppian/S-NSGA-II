@@ -6,19 +6,22 @@ clear
 % CHANGE ME 1
 % true to make the dependent variable # of decision variables
 % false to make the dependent variable sparsity % 
-indep_var_dec_vars = false;
+indep_var_dec_vars = true;
 
 % CHANGE ME 2
 % true to plot for comparative runs
 % false to plot effective runs
-comparative_runs = false;
+comparative_runs = true;
 
 % CHANGE ME 3
-input_file = 'data/runResults_effective_sparsity_SMOP7.mat';
+input_file = 'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP1.mat';
 load(input_file);
 
 % CHANGE ME 4
-save_to_file = true;
+save_to_file = false;
+
+% CHANGE ME 5
+hv_ref = 1;
 
 %% Comparative versus effective options
 if comparative_runs
@@ -79,6 +82,8 @@ numRepetitions = size(HVResults, 1);
 numDependentVars = size(HVResults, 2);
 numAlgorithms = size(HVResults, 3);
 
+hv_ind = 1;
+
 % results
 % dim. two: the number of decision variables
 % dim. one: algorithm
@@ -105,10 +110,17 @@ for m = 1:numel(results)
 
         for decVar = 1:numDependentVars
             
-            %% HV processing
+            %% metric processing
 
             decResults = algResults(:,decVar);
 
+            if m == hv_ind
+                % Pull the appropriate HV from the record
+                decResults = arrayfun(@(x)(x{1}(hv_ref)), decResults, 'UniformOutput', false);
+                decResults = arrayfun(@(x)(x{1}), decResults);
+            end
+
+            
             % Calculate mean
             decMean = mean(decResults);
 
@@ -173,3 +185,5 @@ for m = 1:numel(results)
 end
 
 
+
+%% Functions 
