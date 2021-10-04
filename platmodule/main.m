@@ -5,7 +5,7 @@ clear;
 globalTimeStart = cputime;
 
 % Path to the install path of plat EMO 
-platEMOPath = 'C:\Users\Ian Kropp\Projects\PlatEMO';
+platEMOPath = '/home/ian/Projects/PlatEMO';
 [workingDir, name, ext]= fileparts(mfilename('fullpath'));
 addpath(genpath(platEMOPath));
 addpath(workingDir);
@@ -18,18 +18,17 @@ reps = 60;
 % Algorithms
 
 %% Parameters for comparative runs
-%algorithms = {@SparseEA, @NSGAII, @NSGAII};
-% colors = ["red", "blue", "green"];
-% sps_on = {false, true, false};
-% labels = ["SparseEA", "NSGAII-SPS", "NSGAII"];
+algorithms = {@SparseEA, @NSGAII};
+sps_on = {false, true};
+labels = ["SparseEA", "NSGAII-SPS"];
 
 %% Parameters for effective runs
-algorithms = {@MOPSO, @MOPSO, @MOEADDE, @MOEADDE, @NSGAII, @NSGAII};
-sps_on = {false, true, false, true, false, true};
-labels = ["MOPSO", "MOPSO-SPS", "MOEADDE", "MOEADDE-SPS", "NSGAII", "NSGAII-SPS"];
+%algorithms = {@MOPSO, @MOPSO, @MOEADDE, @MOEADDE, @NSGAII, @NSGAII};
+%sps_on = {false, true, false, true, false, true};
+%labels = ["MOPSO", "MOPSO-SPS", "MOEADDE", "MOEADDE-SPS", "NSGAII", "NSGAII-SPS"];
 
 %% Remaining parameters
-run_label = "effective";
+run_label = "comparative";
 
 % Reference point for hypervolume calculation
 max_ref = 7;
@@ -37,11 +36,11 @@ refPoints = 1:max_ref;
 
 
 % Problem
-prob = @SMOP2;
+prob = @SMOP1;
 
 % 1 to make the dependent variable # of decision variables
 % 0 to make the dependent variable sparsity % 
-indep_var_dec_vars = false;
+indep_var_dec_vars = true;
 defaultDecVar = 1000;
 defaultSparsity = 0.1;
 
@@ -104,7 +103,7 @@ for s = 1:numel(sparsities)
                 for hvr = 1:max_ref
                     hvs(hvr, 1) = CalHV(final_pop, [hvr, hvr]);
                 end
-                HVResults{rep, index, a} = hvs;jjkk
+                HVResults{rep, index, a} = hvs;
                 
                 timeResults(rep, index, a) = tEnd;
                 noNonDoms(rep, index, a) = size(final_pop,1);
