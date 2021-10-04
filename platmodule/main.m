@@ -5,7 +5,7 @@ clear;
 globalTimeStart = cputime;
 
 % Path to the install path of plat EMO 
-platEMOPath = '/Users/iankropp/Projects/platEMO/';
+platEMOPath = 'C:\Users\Ian Kropp\Projects\PlatEMO';
 [workingDir, name, ext]= fileparts(mfilename('fullpath'));
 addpath(genpath(platEMOPath));
 addpath(workingDir);
@@ -32,7 +32,9 @@ labels = ["MOPSO", "MOPSO-SPS", "MOEADDE", "MOEADDE-SPS", "NSGAII", "NSGAII-SPS"
 run_label = "effective";
 
 % Reference point for hypervolume calculation
-refPoint = [7,7];
+max_ref = 7;
+refPoints = 1:max_ref;
+
 
 % Problem
 prob = @SMOP2;
@@ -59,9 +61,17 @@ end
 % Dimension one:   repetition
 % Dimension two:   # of decision variables
 % Dimension three: algorithm
-HVResults   = ones(reps, numel(Dz), numel(algorithms))*-1;
 timeResults = ones(reps, numel(Dz), numel(algorithms))*-1;
 noNonDoms   = ones(reps, numel(Dz), numel(algorithms))*-1;
+final_pops = cell(reps, numel(Dz), numel(algorithms));
+
+HVResults = cell(max_ref);
+
+for hvr = 1:max_ref
+    HVResults{hvr} = ones(reps, numel(Dz), numel(algorithms))*-1;
+end
+
+
 
 %% Main 
 
@@ -80,9 +90,6 @@ for s = 1:numel(sparsities)
             end
 
             % for each repetition
-
-            %parpool(4);
-
             
             if indep_var_dec_vars
                 index = i;
@@ -96,9 +103,14 @@ for s = 1:numel(sparsities)
                 final_pop = runOpt(algorithms{a}, Dz{i}, sparsities(s), prob, sps_on{a});
                 tEnd = cputime - tStart;
 
-                hv = CalHV(final_pop, refPoint);
+                for hvr = 1:max_ref
+                    hv = CalHV(final_pop, [hvr, hvr]);
+                    HVResults{hvr}(rep, index, a) = hv;
+                end
 
-                HVResults(rep, index, a) = hv;
+                
+                
+                
                 timeResults(rep, index, a) = tEnd;
                 noNonDoms(rep, index, a) = size(final_pop,1);
 
@@ -119,7 +131,7 @@ end
 file_name = strcat('runResults_', run_label, '_', run_type, '_', strrep(char(prob),'@(x)',''), '.mat');
 
 % Save results so we don't have to 
-save(file_name, 'HVResults', 'timeResults', 'noNonDoms');
+save(file_name, 'HVResults', 'timeResults', 'noNonDoms', 'final_pops');
 
 globalTimeEnd = cputime - globalTimeStart;
 
