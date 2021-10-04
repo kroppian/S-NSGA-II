@@ -65,11 +65,8 @@ timeResults = ones(reps, numel(Dz), numel(algorithms))*-1;
 noNonDoms   = ones(reps, numel(Dz), numel(algorithms))*-1;
 final_pops = cell(reps, numel(Dz), numel(algorithms));
 
-HVResults = cell(max_ref);
+HVResults = cell(reps, numel(Dz), numel(algorithms));
 
-for hvr = 1:max_ref
-    HVResults{hvr} = ones(reps, numel(Dz), numel(algorithms))*-1;
-end
 
 
 
@@ -103,13 +100,11 @@ for s = 1:numel(sparsities)
                 final_pop = runOpt(algorithms{a}, Dz{i}, sparsities(s), prob, sps_on{a});
                 tEnd = cputime - tStart;
 
+                hvs = ones(max_ref, 1)*-1;
                 for hvr = 1:max_ref
-                    hv = CalHV(final_pop, [hvr, hvr]);
-                    HVResults{hvr}(rep, index, a) = hv;
+                    hvs(hvr, 1) = CalHV(final_pop, [hvr, hvr]);
                 end
-
-                
-                
+                HVResults{rep, index, a} = hvs;jjkk
                 
                 timeResults(rep, index, a) = tEnd;
                 noNonDoms(rep, index, a) = size(final_pop,1);
