@@ -7,32 +7,32 @@ print_latex_table = false;
 print_pval_latex_table = true;
 
 % Analysis metrics
-metrics = {'hv', 'runTimes', 'numNonDom'};
+metrics = {'hv2', 'runTimes', 'numNonDom'};
 
 %% Uncomment for comparative decision variable runs
-% load('comparative_decVar_resultsTable.mat')
-% baseMethods = {'SparseEA'};
-% proposedMethod = 'NSGAII-SPS';
-% include_dep_var = true;
-% include_test_prob = true;
-% include_hv = true;
-% include_runTime = true;
-% include_numNonDom = true;
-% include_backslash = true;
-% usesDecVar = true;
+load('/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/comparative_decVar_resultsTable.mat')
+baseMethods = {'SparseEA'};
+proposedMethod = 'NSGAII-SPS';
+include_dep_var = true;
+include_test_prob = true;
+include_hv = true;
+include_runTime = true;
+include_numNonDom = true;
+include_backslash = true;
+usesDecVar = true;
 % end -- comparative decision variable runs
 
 %% Uncomment for effective decision variable runs
-load('effective_decVar_resultsTable.mat')
-baseMethods = {'MOEADDE'};      % Toggle between the different algorithms
-proposedMethod = 'MOEADDE-SPS'; % on this line 
-include_dep_var = false;
-include_test_prob = false;
-include_hv = true;
-include_runTime = false;
-include_numNonDom = true;
-include_backslash = false;
-usesDecVar = true;
+% load('effective_decVar_resultsTable.mat')
+% baseMethods = {'MOEADDE'};      % Toggle between the different algorithms
+% proposedMethod = 'MOEADDE-SPS'; % on this line 
+% include_dep_var = false;
+% include_test_prob = false;
+% include_hv = true;
+% include_runTime = false;
+% include_numNonDom = true;
+% include_backslash = false;
+% usesDecVar = true;
 % end -- effective decision variable runs
 
 %% Uncomment for effective sparsity runs
