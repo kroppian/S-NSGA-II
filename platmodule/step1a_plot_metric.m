@@ -3,7 +3,13 @@ clear
 
 %% Global controls 
 
+[workingDir, name, ext]= fileparts(mfilename('fullpath'));
+
+addpath(genpath(strcat(workingDir, '/utilities')));
+
+
 % CHANGE ME 1
+
 % true to make the dependent variable # of decision variables
 % false to make the dependent variable sparsity % 
 indep_var_dec_vars = true;
