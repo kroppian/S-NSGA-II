@@ -2,52 +2,49 @@ clear;
 
 %% Comparative runs parameters for # of decision variables 
 %  (uncomment/comment to use/not use)
-% algorithmsUsed = {'SparseEA', 'NSGAII-SPS'};
-% load('data/runResults_comparative_decVar_SMOP1.mat');
-% decVarsUsed = [100, 500, 1000, 2500, 5000, 7500];
-% 
-% 
-% fileNames = {'data/runResults_comparative_decVar_SMOP1.mat', ... 
-%              'data/runResults_comparative_decVar_SMOP2.mat', ... 
-%              'data/runResults_comparative_decVar_SMOP3.mat', ...
-%              'data/runResults_comparative_decVar_SMOP4.mat', ...
-%              'data/runResults_comparative_decVar_SMOP5.mat', ...
-%              'data/runResults_comparative_decVar_SMOP6.mat', ...
-%              'data/runResults_comparative_decVar_SMOP7.mat', ...
-%              'data/runResults_comparative_decVar_SMOP8.mat'};
-% 
-% 
-% label = "comparative";
-% % Set to true if the run is on decision variables. False for sparsrity 
-% usesDecVar = true
-
-%% Comparative runs parameters for # of decision variables 
 algorithmsUsed = {'SparseEA', 'NSGAII-SPS'};
-load('data/runResults_comparative_sparsity_SMOP1.mat');
-sparsitiesUsed = (1-linspace(0.05, 0.45,9))*100;
+load('/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP1.mat');
+decVarsUsed = [100, 500, 1000, 2500, 5000, 7500];
 
-fileNames = {'data/runResults_comparative_sparsity_SMOP1.mat', ... 
-             'data/runResults_comparative_sparsity_SMOP2.mat', ... 
-             'data/runResults_comparative_sparsity_SMOP3.mat', ...
-             'data/runResults_comparative_sparsity_SMOP4.mat', ...
-             'data/runResults_comparative_sparsity_SMOP5.mat', ...
-             'data/runResults_comparative_sparsity_SMOP6.mat', ...
-             'data/runResults_comparative_sparsity_SMOP7.mat', ...
-             'data/runResults_comparative_sparsity_SMOP8.mat'};
+
+fileNames = {'/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP1.mat', ... 
+             '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP2.mat', ... 
+             '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP3.mat', ...
+             '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP4.mat', ...
+             '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP5.mat', ...
+             '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP6.mat', ...
+             '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP7.mat', ...
+             '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP8.mat'};
+
 
 label = "comparative";
 % Set to true if the run is on decision variables. False for sparsrity 
-usesDecVar = false;
+usesDecVar = true;
 
-%% Effective run parameters (uncomment/comment to use/not use)
+%% Effective run parameters for # of decision variables (uncomment/comment to use/not use)
 % algorithmsUsed = {'MOPSO', 'MOPSO-SPS', 'MOEADDE', 'MOEADDE-SPS', 'NSGAII', 'NSGAII-SPS'};
 % decVarsUsed = [100, 500, 1000, 2500, 5000, 7500];
-% fileNames = {'data/runResults_comparative_SMOP1.mat', 'data/runResults_comparative_SMOP2.mat', ...
-%  'data/runResults_comparative_SMOP3.mat', 'data/runResults_comparative_SMOP4.mat', ...
-%  'data/runResults_comparative_SMOP5.mat', 'data/runResults_comparative_SMOP6.mat', ...
-%  'data/runResults_comparative_SMOP7.mat', 'data/runResults_comparative_SMOP8.mat'};
+% fileNames = {'data/runResults_effective_decVar_SMOP1.mat', 'data/runResults_effective_decVar_SMOP2.mat', ...
+%  'data/runResults_effective_decVar_SMOP3.mat', 'data/runResults_effective_decVar_SMOP4.mat', ...
+%  'data/runResults_effective_decVar_SMOP5.mat', 'data/runResults_effective_decVar_SMOP6.mat', ...
+%  'data/runResults_effective_decVar_SMOP7.mat', 'data/runResults_effective_decVar_SMOP8.mat'};
+% usesDecVar = true;
+% 
 % load(fileNames{1});
 % label = "effective";
+
+%% Effective run parameters for sparsity (uncomment/comment to use/not use)
+% algorithmsUsed = {'MOPSO', 'MOPSO-SPS', 'MOEADDE', 'MOEADDE-SPS', 'NSGAII', 'NSGAII-SPS'};
+% sparsitiesUsed = (1-linspace(0.05, 0.45,9))*100;
+% fileNames = {'data/runResults_effective_sparsity_SMOP1.mat', 'data/runResults_effective_sparsity_SMOP2.mat', ...
+%  'data/runResults_effective_sparsity_SMOP3.mat', 'data/runResults_effective_sparsity_SMOP4.mat', ...
+%  'data/runResults_effective_sparsity_SMOP5.mat', 'data/runResults_effective_sparsity_SMOP6.mat', ...
+%  'data/runResults_effective_sparsity_SMOP7.mat', 'data/runResults_effective_sparsity_SMOP8.mat'};
+% 
+% load(fileNames{1});
+% label = "effective";
+% % Set to true if the run is on decision variables. False for sparsrity 
+% usesDecVar = false;
 
 %% Remaining parameters
 
@@ -74,7 +71,14 @@ end
 
 algorithm = cell(numRows,1);
 testProbs = cell(numRows,1);
-hv = ones(numRows,1)*-1;
+hv1 = ones(numRows,1)*-1;
+hv2 = ones(numRows,1)*-1;
+hv3 = ones(numRows,1)*-1;
+hv4 = ones(numRows,1)*-1;
+hv5 = ones(numRows,1)*-1;
+hv6 = ones(numRows,1)*-1;
+hv7 = ones(numRows,1)*-1;
+
 runTimes = ones(numRows,1)*-1;
 numNonDom = ones(numRows,1)*-1;
 repetition = ones(numRows,1)*-1;
@@ -115,9 +119,51 @@ for t = 1:numTestProbs
 
                 algorithm{row} = currentAlgorithm;
 
-                % HV
-                hv(row) = HVResults(r,d,a);
+                % HV  
+                hv_ref = 1; 
+                hv_set = HVResults(r,d,a);
+                hv = arrayfun(@(x)(x{1}(hv_ref)), hv_set, 'UniformOutput', false);
+                hv = arrayfun(@(x)(x{1}), hv);
+                hv1(row) = hv;
+                
+                hv_ref = 2; 
+                hv_set = HVResults(r,d,a);
+                hv = arrayfun(@(x)(x{1}(hv_ref)), hv_set, 'UniformOutput', false);
+                hv = arrayfun(@(x)(x{1}), hv);
+                hv2(row) = hv;
 
+                hv_ref = 3; 
+                hv_set = HVResults(r,d,a);
+                hv = arrayfun(@(x)(x{1}(hv_ref)), hv_set, 'UniformOutput', false);
+                hv = arrayfun(@(x)(x{1}), hv);
+                hv3(row) = hv;
+
+                hv_ref = 4; 
+                hv_set = HVResults(r,d,a);
+                hv = arrayfun(@(x)(x{1}(hv_ref)), hv_set, 'UniformOutput', false);
+                hv = arrayfun(@(x)(x{1}), hv);
+                hv4(row) = hv;
+                
+                hv_ref = 5; 
+                hv_set = HVResults(r,d,a);
+                hv = arrayfun(@(x)(x{1}(hv_ref)), hv_set, 'UniformOutput', false);
+                hv = arrayfun(@(x)(x{1}), hv);
+                hv5(row) = hv;
+                
+                hv_ref = 6; 
+                hv_set = HVResults(r,d,a);
+                hv = arrayfun(@(x)(x{1}(hv_ref)), hv_set, 'UniformOutput', false);
+                hv = arrayfun(@(x)(x{1}), hv);
+                hv6(row) = hv;
+                
+                
+                hv_ref = 7; 
+                hv_set = HVResults(r,d,a);
+                hv = arrayfun(@(x)(x{1}(hv_ref)), hv_set, 'UniformOutput', false);
+                hv = arrayfun(@(x)(x{1}), hv);
+                hv7(row) = hv;
+                
+                
                 % Run times
                 runTimes(row) = timeResults(r,d,a);
 
@@ -134,15 +180,15 @@ for t = 1:numTestProbs
 end
 
 
+
+
 %% Make the table
-
-
 if usesDecVar
-    resultsTable = table(numDecVars, algorithm, testProbs, repetition, hv, runTimes, numNonDom);
+    resultsTable = table(numDecVars, algorithm, testProbs, repetition, hv1, hv2, hv3, hv3, hv4, hv5, hv6, hv7, runTimes, numNonDom);
     filename = strcat(label, '_decVar_resultsTable.mat');
     save(filename, 'resultsTable', 'algorithmsUsed', 'testProblemsUsed', 'decVarsUsed');
 else
-    resultsTable = table(sparsities, algorithm, testProbs, repetition, hv, runTimes, numNonDom);
+    resultsTable = table(sparsities, algorithm, testProbs, repetition, hv1, hv2, hv3, hv3, hv4, hv5, hv6, hv7, runTimes, numNonDom);
     filename = strcat(label, '_sparsity_resultsTable.mat');
     save(filename, 'resultsTable', 'algorithmsUsed', 'testProblemsUsed', 'sparsitiesUsed');
 end
