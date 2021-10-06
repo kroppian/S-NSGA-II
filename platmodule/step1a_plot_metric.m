@@ -3,9 +3,14 @@ clear
 
 %% Global controls 
 
-[workingDir, name, ext]= fileparts(mfilename('fullpath'));
+platEMOPath = 'C:\Users\Ian Kropp\Projects\PlatEMO';
+addpath(genpath(platEMOPath));
 
-addpath(genpath(strcat(workingDir, '/utilities')));
+LABEL_FONT_SIZE = 16; 
+LEGEND_FONT_SIZE = 12; 
+SUBTITLE_FONT_SIZE = 12;
+TITLE_FONT_SIZE = 18;
+
 
 
 % CHANGE ME 1
@@ -17,20 +22,19 @@ indep_var_dec_vars = true;
 % CHANGE ME 2
 % true to plot for comparative runs
 % false to plot effective runs
-comparative_runs = true;
+comparative_runs = false;
 
 % CHANGE ME 3
-runs = {
-   '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP1.mat', ...  
-   '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP2.mat', ...
-   '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP3.mat', ...
-   '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP4.mat', ...
-   '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP5.mat', ...
-   '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP6.mat', ...
-   '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP7.mat', ...
-   '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/runResults_comparative_decVar_SMOP8.mat'
 
-   };
+% runs = {'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP1.mat', ... 
+%         'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP2.mat', ... 
+%         'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP3.mat', ...
+%         'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP4.mat', ...
+%         'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP5.mat', ...
+%         'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP6.mat', ...
+%         'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP7.mat', ...
+%         'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_comparative_decVar_SMOP8.mat'};
+
 
 % runs = {
 %    'data/runResults_effective_sparsity_SMOP1.mat', ...  
@@ -41,15 +45,16 @@ runs = {
 %    'data/runResults_effective_sparsity_SMOP6.mat', ...
 %    'data/runResults_effective_sparsity_SMOP7.mat', ...
 %    'data/runResults_effective_sparsity_SMOP8.mat'};
-% runs = {
-%    'data/runResults_effective_decVar_SMOP1.mat', ...  
-%    'data/runResults_effective_decVar_SMOP2.mat', ...
-%    'data/runResults_effective_decVar_SMOP3.mat', ...
-%    'data/runResults_effective_decVar_SMOP4.mat', ...
-%    'data/runResults_effective_decVar_SMOP5.mat', ...
-%    'data/runResults_effective_decVar_SMOP6.mat', ...
-%    'data/runResults_effective_decVar_SMOP7.mat', ...
-%    'data/runResults_effective_decVar_SMOP8.mat'};
+runs = {'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_effective_decVar_SMOP1.mat', ... 
+        'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_effective_decVar_SMOP2.mat', ... 
+        'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_effective_decVar_SMOP3.mat', ...
+        'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_effective_decVar_SMOP4.mat', ...
+        'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_effective_decVar_SMOP5.mat', ...
+        'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_effective_decVar_SMOP6.mat', ...
+        'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_effective_decVar_SMOP7.mat', ...
+        'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\runResults_effective_decVar_SMOP8.mat'};
+
+
 
 
 
@@ -66,7 +71,7 @@ save_to_file = false;
 metric = 1;
 
 % CHANGE ME 6
-grid_layout = false;
+grid_layout = true;
 
 % CHANGE ME 7
 hv_ref = 2; 
@@ -90,11 +95,16 @@ else
     
     % Generate the number of colors needed automatically 
     alg_count = 6;
-    colors = hsv;
-    color_count = size(colors, 1);
-    color_step_size = floor(color_count/alg_count);
-    color_indices = (1:alg_count)*color_step_size;
-    algorithmColors = colors(color_indices,:);
+
+    % https://sashamaps.net/docs/resources/20-colors/
+    algorithmColors = [ 230, 25, 75; ...
+                        60, 180, 75; ...
+                        0, 0, 128; ...
+                        0, 130, 200; ...
+                        245, 130, 48; ...
+                        0, 0, 0];
+                    
+    algorithmColors = algorithmColors / 255;
     
     legend_entries = {'MOPSO 95% conf. int', 'MOPSO mean',  ...
         'MOPSO with SPS 95% conf. int', 'MOPSO with SPS mean',  ...
@@ -122,7 +132,7 @@ end
 
 metricLabels = {'HV vs # of decision variables', 'Runtime vs # of decision variables', 'Number of non-dominated solutions vs # of decision variables'};
 abbrMetricLabels = {'hv', 'runtime', 'NDS'};
-yLabels = {'HV', 'Runtime log(seconds)', 'Number of non-dominated solutions'};
+yLabels = {'HV', 'Runtime log(seconds)', 'NDS'};
 testProbLabels = {'SMOP1', 'SMOP2', 'SMOP3', 'SMOP4', 'SMOP5', 'SMOP6', 'SMOP7', 'SMOP8'};
 
 numRepetitions = size(HVResults, 1);
@@ -244,11 +254,16 @@ for r = 1:numRuns
             %dependentVars = log10(dependentVars);
         end
         
-        plot(dependentVars, y, 'Color', color);
+        % Make song distinguishing difference between with/without SPS
+        if mod(alg, 2) == 1
+           plot(dependentVars, y, 'Color', color, 'LineWidth', 2);
+        else
+           plot(dependentVars, y, 'Color', color, 'LineStyle', ':', 'LineWidth', 2);
+        end
 
 
-        xlabel(x_label);
-        ylabel(yLabels{metric});
+        xlabel(x_label, 'FontSize', LABEL_FONT_SIZE);
+        ylabel(yLabels{metric}, 'FontSize', LABEL_FONT_SIZE);
         
         y_min = min(y_min, min(y));
         y_max = max(y_max, max(y));
@@ -257,7 +272,7 @@ for r = 1:numRuns
 
           
     plot_title = strcat([char(96+r), '.) ', testProbLabels{r}]);
-    title(plot_title);
+    title(plot_title, "FontSize", SUBTITLE_FONT_SIZE);
 
     
     if metric == 1 % HV 
@@ -292,7 +307,9 @@ for r = 1:numRuns
             end
         end
 
-        legend(legend_entries);
+        l = legend(legend_entries);
+        l.FontSize = LEGEND_FONT_SIZE;
+        
         
     end
     
@@ -308,6 +325,13 @@ for r = 1:numRuns
 
     
 end % End for every run 
+
+if grid_layout 
+    % comparative_runs indep_var_dec_vars
+    if ~comparative_runs
+        sgtitle(strcat("Effects of SPS on ", yLabels{metric}, " at varying decision space complexity"), 'FontSize', TITLE_FONT_SIZE);
+    end
+end
 
 
 
