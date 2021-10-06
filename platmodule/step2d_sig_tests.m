@@ -7,7 +7,8 @@ print_latex_table = false;
 print_pval_latex_table = true;
 
 % Analysis metrics
-metrics = {'hv2', 'runTimes', 'numNonDom'};
+metrics = {'hv', 'runTimes', 'numNonDom'};
+
 
 %% Uncomment for comparative decision variable runs
 load('/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/comparative_decVar_resultsTable.mat')
@@ -49,7 +50,11 @@ usesDecVar = true;
 % end -- effective sparsity runs
 
 
-% Result set up
+%% Result set up
+% Choose the HV you want to use for the analysis
+resultsTable.('hv') = resultsTable.('hv2');
+
+
 numbaseMeths = numel(baseMethods);
 numTestProbs = numel(testProblemsUsed);
 if usesDecVar
@@ -137,7 +142,6 @@ for m_metric = 1:numel(metrics)
                 test_prob_mask = strcmp(resultsTable.testProbs, currentTestProb);
 
                 %% Perform significance testing
-
 
                 % Retrieve the data for the proposed method
                 method_mask = strcmp(resultsTable.algorithm, proposedMethod);
