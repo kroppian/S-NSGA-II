@@ -10,76 +10,93 @@ addpath(genpath(platEMOPath));
 
 LABEL_FONT_SIZE = 16; 
 LEGEND_FONT_SIZE = 12; 
-SUBTITLE_FONT_SIZE = 12;
-TITLE_FONT_SIZE = 18;
-
-
+SUBTITLE_FONT_SIZE = 14;
+TITLE_FONT_SIZE = 22;
 
 % CHANGE ME 1
-
-% true to make the dependent variable # of decision variables
-% false to make the dependent variable sparsity % 
-indep_var_dec_vars = false;
+runType = "compDecVar";
+% runType = "effSparsity";
+% runType = "effDecVar";
 
 % CHANGE ME 2
-% true to plot for comparative runs
-% false to plot effective runs
-comparative_runs = false;
-
-% CHANGE ME 3
-
-%data_home = 'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\';
-data_home = '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/';
-
-
-% runs = {strcat(data_home, 'runResults_comparative_decVar_SMOP1.mat'), ... 
-%         strcat(data_home, 'runResults_comparative_decVar_SMOP2.mat'), ... 
-%         strcat(data_home, 'runResults_comparative_decVar_SMOP3.mat'), ...
-%         strcat(data_home, 'runResults_comparative_decVar_SMOP4.mat'), ...
-%         strcat(data_home, 'runResults_comparative_decVar_SMOP5.mat'), ...
-%         strcat(data_home, 'runResults_comparative_decVar_SMOP6.mat'), ...
-%         strcat(data_home, 'runResults_comparative_decVar_SMOP7.mat'), ...
-%         strcat(data_home, 'runResults_comparative_decVar_SMOP8.mat')};
-
-
-runs = {strcat(data_home, 'runResults_effective_sparsity_SMOP1.mat'), ... 
-        strcat(data_home, 'runResults_effective_sparsity_SMOP2.mat'), ... 
-        strcat(data_home, 'runResults_effective_sparsity_SMOP3.mat'), ...
-        strcat(data_home, 'runResults_effective_sparsity_SMOP4.mat'), ...
-        strcat(data_home, 'runResults_effective_sparsity_SMOP5.mat'), ...
-        strcat(data_home, 'runResults_effective_sparsity_SMOP6.mat'), ...
-        strcat(data_home, 'runResults_effective_sparsity_SMOP7.mat'), ...
-        strcat(data_home, 'runResults_effective_sparsity_SMOP8.mat')};
-
-
-% runs = {strcat(data_home, 'runResults_effective_decVar_SMOP1.mat'), ... 
-%         strcat(data_home, 'runResults_effective_decVar_SMOP2.mat'), ... 
-%         strcat(data_home, 'runResults_effective_decVar_SMOP3.mat'), ...
-%         strcat(data_home, 'runResults_effective_decVar_SMOP4.mat'), ...
-%         strcat(data_home, 'runResults_effective_decVar_SMOP5.mat'), ...
-%         strcat(data_home, 'runResults_effective_decVar_SMOP6.mat'), ...
-%         strcat(data_home, 'runResults_effective_decVar_SMOP7.mat'), ...
-%         strcat(data_home, 'runResults_effective_decVar_SMOP8.mat')};
-
-
-
-% Load one as a template for the rest of the runs
-load(runs{1});
-
-% CHANGE ME 4
-save_to_file = false;
-
-% CHANGE ME 5
 % HV = 1
 % run time = 2
 % NNDS = 3
 metric = 1;
 
-% CHANGE ME 6
-grid_layout = true;
+% CHANGE ME 3
+%data_home = 'Z:\Gilgamesh\kroppian\spsRuns\2021-10-04\';
+data_home = '/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/';
 
-% CHANGE ME 7
-hv_ref = 4; 
+% CHANGE ME 4
+save_to_file = false;
+
+% CHANGE ME 6
+grid_layout = false;
+
+%% Configuration
+
+if runType == "compDecVar" || runType == "effDecVar"
+    indep_var_dec_vars = true;
+else
+    indep_var_dec_vars = false;
+end
+
+if runType == "compDecVar"
+    comparative_runs = true;
+else
+    comparative_runs = false;
+end
+
+
+if runType == "compDecVar"
+    runs = {strcat(data_home, 'runResults_comparative_decVar_SMOP1.mat'), ... 
+            strcat(data_home, 'runResults_comparative_decVar_SMOP2.mat'), ... 
+            strcat(data_home, 'runResults_comparative_decVar_SMOP3.mat'), ...
+            strcat(data_home, 'runResults_comparative_decVar_SMOP4.mat'), ...
+            strcat(data_home, 'runResults_comparative_decVar_SMOP5.mat'), ...
+            strcat(data_home, 'runResults_comparative_decVar_SMOP6.mat'), ...
+            strcat(data_home, 'runResults_comparative_decVar_SMOP7.mat'), ...
+            strcat(data_home, 'runResults_comparative_decVar_SMOP8.mat')};
+end
+
+if runType == "effSparsity"
+    runs = {strcat(data_home, 'runResults_effective_sparsity_SMOP1.mat'), ... 
+            strcat(data_home, 'runResults_effective_sparsity_SMOP2.mat'), ... 
+            strcat(data_home, 'runResults_effective_sparsity_SMOP3.mat'), ...
+            strcat(data_home, 'runResults_effective_sparsity_SMOP4.mat'), ...
+            strcat(data_home, 'runResults_effective_sparsity_SMOP5.mat'), ...
+            strcat(data_home, 'runResults_effective_sparsity_SMOP6.mat'), ...
+            strcat(data_home, 'runResults_effective_sparsity_SMOP7.mat'), ...
+            strcat(data_home, 'runResults_effective_sparsity_SMOP8.mat')};
+end
+
+if runType == "effDecVar"
+    runs = {strcat(data_home, 'runResults_effective_decVar_SMOP1.mat'), ... 
+            strcat(data_home, 'runResults_effective_decVar_SMOP2.mat'), ... 
+            strcat(data_home, 'runResults_effective_decVar_SMOP3.mat'), ...
+            strcat(data_home, 'runResults_effective_decVar_SMOP4.mat'), ...
+            strcat(data_home, 'runResults_effective_decVar_SMOP5.mat'), ...
+            strcat(data_home, 'runResults_effective_decVar_SMOP6.mat'), ...
+            strcat(data_home, 'runResults_effective_decVar_SMOP7.mat'), ...
+            strcat(data_home, 'runResults_effective_decVar_SMOP8.mat')};
+end
+
+
+% Load one as a template for the rest of the runs
+load(runs{1});
+
+
+
+if comparative_runs
+    hv_ref = 2; 
+    if grid_layout
+        LEGEND_FONT_SIZE = 18; 
+    end
+else
+    hv_ref = 4; 
+end
+
 
 %% Comparative versus effective options
 if comparative_runs
@@ -88,12 +105,26 @@ if comparative_runs
 
     % Generate the number of colors needed automatically 
 
-    algorithmColors = [255, 25, 25; 0, 0, 230];
+    algorithmColors = [0, 0, 230; 255, 25, 25];
 
     algorithmColors = algorithmColors/255;
 
-    legend_entries = {'SparseEA 95% conf. int', 'SparseEA mean',  ...
-        'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS'};
+    %% legend logic 
+    % Add perfect reference lines if needed
+    if metric == 1
+        legend_entries = {'Perfect HV', 'SparseEA 95% conf. int', 'SparseEA mean',  ...
+            'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS'};    
+    end
+    if metric == 3
+        legend_entries = {'Perfect NDS', 'SparseEA 95% conf. int', 'SparseEA mean',  ...
+            'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS'};    
+    end
+    if metric == 2
+        legend_entries = {'SparseEA 95% conf. int', 'SparseEA mean',  ...
+            'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS'};
+    end
+    
+
 
 else
     %% Effective runs parameters 
@@ -110,13 +141,38 @@ else
                         0, 0, 0];
                     
     algorithmColors = algorithmColors / 255;
+
     
-    legend_entries = {'MOPSO 95% conf. int', 'MOPSO mean',  ...
-        'MOPSO with SPS 95% conf. int', 'MOPSO with SPS mean',  ...
-        'MOEADDE 95% conf. int', 'MOEADDE mean', ...
-        'MOEADDE with SPS 95% conf. int', 'MOEADDE with SPS mean', ...
-        'NSGA-II 95% conf. int', 'NSGA-II mean', ...
-        'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS mean'};
+    
+    if metric == 1
+        legend_entries = {'Perfect HV', 'MOPSO 95% conf. int', 'MOPSO mean',  ...
+            'MOPSO with SPS 95% conf. int', 'MOPSO with SPS mean',  ...
+            'MOEADDE 95% conf. int', 'MOEADDE mean', ...
+            'MOEADDE with SPS 95% conf. int', 'MOEADDE with SPS mean', ...
+            'NSGA-II 95% conf. int', 'NSGA-II mean', ...
+            'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS mean'};   
+    end
+    if metric == 3
+        legend_entries = {'Perfect NDS', 'MOPSO 95% conf. int', 'MOPSO mean',  ...
+            'MOPSO with SPS 95% conf. int', 'MOPSO with SPS mean',  ...
+            'MOEADDE 95% conf. int', 'MOEADDE mean', ...
+            'MOEADDE with SPS 95% conf. int', 'MOEADDE with SPS mean', ...
+            'NSGA-II 95% conf. int', 'NSGA-II mean', ...
+            'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS mean'};   
+    end
+    if metric == 2
+    
+        legend_entries = {'MOPSO 95% conf. int', 'MOPSO mean',  ...
+            'MOPSO with SPS 95% conf. int', 'MOPSO with SPS mean',  ...
+            'MOEADDE 95% conf. int', 'MOEADDE mean', ...
+            'MOEADDE with SPS 95% conf. int', 'MOEADDE with SPS mean', ...
+            'NSGA-II 95% conf. int', 'NSGA-II mean', ...
+            'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS mean'};
+    end
+    
+    
+    
+    
 
 end
 
@@ -231,6 +287,29 @@ for r = 1:numRuns
     y_min = 5000000;
     y_max = -5000000;
     
+    
+    %% Print out perfect results if applicable
+    if metric == 1 % HV 
+        x = dependentVars;
+        y = ones(1, numel(x))*optimal_hvs(r);
+        plot(x,y, ':k', 'LineWidth', 4);
+        y_min = min(y_min, min(y));
+        y_max = max(y_max, max(y));
+        hold on
+
+    end
+    if metric == 3 % NNDS
+        x = dependentVars;
+        y = ones(1, numel(x))*100;
+        plot(x,y, ':k', 'LineWidth', 4);
+        y_min = min(y_min, min(y));
+        y_max = max(y_max, max(y));
+        ylim([y_min - (y_min*0.05), y_max*1.05])
+        hold on
+
+    end
+    
+    %% Print results
     for alg = 1:numAlgorithms
             
         color = algorithmColors(alg,:);
@@ -251,21 +330,24 @@ for r = 1:numRuns
             'edgecolor','none', ...
             'facealpha', 0.3);
 
+        y_min = min(y_min, min(y));
+        y_max = max(y_max, max(y));
+        
+        
         hold on
 
         y = globalMeans{metric}(:,alg);
         if metric == 2 % Run time
             y = log(y);
-            %dependentVars = log10(dependentVars);
         end
         
-        % Make song distinguishing difference between with/without SPS
-        if mod(alg, 2) == 1
+        % Make song distinguishing difference between with/without SPS in
+        % effective runs
+        if mod(alg, 2) == 0 
            plot(dependentVars, y, 'Color', color, 'LineWidth', 2);
         else
            plot(dependentVars, y, 'Color', color, 'LineStyle', ':', 'LineWidth', 2);
         end
-
 
         xlabel(x_label, 'FontSize', LABEL_FONT_SIZE);
         ylabel(yLabels{metric}, 'FontSize', LABEL_FONT_SIZE);
@@ -273,44 +355,45 @@ for r = 1:numRuns
         y_min = min(y_min, min(y));
         y_max = max(y_max, max(y));
         
-    end
+        x_min = min(dependentVars);
+        x_max = max(dependentVars);
+        
+        y_range = y_max - y_min;
+        
+        if y_range == 0
+            margin = y_max*0.1;
+        else
+            margin = y_range*0.1;
+        end
+        
+        
 
-          
-    plot_title = strcat([char(96+r), '.) Run with ', testProbLabels{r}]);
-    title(plot_title, "FontSize", SUBTITLE_FONT_SIZE);
+        axis([x_min x_max (y_min-margin) (y_max + margin)])
 
-    
-    if metric == 1 % HV 
-        x = dependentVars;
-        y = ones(1, numel(x))*optimal_hvs(r);
-        plot(x,y, '--k', 'LineWidth', 1);
-        y_min = min(y_min, min(y));
-        y_max = max(y_max, max(y));
         
     end
-    if metric == 3 % NNDS
-        x = dependentVars;
-        y = ones(1, numel(x))*100;
-        plot(x,y, '--k', 'LineWidth', 1.5);
-        y_min = min(y_min, min(y));
-        y_max = max(y_max, max(y));
-        ylim([y_min - (y_min*0.05), y_max*1.05])
 
+    if grid_layout
+        plot_title = strcat([char(96+r), '.) Runs with ', testProbLabels{r}]);
+        title(plot_title, "FontSize", SUBTITLE_FONT_SIZE);
     end
+
+
+
 
     % Legend logic
     if (plotno == numAlgorithms || ~grid_layout)
         
-        % See if you've already added the perfect line legend 
-        if numel(legend_entries) < ((numAlgorithms*2)+1)
-             % Then only add it for HV and NNDS
-            if metric == 1
-               legend_entries{numel(legend_entries)+1} = 'Perfect HV';
-            end
-            if metric == 3
-               legend_entries{numel(legend_entries)+1} = 'Perfect NDS';
-            end
-        end
+%         % See if you've already added the perfect line legend 
+%         if numel(legend_entries) < ((numAlgorithms*2)+1)
+%              % Then only add it for HV and NNDS
+%             if metric == 1
+%                legend_entries{numel(legend_entries)+1} = 'Perfect HV';
+%             end
+%             if metric == 3
+%                {numel()+1} = 'Perfect NDS';
+%             end
+%         end
 
         l = legend(legend_entries);
         l.FontSize = LEGEND_FONT_SIZE;
@@ -334,12 +417,23 @@ end % End for every run
 if grid_layout 
     % comparative_runs indep_var_dec_vars
     if ~comparative_runs
-        sgtitle(strcat("Effects of SPS on ", yLabels{metric}, " at varying decision space complexity"), 'FontSize', TITLE_FONT_SIZE);
+        if indep_var_dec_vars     
+            sgtitle(strcat("Effects of SPS on ", yLabels{metric}, " at varying decision space sizes"), 'FontSize', TITLE_FONT_SIZE);
+        else
+            sgtitle(strcat("Effects of SPS on ", yLabels{metric}, " at varying sparsities"), 'FontSize', TITLE_FONT_SIZE);
+        end
+    else
+        sgtitle(strcat(yLabels{metric}, " performance of SparseEA and NSGA-II/SPS at varying decision space sizes"), 'FontSize', TITLE_FONT_SIZE);
     end
 end
 
 
 
 %% Functions 
-png_file = replace(input_file, '.mat', strcat('_', abbrMetricLabels{metric},'.png'));
+if grid_layout
+    png_file = replace(strrep(input_file, '_SMOP8', ''), '.mat', strcat('_', abbrMetricLabels{metric},'.png'));
+else
+    png_file = replace(input_file, '.mat', strcat('_', abbrMetricLabels{metric},'.png'));
+
+end
 disp(png_file);
