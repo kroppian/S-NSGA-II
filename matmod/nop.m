@@ -1,4 +1,4 @@
-function nop(obj)
+function nop(a,b)
 
 end
 

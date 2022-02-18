@@ -8,17 +8,20 @@ function final_objs = runOpt(algorithm, D, sparsity, prob,sps_on)
     [workingDir, name, ext]= fileparts(mfilename('fullpath'));
     addpath(workingDir);
 
-    
-    Global = GLOBAL_SPS('-algorithm',algorithm,'-evaluation', 20000,'-problem',{prob, sparsity},'-N',100,'-M',2, '-D', D,'-outputFcn', @nop);
+    [Dec, Obj, Con] = platemo('algorithm', algorithm        , ...
+                              'problem'  , {prob , sparsity}, ...
+                              'N'        , 50               , ...
+                              'maxFE'    , 20000            , ...
+                              'N'        , 100              , ...
+                              'M'        , 2                , ...
+                              'D'        , D                , ...
+                              'outputFcn', @nop);
+                          %                               'D'        , D)
 
-    if sps_on
-        Global.sps_on = true;
-    end
-    
-    final_objs = Global.Start();
-    
-    
     cd(workingDir);
+
+    final_objs = Obj;  
+    
 
     
     
