@@ -1,4 +1,5 @@
  function results = run_single_optimization(platEMOPath, ...
+                                            sNSGAIIPath, ...
                                             reps, ...
                                             algorithms, ...
                                             sps_on, ... 
@@ -18,6 +19,7 @@
     [workingDir, name, ext]= fileparts(mfilename('fullpath'));
     addpath(genpath(platEMOPath));
     addpath(workingDir);
+    addpath(sNSGAIIPath)
     
 
     if indep_var_dec_vars
@@ -64,9 +66,28 @@
 
                 for rep = 1:reps
 
+                                        
+                    [workingDir, name, ext]= fileparts(mfilename('fullpath'));
+                    addpath(workingDir);
+                    
                     tStart = cputime;
-                    final_pop = runOpt(algorithms{a}, Dz{i}, sparsities(s), prob, sps_on{a});
+
+                    [Dec, final_pop, Con] = platemo(                 ...
+                              'algorithm',  algorithms{a}          , ...
+                              'problem'  ,  {prob , sparsities(s)} , ...
+                              'N'        ,  50                     , ...
+                              'maxFE'    ,  20000                  , ...
+                              'N'        ,  100                    , ...
+                              'M'        ,  2                      , ...
+                              'D'        ,  Dz{i}                  , ...
+                              'outputFcn',  @nop); % Surpresses the normaloutput
+
+                          
+                   
                     tEnd = cputime - tStart;
+                    
+                    cd(workingDir);
+
 
                     hvs = ones(max_ref, 1)*-1;
                     for hvr = 1:max_ref

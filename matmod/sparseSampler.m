@@ -1,5 +1,5 @@
 %% Randomly generate an initial population
-function Population = sparseSampler(obj, N, sLower, sUpper)
+function Population = sparseSampler(prob, sLower, sUpper)
 %Initialization - Randomly generate an initial population.
 %
 %   P = obj.Initialization() returns an initial population, i.e.,
@@ -11,17 +11,20 @@ function Population = sparseSampler(obj, N, sLower, sUpper)
 %   Example:
 %       P = obj.Initialization()
 
-    genome = obj.problem.Init(obj.N);
-    varCount = size(obj.lower,2);
+    
+    pop = prob.Initialization();
+    varCount = size(prob.lower,2);
 
-    mask = false(N, varCount);
-    for indv = 1:N
+    mask = false(prob.N, varCount);
+    for indv = 1:prob.N
         % generate the number of zeros 
         zeroCount = randi(round([sLower*varCount, sUpper*varCount]));
         zeroIndices = randperm(varCount, zeroCount);
         mask(indv, zeroIndices) = true;
     end
-    genome(mask) = 0;
-
-    Population = INDIVIDUAL(genome);
+    sparse_pop = pop.decs;
+    
+    sparse_pop(mask) = 0;
+    
+    Population = SOLUTION(sparse_pop);
 end

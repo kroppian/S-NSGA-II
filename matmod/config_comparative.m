@@ -1,8 +1,9 @@
 
 %% Comparative runs
 platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
+sNSGAIIPath = 'M:\Projects\cropover\matmod\sNSGAII';
 repetitions = 30;
-algorithms = {@SparseEA, @NSGAII};
+algorithms = {@SparseEA, @SNSGAII};
 sps_on = {false, true};
 labels = ["SparseEA", "NSGAII-SPS"];
 run_label = "comparative";
