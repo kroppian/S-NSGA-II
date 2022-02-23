@@ -1,70 +1,58 @@
- function results = run_single_optimization(platEMOPath, ...
-                                            sNSGAIIPath, ...
-                                            reps, ...
-                                            algorithms, ...
-                                            sps_on, ... 
-                                            labels, ...
-                                            max_ref, ...
-                                            prob, ...
-                                            indep_var_dec_vars, ...
-                                            defaultDecVar, ...
-                                            defaultSparsity, ...
-                                            Dz, ...
-                                            sparsities)
+function results = runOptBatch(config)
 
     %% Setup
     globalTimeStart = cputime;
 
     % Path to the install path of plat EMO 
     [workingDir, name, ext]= fileparts(mfilename('fullpath'));
-    addpath(genpath(platEMOPath));
+    addpath(genpath(config.platPath));
     addpath(workingDir);
-    addpath(sNSGAIIPath)
+    addpath(config.sNSGAIIPath)
     
 
-    if indep_var_dec_vars
-        sparsities = [defaultSparsity];
+    if config.indep_var_dec_vars
+        config.sparsities = [config.defaultSparsity];
     else
-        Dz = {defaultDecVar};
+        config.Dz = {config.defaultDecVar};
     end
 
     % Dimension one:   repetition
     % Dimension two:   # of decision variables
     % Dimension three: algorithm
-    timeResults = ones(reps, numel(Dz), numel(algorithms))*-1;
-    noNonDoms   = ones(reps, numel(Dz), numel(algorithms))*-1;
-    final_pops = cell(reps, numel(Dz), numel(algorithms));
+    timeResults = ones(config.repetitions, numel(config.Dz), numel(config.algorithms))*-1;
+    noNonDoms   = ones(config.repetitions, numel(config.Dz), numel(config.algorithms))*-1;
+    final_pops = cell(config.repetitions, numel(config.Dz), numel(config.algorithms));
 
-    HVResults = cell(reps, numel(Dz), numel(algorithms));
+    HVResults = cell(config.repetitions, numel(config.Dz), numel(config.algorithms));
 
 
 
 
     %% Main 
 
-    for s = 1:numel(sparsities)
+    for s = 1:numel(config.sparsities)
 
         % for each # of decision variables
-        for i = 1:size(Dz,2)
+        for i = 1:size(config.Dz,2)
 
             % for each possible algorithm 
-            for a = 1:size(algorithms,2)
+            for a = 1:size(config.algorithms,2)
 
-                if indep_var_dec_vars
-                    fprintf("Running algorithm %s with %d decision variables\n", labels{a}, Dz{i});
+                if config.indep_var_dec_vars
+                    fprintf("Running algorithm %s with %d decision variables\n", config.labels{a}, config.Dz{i});
                 else
-                    fprintf("Running algorithm %s with sparsity of %d\n", labels{a}, sparsities(s));
+                    fprintf("Running algorithm %s with sparsity of %d\n", config.labels{a}, config.sparsities(s));
                 end
 
                 % for each repetition
 
-                if indep_var_dec_vars
+                if config.indep_var_dec_vars
                     index = i;
                 else
                     index = s;
                 end
 
-                for rep = 1:reps
+                parfor rep = 1:config.repetitions
 
                                         
                     [workingDir, name, ext]= fileparts(mfilename('fullpath'));
@@ -73,13 +61,13 @@
                     tStart = cputime;
 
                     [Dec, final_pop, Con] = platemo(                 ...
-                              'algorithm',  algorithms{a}          , ...
-                              'problem'  ,  {prob , sparsities(s)} , ...
+                              'algorithm',  config.algorithms{a}          , ...
+                              'problem'  ,  {config.prob , config.sparsities(s)} , ...
                               'N'        ,  50                     , ...
                               'maxFE'    ,  20000                  , ...
                               'N'        ,  100                    , ...
                               'M'        ,  2                      , ...
-                              'D'        ,  Dz{i}                  , ...
+                              'D'        ,  config.Dz{i}                  , ...
                               'outputFcn',  @nop); % Surpresses the normaloutput
 
                           
@@ -89,8 +77,8 @@
                     cd(workingDir);
 
 
-                    hvs = ones(max_ref, 1)*-1;
-                    for hvr = 1:max_ref
+                    hvs = ones(config.max_ref, 1)*-1;
+                    for hvr = 1:config.max_ref
                         hvs(hvr, 1) = CalHV(final_pop, [hvr, hvr]);
                     end
                     HVResults{rep, index, a} = hvs;
@@ -106,22 +94,22 @@
     end
 
 
-    if indep_var_dec_vars 
+    if config.indep_var_dec_vars 
         run_type = "decVar";
     else
         run_type = "sparsity";
     end
 
-    %file_name = strcat('runResults_', run_label, '_', run_type, '_', strrep(char(prob),'@(x)',''), '.mat');
+    %file_name = strcat('runResults_', run_label, '_', run_type, '_', strrep(char(config.prob),'@(x)',''), '.mat');
 
     % Save results so we don't have to 
-    save(file_name, 'HVResults', 'timeResults', 'noNonDoms', 'final_pops');
+    %save(file_name, 'HVResults', 'timeResults', 'noNonDoms', 'final_pops');
 
     globalTimeEnd = cputime - globalTimeStart;
 
     fprintf("Took %f seconds\n", globalTimeEnd);
-
-    HVResults, timeResults, noNonDoms, final_pops, globalTimeEnd = HVResults, timeResults, noNonDoms, final_pops, globalTimeEnd
+    
+    results = run_result(HVResults, timeResults, noNonDoms, final_pops, globalTimeEnd);
     
 end
 
