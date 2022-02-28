@@ -3,9 +3,9 @@ max_ref = 7;
 config = run_config('M:\Projects\PlatEMO_3.4.0\PlatEMO\',  ...    %   platPath          
                     'M:\Projects\cropover\matmod\sNSGAII', ...    %   sNSGAIIPath       
                     4,                                     ...    %   repetitions        ( TODO revert)
-                    {@SparseEA, @sNSGAII},                 ...    %   algorithms        
+                    {@sNSGAII, @SparseEA2},                ...    %   algorithms        
                     {false, true},                         ...    %   sps_on            
-                    ["SparseEA", "NSGAII-SPS"],            ...    %   labels            
+                    ["SparseEA2", "sNSGAII"],              ...    %   labels            
                     "comparative",                         ...    %   run_label         
                     max_ref,                               ...    %   max_ref           
                     1:max_ref,                             ...    %   refPoints         

@@ -39,7 +39,7 @@ function results = runOptBatch(config)
             for a = 1:size(config.algorithms,2)
 
                 if config.indep_var_dec_vars
-                    fprintf("Running algorithm %s with %d decision variables\n", config.labels{a}, config.Dz{i});
+                    fprintf("Running algorithm %s with %d decision variables\n", config.labels{a}, config.Dz(i));
                 else
                     fprintf("Running algorithm %s with sparsity of %d\n", config.labels{a}, config.sparsities(s));
                 end
@@ -52,7 +52,7 @@ function results = runOptBatch(config)
                     index = s;
                 end
 
-                parfor rep = 1:config.repetitions
+                for rep = 1:config.repetitions
 
                                         
                     [workingDir, name, ext]= fileparts(mfilename('fullpath'));
@@ -67,7 +67,7 @@ function results = runOptBatch(config)
                               'maxFE'    ,  20000                  , ...
                               'N'        ,  100                    , ...
                               'M'        ,  2                      , ...
-                              'D'        ,  config.Dz{i}                  , ...
+                              'D'        ,  config.Dz(i)                  , ...
                               'outputFcn',  @nop); % Surpresses the normaloutput
 
                           
