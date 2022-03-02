@@ -1,13 +1,12 @@
 
-
-
 load("testData.mat");
 addpath("..");
 
-%fakeDelta = rand(100,100);
+prob = SMOP1(100, 99, 2, 100);
 
-newParent = sparsePolyMutate(Parent);
+newParent = sparsePolyMutate(Parent, prob);
 
 parentDelta = newParent - Parent;
 
 heatmap(parentDelta);
+
