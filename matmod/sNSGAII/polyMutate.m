@@ -12,18 +12,21 @@ function result = polyMutate(genome, lb, ub, eta)
     rightMask = ran >= 0.5;
     
     xy = 1 - delta1;
-    val = 2.0 * ran + (1.0 - 2.0 * ran) * (xy .^ (eta + 1.0));
+    val = 2.0 * ran + (1.0 - 2.0 * ran) .* (xy .^ (eta + 1.0));
     d = (val .^ exp) - 1.0;
     deltaq(leftMask) = d(leftMask);
 
     xy = 1.0 - delta2;
-    val = 2.0 * (1.0 - ran) + 2.0 * (ran - 0.5) * (xy .^ (eta + 1.0));
+    val = 2.0 * (1.0 - ran) + 2.0 * (ran - 0.5) .* (xy .^ (eta + 1.0));
     d = 1.0 - (val .^ exp);
+    isreal(d)
     deltaq(rightMask) = d(rightMask);
-
+ 
     muted_genome = genome + deltaq * (ub - lb);
     
-    % Todo fix out of bounds errors
+    if any(lb > genome, 'all') || any(ub < genome, 'all')
+        error("Whoops")
+    end
     
     result = muted_genome;
 
