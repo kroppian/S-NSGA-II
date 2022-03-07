@@ -19,13 +19,12 @@ function result = polyMutate(genome, lb, ub, eta)
     xy = 1.0 - delta2;
     val = 2.0 * (1.0 - ran) + 2.0 * (ran - 0.5) .* (xy .^ (eta + 1.0));
     d = 1.0 - (val .^ exp);
-    isreal(d)
     deltaq(rightMask) = d(rightMask);
  
     muted_genome = genome + deltaq .* (ub - lb);
     
     if any(lb > genome, 'all') || any(ub < genome, 'all')
-        error("Whoops")
+        error("Whoops");
     end
     
     result = muted_genome;
