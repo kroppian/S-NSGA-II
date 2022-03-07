@@ -45,6 +45,8 @@ classdef run_config
             obj.Dz                 = Dz;
             obj.sparsities         = sparsities;
             obj.runType            = runType;
+            
+            addpath(genpath(obj.platPath));
 
         end
     end

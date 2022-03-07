@@ -22,7 +22,7 @@ function result = polyMutate(genome, lb, ub, eta)
     isreal(d)
     deltaq(rightMask) = d(rightMask);
  
-    muted_genome = genome + deltaq * (ub - lb);
+    muted_genome = genome + deltaq .* (ub - lb);
     
     if any(lb > genome, 'all') || any(ub < genome, 'all')
         error("Whoops")
