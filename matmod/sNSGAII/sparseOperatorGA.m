@@ -9,9 +9,9 @@ function Offspring = sparseOperatorGA(Parent, Parameter)
 
     %% Parameter setting
     if nargin > 1
-        [probCross,distrCross,probMut,distrMut] = deal(Parameter{:});
+        [probCross,distrCross,~,~] = deal(Parameter{:});
     else
-        [probCross,distrCross,probMut,distrMut] = deal(1,20,1,20);
+        [probCross,distrCross,~,~] = deal(1,20,1,20);
     end
     if isa(Parent(1),'SOLUTION')
         calObj = true;

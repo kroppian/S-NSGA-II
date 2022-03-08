@@ -29,7 +29,7 @@ function newPop = sparsePolyMutate(Pop, Problem, Parameter)
     
     toMutate(nonZeroMask) = toMutateNZ;
     
-    [genomesToMutate, c] = find(toMutate);
+    [genomesToMutate, ~] = find(toMutate);
 
     lb = Problem.lower(genomesToMutate)';
     ub = Problem.upper(genomesToMutate)';
@@ -110,7 +110,7 @@ function newPop = sparsePolyMutate(Pop, Problem, Parameter)
     %% Make the mutations
     
     % Find the min/max of the genome positions to mutate 
-    [newNzsRows, newNzsCols] = find(newNzs);
+    [newNzsRows, ~] = find(newNzs);
 
     newNzsLb = Problem.lower(newNzsRows);
     newNzsUb = Problem.upper(newNzsRows);
