@@ -12,6 +12,13 @@ function plot_metric(metric, config, res)
     SUBTITLE_FONT_SIZE = 14;
     TITLE_FONT_SIZE = 22;
 
+    available_colors = [230, 25 , 75 ; 60 , 180, 75 ; 255, 225, 25 ; ...
+         0  , 130, 200; 245, 130, 48 ; 145, 30 , 180; 70 , 240, 240; ...
+         240, 50 , 230; 210, 245, 60 ; 250, 190, 212; 0  , 128, 128; ...
+         220, 190, 255; 170, 110, 40 ; 255, 250, 200; 128, 0  , 0  ; ...
+         170, 255, 195; 128, 128, 0  ; 255, 215, 180; 0  , 0  , 128; ...
+         128, 128, 128; 255, 255, 255 ];
+    
     %% Configuration
     if config.runType == "compDecVar" || config.runType == "effDecVar"
         indep_var_dec_vars = true;
@@ -30,87 +37,36 @@ function plot_metric(metric, config, res)
     else
         hv_ref = 4; 
     end
+    
+    numRepetitions = size(res.HVResults, 1);
+    numDependentVars = size(res.HVResults, 2);
+    numAlgorithms = size(res.HVResults, 3);
+    
+    
+    %% Legend logic
 
+    % Generate the number of colors needed automatically 
 
-    %% Comparative versus effective options
-    if comparative_runs
+    algorithmColors = available_colors(1:numAlgorithms,:);
 
-        %% Comparative runs parameters 
+    algorithmColors = algorithmColors/255;
 
-        % Generate the number of colors needed automatically 
-
-        algorithmColors = [0, 0, 230; 255, 25, 25];
-
-        algorithmColors = algorithmColors/255;
-
-        %% legend logic 
-        % Add perfect reference lines if needed
-        if metric == 1
-            legend_entries = {'Perfect HV', 'SparseEA 95% conf. int', 'SparseEA mean',  ...
-                'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS'};    
-        end
-        if metric == 3
-            legend_entries = {'Perfect NDS', 'SparseEA 95% conf. int', 'SparseEA mean',  ...
-                'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS'};    
-        end
-        if metric == 2
-            legend_entries = {'SparseEA 95% conf. int', 'SparseEA mean',  ...
-                'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS'};
-        end
-
-
-
+    %% legend logic 
+    % Add perfect reference lines if needed
+    if metric == 1
+        legend_entries = {'Perfect HV'};    
+    elseif metric == 3
+        legend_entries = {'Perfect NDS'};
     else
-        %% Effective runs parameters 
-
-        % Generate the number of colors needed automatically 
-        alg_count = 6;
-
-        % https://sashamaps.net/docs/resources/20-colors/
-        algorithmColors = [ 230, 25, 75; ...
-                            60, 180, 75; ...
-                            0, 0, 128; ...
-                            0, 130, 200; ...
-                            245, 130, 48; ...
-                            0, 0, 0];
-
-        algorithmColors = algorithmColors / 255;
-
-
-
-        if metric == 1
-            legend_entries = {'Perfect HV', 'MOPSO 95% conf. int', 'MOPSO mean',  ...
-                'MOPSO with SPS 95% conf. int', 'MOPSO with SPS mean',  ...
-                'MOEADDE 95% conf. int', 'MOEADDE mean', ...
-                'MOEADDE with SPS 95% conf. int', 'MOEADDE with SPS mean', ...
-                'NSGA-II 95% conf. int', 'NSGA-II mean', ...
-                'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS mean'};   
-        end
-        if metric == 3
-            legend_entries = {'Perfect NDS', 'MOPSO 95% conf. int', 'MOPSO mean',  ...
-                'MOPSO with SPS 95% conf. int', 'MOPSO with SPS mean',  ...
-                'MOEADDE 95% conf. int', 'MOEADDE mean', ...
-                'MOEADDE with SPS 95% conf. int', 'MOEADDE with SPS mean', ...
-                'NSGA-II 95% conf. int', 'NSGA-II mean', ...
-                'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS mean'};   
-        end
-        if metric == 2
-
-            legend_entries = {'MOPSO 95% conf. int', 'MOPSO mean',  ...
-                'MOPSO with SPS 95% conf. int', 'MOPSO with SPS mean',  ...
-                'MOEADDE 95% conf. int', 'MOEADDE mean', ...
-                'MOEADDE with SPS 95% conf. int', 'MOEADDE with SPS mean', ...
-                'NSGA-II 95% conf. int', 'NSGA-II mean', ...
-                'NSGA-II with SPS 95% conf. int', 'NSGA-II with SPS mean'};
-        end
-
-
-
-
-
+        legend_entries = {};
     end
 
+    % Add the various algorithms to the legend 
+    for a = 1:numAlgorithms
+        legend_entries{a*2} = config.labels{a};
+        legend_entries{a*2+1} = config.labels(a) + " CI";
 
+    end
 
     if indep_var_dec_vars
         dependentVars = config.Dz;
@@ -128,9 +84,7 @@ function plot_metric(metric, config, res)
     yLabels = {'HV', 'Runtime log(seconds)', 'NDS'};
     testProbLabels = {'SMOP1', 'SMOP2', 'SMOP3', 'SMOP4', 'SMOP5', 'SMOP6', 'SMOP7', 'SMOP8'};
 
-    numRepetitions = size(res.HVResults, 1);
-    numDependentVars = size(res.HVResults, 2);
-    numAlgorithms = size(res.HVResults, 3);
+
 
     %% Calculate optimal HV
     if metric == 1
@@ -149,7 +103,7 @@ function plot_metric(metric, config, res)
     % dim. one: algorithm
     template = ones(numDependentVars, numAlgorithms);
 
-    globalMeans = {template, template};
+    globalMeans     = {template, template};
     globalUpperInts = {template, template};
     globalLowerInts = {template, template};
 
@@ -175,7 +129,6 @@ function plot_metric(metric, config, res)
                 decResults = arrayfun(@(x)(x{1}), decResults);
             end
 
-
             % Calculate mean
             decMean = mean(decResults);
 
@@ -188,8 +141,6 @@ function plot_metric(metric, config, res)
             globalLowerInts{metric}(decVar, alg) = min(CI);
 
         end
-
-
     end
 
     %% Plot  results
@@ -198,7 +149,6 @@ function plot_metric(metric, config, res)
     
     y_min = 5000000;
     y_max = -5000000;
-
 
     %% Print out perfect results if applicable
     if metric == 1 % HV 
@@ -284,6 +234,8 @@ function plot_metric(metric, config, res)
 
 
     end
+    
+    legend(legend_entries)
     
 end
 
