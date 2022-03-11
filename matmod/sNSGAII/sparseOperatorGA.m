@@ -42,6 +42,13 @@ function Offspring = sparseOperatorGA(Parent, Parameter)
             Offspring = [(Parent1+Parent2)/2+beta.*(Parent1-Parent2)/2
                          (Parent1+Parent2)/2-beta.*(Parent1-Parent2)/2];
 
+            Lower = repmat(Problem.lower,2*N,1);
+            Upper = repmat(Problem.upper,2*N,1);
+            
+            % Put everything back in bounds
+            Offspring       = min(max(Offspring,Lower),Upper);
+
+                     
             if nargin > 1
                 Offspring = sparsePolyMutate(Offspring, Problem, Parameter{3:4});
             else

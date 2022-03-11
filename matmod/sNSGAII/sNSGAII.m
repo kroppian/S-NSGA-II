@@ -18,18 +18,33 @@ classdef sNSGAII < ALGORITHM
     methods
         function main(Algorithm,Problem)
             
-            [sLower, sUpper] = Algorithm.ParameterSet(0.5, 1);
+            [sLower, sUpper, spsOn, sparseMutOn, sparseXOn] = Algorithm.ParameterSet(0.5, 1, true, true, true);
             
             %% Generate random population
-            Population = sparseSampler(Problem, sLower, sUpper);
+
+            if spsOn
+                Population = sparseSampler(Problem, sLower, sUpper);
+            else
+                Population = Problem.Initialization();
+            end
             [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Problem.N);
 
             %% Optimization
             while Algorithm.NotTerminated(Population)
                 MatingPool = TournamentSelection(2,Problem.N,FrontNo,-CrowdDis);
-                Offspring  = sparseOperatorGA(Population(MatingPool));
+
+                if sparseMutOn
+                    Offspring  = sparseOperatorGA(Population(MatingPool));
+                else
+                    Offspring = OperatorGA(Population(MatingPool));
+                end
+                
                 [Population,FrontNo,CrowdDis] = EnvironmentalSelection([Population,Offspring],Problem.N);
             end
         end
+
     end
+
+    
+
 end
