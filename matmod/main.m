@@ -1,11 +1,12 @@
 
 clear
 
-config_comparative
+%config_comparative
 %config_effective
+config_mutationTest
 
 %% Run optimization
-res2 = runOptBatch(config);
+res = runOptBatch(config);
 
 metric = 1;
 
