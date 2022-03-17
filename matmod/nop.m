@@ -20,6 +20,16 @@ function nop(Algorithm, Problem)
                     
         result = Algorithm.result;
         metric = Algorithm.metric;
+
+        gens_recorded = size(result,1);
+
+        metric.HV = ones(gens_recorded,1)*-99;
+        %metric.nds = 
+
+        for p = 1:gens_recorded
+            metric.HV(p) = HV(result{p,2}, Problem.optimum);
+        end
+
         save([file,'.mat'],'result','metric');
 
     end

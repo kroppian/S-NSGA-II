@@ -58,8 +58,6 @@ function results = runOptBatch(config)
         [workingDir, ~, ~]= fileparts(mfilename('fullpath'));
         addpath(workingDir);
         
-        tStart = cputime;         
-            
         platemo(                                             ...
                   'algorithm',  {algorithm, 0.5, 1, sps_on, s_mut_on, false} , ...
                   'problem'  ,  {config.prob , sparsity}               , ...
@@ -71,6 +69,8 @@ function results = runOptBatch(config)
                   'outputFcn',  @nop                                 , ...
                   'save'     ,  20000);
               
+        
+
         % Read output      
         output_dir = fullfile(config.platPath, ...
                               'Data', ...
@@ -87,10 +87,10 @@ function results = runOptBatch(config)
                         func2str(algorithm), ...
                         func2str(config.prob), ...
                         2, decision_vars, proc_id));
-    
         
-    
         raw_run_history = load(output_path, 'result');
+        metrics = load(output_path, 'metric');
+        metrics = metrics.metric;
         
         % massage the data into a nice table
         run_history = cell2table(raw_run_history.result, ...
@@ -101,12 +101,14 @@ function results = runOptBatch(config)
         run_history.run = ones(generations, 1) * rep;
         run_history.D   = ones(generations, 1) * decision_vars;
         run_history.s   = ones(generations, 1) * sparsity;
-        
+        run_history.HV  = metrics.HV;
+
         run_history.gen = (1:generations)';
     
+        run_history.time = ones(generations, 1) * metrics.runtime;
+
         table_collection{s} = run_history;
         
-        tEnd = cputime - tStart;
         
         cd(workingDir);
 

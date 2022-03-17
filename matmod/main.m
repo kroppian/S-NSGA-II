@@ -11,7 +11,14 @@ res = runOptBatch(config);
 disp("Plotting...")
 metric = 1;
 
-plot_metric(metric, config, res);
+%% Calc metrics
+medSparsities = calcMedianSparsities(res);
+res.medSparsities = medSparsities;
+
+%% Plot final results 
+final_pops = res(res.gen == 200,:);
+
+plot_metric(metric, config, final_pops);
 disp("Done.")
 
 
