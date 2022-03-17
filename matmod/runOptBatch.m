@@ -87,7 +87,8 @@ function results = runOptBatch(config)
                         func2str(algorithm), ...
                         func2str(config.prob), ...
                         2, decision_vars, proc_id));
-        
+    
+    
         raw_run_history = load(output_path, 'result');
         metrics = load(output_path, 'metric');
         metrics = metrics.metric;
@@ -97,16 +98,24 @@ function results = runOptBatch(config)
             'VariableNames',{'evaluations', 'population'});
         
         generations = size(run_history,1);
-        
-        run_history.run = ones(generations, 1) * rep;
-        run_history.D   = ones(generations, 1) * decision_vars;
-        run_history.s   = ones(generations, 1) * sparsity;
-        run_history.HV  = metrics.HV;
 
-        run_history.gen = (1:generations)';
-    
+        % configuration
+        run_history.run      = ones(generations, 1) * rep;
+        run_history.D        = ones(generations, 1) * decision_vars;
+        run_history.s        = ones(generations, 1) * sparsity;
+        run_history.HV       = metrics.HV;
+        run_history.gen      = (1:generations)';
+        run_history.sps_on   = ones(generations, 1) * sps_on;
+        run_history.s_mut_on = ones(generations, 1) * s_mut_on;
+
+        alg_name = cell(generations, 1);
+        [alg_name{:}] = deal(func2str(algorithm));
+        run_history.alg = alg_name;
+
+        % metrics
         run_history.time = ones(generations, 1) * metrics.runtime;
 
+        % Save it for compilation later
         table_collection{s} = run_history;
         
         
