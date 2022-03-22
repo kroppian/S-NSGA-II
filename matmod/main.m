@@ -13,12 +13,28 @@ res = runOptBatch(config);
 medSparsities = calcMedianSparsities(res);
 res.medSparsities = medSparsities;
 
-sample = res(res.run == 1 & res.D == 100 & res.s == 0.1 & res.sps_on & res.s_mut_on, :);
+% Plot the sparsity over generations
+targetSparsity = 0.1;
+sample_s_mut_on  = res(res.run == 2 & res.D == 1000 & res.s == targetSparsity & res.sps_on & res.s_mut_on, :);
+sample_s_mut_off = res(res.run == 2 & res.D == 1000 & res.s == targetSparsity & res.sps_on & (~res.s_mut_on), :);
+
 subplot(2,1,1);
-plot(sample.medSparsities);
+plot(sample_s_mut_on.medSparsities);
+hold on;
+plot(sample_s_mut_off.medSparsities);
+plot(ones(length(sample_s_mut_on.medSparsities))*(1 -targetSparsity));
+legend("on", "off", "perfect");
+
 
 subplot(2,1,2);
-plot(sample.HV);
+plot(sample_s_mut_on.HV);
+hold on;
+plot(sample_s_mut_on.HV);
+plot(sample_s_mut_off.HV);
+legend("on", "off");
+
+
+
 
 
 
