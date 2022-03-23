@@ -3,7 +3,8 @@ clear
 
 %config_comparative
 %config_effective
-config_mutationTest
+%config_mutationTest
+config_cropoverTest
 
 %% Run optimization
 res = runOptBatch(config);
