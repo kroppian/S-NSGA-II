@@ -18,7 +18,8 @@ config = run_config(platPath,                                                 ..
                     4,                                                        ...    %   repetitions        ( TODO revert)
                     {@sNSGAII, @sNSGAII, @sNSGAII},                           ...    %   algorithms          
                     {true, false, true},                                      ...    %   sps_on 
-                    {true, false, false},                                     ...    %   s_mutation_on            
+                    {true, false, false},                                     ...    %   s_mutation_on         
+                    {true, false, false},                                     ...    %   s_x_on            
                     ["sNSGAII w/ s-mut", "NSGA-II", "sNSGAII w/out s-mut"],   ...    %   labels         
                     "Mutation",                                               ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           

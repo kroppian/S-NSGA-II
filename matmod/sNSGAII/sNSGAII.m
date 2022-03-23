@@ -33,12 +33,9 @@ classdef sNSGAII < ALGORITHM
             while Algorithm.NotTerminated(Population)
                 MatingPool = TournamentSelection(2,Problem.N,FrontNo,-CrowdDis);
 
-                if sparseMutOn
-                    Offspring  = sparseOperatorGA(Population(MatingPool));
-                else
-                    Offspring = OperatorGA(Population(MatingPool));
-                end
-                
+                Offspring  = sparseOperatorGA(Population(MatingPool), ...
+                                        {1,20,1,20,1,20,sparseMutOn,sparseXOn});
+
                 [Population,FrontNo,CrowdDis] = EnvironmentalSelection([Population,Offspring],Problem.N);
             end
         end

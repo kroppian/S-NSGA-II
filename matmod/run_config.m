@@ -7,8 +7,9 @@ classdef run_config
         sNSGAIIPath        
         repetitions        
         algorithms         
-        sps_on       
+        sps_on    
         s_mutation_on
+        s_x_on       
         labels             
         run_label          
         max_ref            
@@ -24,7 +25,7 @@ classdef run_config
     
     methods
         function obj = run_config(platPath, sNSGAIIPath, repetitions, ...
-                algorithms, sps_on, s_mutation_on, labels, run_label, max_ref, ...
+                algorithms, sps_on, s_mutation_on, s_x_on, labels, run_label, max_ref, ...
                 refPoints, prob, indep_var_dec_vars, defaultDecVar, ...
                 defaultSparsity, Dz, sparsities, runType)
             
@@ -36,6 +37,7 @@ classdef run_config
             obj.algorithms         = algorithms;
             obj.sps_on             = sps_on;
             obj.s_mutation_on      = s_mutation_on;
+            obj.s_x_on             = s_x_on;
             obj.labels             = labels;
             obj.run_label          = run_label;
             obj.max_ref            = max_ref;

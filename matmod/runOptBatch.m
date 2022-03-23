@@ -44,6 +44,7 @@ function results = runOptBatch(config)
         algorithm = config.algorithms{scenarios(s, 3)};
         sps_on    = config.sps_on{scenarios(s, 3)};
         s_mut_on  = config.s_mutation_on{scenarios(s, 3)};
+        s_x_on    = config.s_x_on{scenarios(s, 3)};
 
         rep = scenarios(s, 4);
 
