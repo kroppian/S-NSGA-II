@@ -1,4 +1,4 @@
-function newPop = sm2target(Pop,newSparsities)
+function newPop = sm2target(Pop, Problem, newSparsities)
 
     % Sparse Mutate to a target
 
@@ -7,8 +7,6 @@ function newPop = sm2target(Pop,newSparsities)
     sparsities = sum(Pop == 0, 2) / D;
     
     mutateMask = newSparsities ~= sparsities;
-
-    newSparsities = newSparsities(mutateMask);
 
     indv2mut = find(mutateMask);
 

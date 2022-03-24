@@ -62,7 +62,7 @@ function newPop = sparsePolyMutate(Pop, Problem, Parameter)
     if newSparsities == sparsities
         newPop = Pop;
     else
-        newPop = sm2target(Pop, newSparsities);
+        newPop = sm2target(Pop, Problem, newSparsities);
     end
 
 end
