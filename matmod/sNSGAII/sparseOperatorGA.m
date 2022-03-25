@@ -39,7 +39,7 @@ function Offspring = sparseOperatorGA(Parent, Parameter)
             %% Genetic operators for real encoding
 
             if s_x_on 
-                Offspring = cropover(Parent, Problem, {proM,disM});
+                Offspring = cropover(Parent, Problem, {proC,disC});
             else
                 % Simulated binary crossover
                 beta = zeros(N,D);
@@ -64,6 +64,9 @@ function Offspring = sparseOperatorGA(Parent, Parameter)
             if s_mut_on
                 Offspring = sparsePolyMutate(Offspring, Problem, {proM,disM, proSM,disSM});
             else
+                
+                Lower = repmat(Problem.lower,2*N,1);
+                Upper = repmat(Problem.upper,2*N,1);
                 Site  = rand(2*N,D) < proM/D;
                 mu    = rand(2*N,D);
                 temp  = Site & mu<=0.5;
