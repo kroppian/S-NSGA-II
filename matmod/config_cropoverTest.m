@@ -1,6 +1,6 @@
 max_ref = 7; 
 
-comp = 'b';
+comp = 'c';
 
 if comp == 'a'
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
@@ -16,11 +16,11 @@ end
 config = run_config(platPath,                                                 ...    %   platPath          
                     sNSGAIIPath,                                              ...    %   sNSGAIIPath       
                     4,                                                        ...    %   repetitions        ( TODO revert)
-                    {@sNSGAII, @sNSGAII, @sNSGAII},                           ...    %   algorithms          
-                    {true, true,  true},                                      ...    %   sps_on 
-                    {true, false, true},                                      ...    %   s_mutation_on         
-                    {true, true,  false},                                     ...    %   s_x_on            
-                    ["sNSGAII w/ s-mut", "NSGA-II", "sNSGAII w/out s-mut"],   ...    %   labels         
+                    {@sNSGAII, @sNSGAII},                                     ...    %   algorithms          
+                    {true, true},                                             ...    %   sps_on 
+                    {true, false},                                            ...    %   s_mutation_on         
+                    {true, false},                                            ...    %   s_x_on            
+                    ["With works", "Without works"],                          ...    %   labels         
                     "Mutation",                                               ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         

@@ -108,6 +108,7 @@ function results = runOptBatch(config)
         run_history.gen      = (1:generations)';
         run_history.sps_on   = ones(generations, 1) * sps_on;
         run_history.s_mut_on = ones(generations, 1) * s_mut_on;
+        run_history.s_x_on   = ones(generations, 1) * s_x_on;
 
         alg_name = cell(generations, 1);
         [alg_name{:}] = deal(func2str(algorithm));
