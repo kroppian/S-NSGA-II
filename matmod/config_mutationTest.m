@@ -6,7 +6,7 @@ if comp == 'a'
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
     sNSGAIIPath = 'M:\Projects\cropover\matmod\sNSGAII';
 elseif comp == 'b'
-    platPath = 'C:\Users\Ian Kropp\Projects\PlatEMO-3.4';
+    platPath = 'C:\Users\Ian Kropp\Projects\PlatEMO-3.4\PlatEMO';
     sNSGAIIPath = 'C:\Users\Ian Kropp\Projects\cropover\matmod\sNSGAII';
 elseif comp == 'c'
     platPath = '/Users/iankropp/Projects/PlatEMO-3.4/PlatEMO';

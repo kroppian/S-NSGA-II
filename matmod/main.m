@@ -3,8 +3,8 @@ clear
 
 %config_comparative
 %config_effective
-%config_mutationTest
-config_cropoverTest
+config_mutationTest
+%config_cropoverTest
 
 %% Run optimization
 res = runOptBatch(config);
@@ -23,15 +23,17 @@ subplot(2,1,1);
 plot(sample_s_mut_on.medSparsities); hold on;
 plot(sample_s_mut_off.medSparsities); hold on;
 plot(ones(length(sample_s_mut_on.medSparsities),1)*(1 -targetSparsity)); hold on;
-legend("on", "off", "perfect");
-
+legend("sparse mutation on", "sparse mutation off", "Optimal sparsity");
+xlabel("Generation");
+ylabel("Median population sparsity");
 
 subplot(2,1,2);
 plot(sample_s_mut_on.HV);
 hold on;
 plot(sample_s_mut_off.HV);
-legend("on", "off");
-
+legend("sparse mutation on", "sparse mutation off");
+xlabel("Generation");
+ylabel("Median solution HV");
 
 
 
