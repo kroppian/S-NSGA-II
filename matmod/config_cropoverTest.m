@@ -1,6 +1,6 @@
 max_ref = 7; 
 
-comp = 'c';
+comp = 'b';
 
 if comp == 'a'
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
@@ -24,7 +24,7 @@ config = run_config(platPath,                                                 ..
                     "Mutation",                                               ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
-                    @SMOP1,                                                   ...    %   prob              
+                    @SMOP5,                                                   ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
                     1000,                                                     ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
