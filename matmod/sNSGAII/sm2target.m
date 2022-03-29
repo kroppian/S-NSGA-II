@@ -1,4 +1,4 @@
-function newPop = sm2target(Pop, Problem, newSparsities)
+function newPop = sm2target(Pop, lb, ub, newSparsities)
 
     % Sparse Mutate to a target
 
@@ -65,8 +65,8 @@ function newPop = sm2target(Pop, Problem, newSparsities)
     % Find the min/max of the genome positions to mutate 
     [newNzsRows, ~] = find(newNzs);
 
-    newNzsLb = Problem.lower(newNzsRows);
-    newNzsUb = Problem.upper(newNzsRows);
+    newNzsLb = lb(newNzsRows);
+    newNzsUb = ub(newNzsRows);
 
     Pop(newNzs) = newNzsLb + rand(1,sum(newNzs, 'all')) .* (newNzsUb - newNzsLb);
     Pop(newZs) = zeros(sum(newZs, 'all'), 1);

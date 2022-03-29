@@ -1,4 +1,4 @@
-function newPop = sparsePolyMutate(Pop, Problem, Parameter)
+function newPop = sparsePolyMutate(Pop, lb, ub, Parameter)
 
     % Pop 
     % Each row is a different population member
@@ -31,13 +31,13 @@ function newPop = sparsePolyMutate(Pop, Problem, Parameter)
     
     [genomesToMutate, ~] = find(toMutate);
 
-    lb = Problem.lower(genomesToMutate)';
-    ub = Problem.upper(genomesToMutate)';
+    lb_pm = lb(genomesToMutate)';
+    ub_pm = ub(genomesToMutate)';
 
 
     % mutate values
     Pop(toMutate) = polyMutate(  Pop(toMutate), ...
-                                    lb, ub, distrMut);
+                                    lb_pm, ub_pm, distrMut);
         
     %% Sparsity mutations 
 
@@ -49,12 +49,12 @@ function newPop = sparsePolyMutate(Pop, Problem, Parameter)
     % Figure out the individual sparsities of each individual 
     sparsities = sum(Pop == 0, 2) / D;
     
-    lb = zeros(sum(mutateMask), 1);
-    ub = ones(sum(mutateMask), 1);
+    lb_sp = zeros(sum(mutateMask), 1);
+    ub_sp = ones(sum(mutateMask), 1);
 
     newSparsities = sparsities;
 
-    newSparsities(mutateMask) = polyMutate(sparsities(mutateMask), lb, ub, distrSMut);
+    newSparsities(mutateMask) = polyMutate(sparsities(mutateMask), lb_sp, ub_sp, distrSMut);
 
     newSparsities = min(max(newSparsities,0),1);
 
@@ -62,7 +62,7 @@ function newPop = sparsePolyMutate(Pop, Problem, Parameter)
     if newSparsities == sparsities
         newPop = Pop;
     else
-        newPop = sm2target(Pop, Problem, newSparsities);
+        newPop = sm2target(Pop, lb, ub, newSparsities);
     end
 
 end
