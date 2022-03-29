@@ -1,4 +1,4 @@
-function Offspring = sbx(Parent, Problem, proC, disC)
+function Offspring = sbx(Parent, lb, ub, proC, disC)
     
     Parent1 = Parent(1:floor(end/2),:);
     Parent2 = Parent(floor(end/2)+1:floor(end/2)*2,:);
@@ -14,8 +14,8 @@ function Offspring = sbx(Parent, Problem, proC, disC)
     Offspring = [(Parent1+Parent2)/2+beta.*(Parent1-Parent2)/2
                  (Parent1+Parent2)/2-beta.*(Parent1-Parent2)/2];
     
-    Lower = repmat(Problem.lower,2*N,1);
-    Upper = repmat(Problem.upper,2*N,1);
+    Lower = repmat(lb,2*N,1);
+    Upper = repmat(ub,2*N,1);
     
     % Put everything back in bounds
     Offspring       = min(max(Offspring,Lower),Upper);
