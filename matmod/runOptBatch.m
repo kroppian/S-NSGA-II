@@ -1,10 +1,9 @@
 function results = runOptBatch(config)
 
     %% Setup
-    globalTimeStart = cputime;
 
     % Path to the install path of plat EMO 
-    [workingDir, name, ext]= fileparts(mfilename('fullpath'));
+    [workingDir, ~, ~]= fileparts(mfilename('fullpath'));
     addpath(genpath(config.platPath));
     addpath(workingDir);
     addpath(config.sNSGAIIPath)
@@ -16,14 +15,6 @@ function results = runOptBatch(config)
         config.Dz = {config.defaultDecVar};
     end
 
-    % Dimension one:   repetition
-    % Dimension two:   # of decision variables
-    % Dimension three: algorithm
-    timeResults = ones(config.repetitions, numel(config.Dz), numel(config.algorithms))*-1;
-    noNonDoms   = ones(config.repetitions, numel(config.Dz), numel(config.algorithms))*-1;
-    final_pops = cell(config.repetitions, numel(config.Dz), numel(config.algorithms));
-
-    HVResults = cell(config.repetitions, numel(config.Dz), numel(config.algorithms));
 
     num_sparsities = numel(config.sparsities);
     num_decVars = size(config.Dz,2);
@@ -122,10 +113,12 @@ function results = runOptBatch(config)
         run_history.s        = ones(generations, 1) * sparsity;
         run_history.HV       = metrics.HV;
         run_history.gen      = (1:generations)';
+        run_history.max_gen  = ones(generations,1) * generations;
         run_history.sps_on   = ones(generations, 1) * sps_on;
         run_history.s_mut_on = ones(generations, 1) * s_mut_on;
         run_history.s_x_on   = ones(generations, 1) * s_x_on;
-
+    
+        
         alg_name = cell(generations, 1);
         [alg_name{:}] = deal(func2str(algorithm));
         run_history.alg = alg_name;

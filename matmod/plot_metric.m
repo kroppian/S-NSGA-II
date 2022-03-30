@@ -1,10 +1,6 @@
 
-% CHANGE ME 2
-% HV = 1
-% run time = 2
-% NNDS = 3
 
-function plot_metric(metric, config, res)
+function plot_metric(metric, decVarName, config, res)
 
     %% Global controls
     LABEL_FONT_SIZE = 16; 
@@ -32,15 +28,13 @@ function plot_metric(metric, config, res)
         comparative_runs = false;
     end
 
-    if comparative_runs
-        hv_ref = 2; 
-    else
-        hv_ref = 4; 
-    end
-    
-    numRepetitions = size(res.HVResults, 1);
-    numDependentVars = size(res.HVResults, 2);
-    numAlgorithms = size(res.HVResults, 3);
+    repetition = 1:max(res.run);
+    decVars = unique(res{:,decVarName});
+    algs = config.algorithms;
+
+    numRepetitions = numel(repetition);
+    numDependentVars = numel(decVars);
+    numAlgorithms = numel(algs);
     
     
     %% Legend logic
@@ -53,9 +47,9 @@ function plot_metric(metric, config, res)
 
     %% legend logic 
     % Add perfect reference lines if needed
-    if metric == 1
+    if metric == "HV"
         legend_entries = {'Perfect HV'};    
-    elseif metric == 3
+    elseif metric == "NDS"
         legend_entries = {'Perfect NDS'};
     else
         legend_entries = {};
@@ -77,68 +71,43 @@ function plot_metric(metric, config, res)
     end
 
 
-    %% Remaining parameters 
-
-    metricLabels = {'HV vs # of decision variables', 'Runtime vs # of decision variables', 'Number of non-dominated solutions vs # of decision variables'};
-    abbrMetricLabels = {'hv', 'runtime', 'NDS'};
-    yLabels = {'HV', 'Runtime log(seconds)', 'NDS'};
-    testProbLabels = {'SMOP1', 'SMOP2', 'SMOP3', 'SMOP4', 'SMOP5', 'SMOP6', 'SMOP7', 'SMOP8'};
-
 
 
     %% Calculate optimal HV
-    if metric == 1
-
+    if metric == "HV"
         ref_front = config.prob('M',2).GetPF();
-
-        optimal_hv = CalHV(ref_front, [hv_ref, hv_ref]);
-
+        optimal_hv = CalHV(ref_front, [1, 1]);
     end
 
     %% Plotting
-    results = {res.HVResults, res.timeResults, res.noNonDoms};
-
-    % results
-    % dim. two: the number of decision variables
-    % dim. one: algorithm
-    template = ones(numDependentVars, numAlgorithms);
-
-    globalMeans     = {template, template};
-    globalUpperInts = {template, template};
-    globalLowerInts = {template, template};
+    globalMeans     = ones(numDependentVars, numAlgorithms);
+    globalUpperInts = ones(numDependentVars, numAlgorithms);
+    globalLowerInts = ones(numDependentVars, numAlgorithms);
 
     %% Calc result summaries (mean, confidence intervals)
-    label = metricLabels{metric};
-    metricResults = results{metric};
 
     % For every algorithm
     for alg = 1:numAlgorithms
-
-        algResults = metricResults(:,:,alg);
 
         % For every number of decision variables
 
         for decVar = 1:numDependentVars
             %% metric processing
 
-            decResults = algResults(:,decVar); % r == 3 && alg == 2
-
-            if metric == 1
-                % Pull the appropriate HV from the record
-                decResults = arrayfun(@(x)(x{1}(hv_ref)), decResults, 'UniformOutput', false);
-                decResults = arrayfun(@(x)(x{1}), decResults);
-            end
+            current_alg = func2str(algs{alg});
+            current_dec_var_value = decVars(decVar);
+            decResults = res{res{:,decVarName} == current_dec_var_value & strcmp(res.alg, current_alg), metric};
 
             % Calculate mean
             decMean = mean(decResults);
 
-            globalMeans{metric}(decVar, alg) = decMean;
+            globalMeans(decVar, alg) = decMean;
 
             % Calculate confidence intervals
             CI = bootci(30, @mean, decResults);
 
-            globalUpperInts{metric}(decVar, alg) = max(CI);
-            globalLowerInts{metric}(decVar, alg) = min(CI);
+            globalUpperInts(decVar, alg) = max(CI);
+            globalLowerInts(decVar, alg) = min(CI);
 
         end
     end
@@ -151,7 +120,7 @@ function plot_metric(metric, config, res)
     y_max = -5000000;
 
     %% Print out perfect results if applicable
-    if metric == 1 % HV 
+    if metric == "HV"
         x = dependentVars;
         y = ones(1, numel(x))*optimal_hv;
         plot(x,y, ':k', 'LineWidth', 4);
@@ -160,7 +129,7 @@ function plot_metric(metric, config, res)
         hold on
 
     end
-    if metric == 3 % NNDS
+    if metric == "NDS"
         x = dependentVars;
         y = ones(1, numel(x))*100;
         plot(x,y, ':k', 'LineWidth', 4);
@@ -176,13 +145,13 @@ function plot_metric(metric, config, res)
 
         color = algorithmColors(alg,:);
 
-        lowerInterval = globalLowerInts{metric}(:,alg);
-        upperInterval = globalUpperInts{metric}(:,alg);
+        lowerInterval = globalLowerInts(:,alg);
+        upperInterval = globalUpperInts(:,alg);
 
         x = [dependentVars, fliplr(dependentVars)];
         y = [lowerInterval; flipud(upperInterval)]';
 
-        if metric == 2 % Run time
+        if metric == "time" % Run time
             y = log(y);
             %x = log(x);
         end
@@ -198,8 +167,8 @@ function plot_metric(metric, config, res)
 
         hold on
 
-        y = globalMeans{metric}(:,alg);
-        if metric == 2 % Run time
+        y = globalMeans(:,alg);
+        if metric == "time" % Run time
             y = log(y);
         end
 
@@ -212,7 +181,7 @@ function plot_metric(metric, config, res)
         end
 
         xlabel(x_label, 'FontSize', LABEL_FONT_SIZE);
-        ylabel(yLabels{metric}, 'FontSize', LABEL_FONT_SIZE);
+        ylabel(metric, 'FontSize', LABEL_FONT_SIZE);
 
         y_min = min(y_min, min(y));
         y_max = max(y_max, max(y));
@@ -234,8 +203,8 @@ function plot_metric(metric, config, res)
 
 
     end
-    
-    legend(legend_entries)
+    title(func2str(config.prob));
+    legend(legend_entries);
     
 end
 

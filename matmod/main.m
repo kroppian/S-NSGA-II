@@ -10,15 +10,18 @@ config_cropoverTest
 res = runOptBatch(config);
 
 
-%% Calc metrics
+%% Post processing
 medSparsities = calcMedianSparsities(res);
 res.medSparsities = medSparsities;
 
-%% Plot
+% Get a last generation cross section of the results 
+res_final = res(res.gen == res.max_gen,:);
+
+%% Quick plot
 % Plot the sparsity over generations
 targetSparsity = config.defaultSparsity;
-sample_s_mut_on  = res(res.run == 2 & res.D == 2500 & res.s == targetSparsity & res.sps_on & res.s_mut_on, :);
-sample_s_mut_off = res(res.run == 2 & res.D == 2500 & res.s == targetSparsity & (~res.sps_on) & (~res.s_mut_on), :);
+sample_s_mut_on  = res(res.run == 2 & res.D == 100 & res.s == targetSparsity & res.sps_on & res.s_mut_on, :);
+sample_s_mut_off = res(res.run == 2 & res.D == 100 & res.s == targetSparsity & (~res.sps_on) & (~res.s_mut_on), :);
 
 subplot(2,1,1);
 plot(sample_s_mut_on.medSparsities); hold on;
@@ -38,6 +41,9 @@ xlabel("Generation");
 ylabel("Median solution HV");
 
 
+%% Full metric plots
+
+plot_metric("HV", "D", config, res_final);
 
 
 

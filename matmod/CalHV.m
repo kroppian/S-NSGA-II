@@ -1,8 +1,13 @@
-function Score = CalHV(PopObj,RefPoint)
-% Calculate the exact hypervolume value of the population
+function score = CalHV(PopObj,optimum)
+% <max>
+% Hypervolume
 
+%------------------------------- Reference --------------------------------
+% E. Zitzler and L. Thiele, Multiobjective evolutionary algorithms: A
+% comparative case study and the strength Pareto approach, IEEE
+% Transactions on Evolutionary Computation, 1999, 3(4): 257-271.
 %------------------------------- Copyright --------------------------------
-% Copyright (c) 2018-2019 BIMK Group. You are free to use the PlatEMO for
+% Copyright (c) 2022 BIMK Group. You are free to use the PlatEMO for
 % research purposes. All publications which use this platform or any code
 % in the platform should acknowledge the use of "PlatEMO" and reference "Ye
 % Tian, Ran Cheng, Xingyi Zhang, and Yaochu Jin, PlatEMO: A MATLAB platform
@@ -10,31 +15,55 @@ function Score = CalHV(PopObj,RefPoint)
 % Computational Intelligence Magazine, 2017, 12(4): 73-87".
 %--------------------------------------------------------------------------
 
-% This function is written by Liangli Zhen
-
-    [N,M] = size(PopObj);
-    PopObj(any(PopObj>repmat(RefPoint,N,1),2),:) = [];
-    if isempty(PopObj)
-        Score = 0;
+    if size(PopObj,2) ~= size(optimum,2)
+        score = nan;
     else
-        pl = sortrows(PopObj);
-        S  = {1,pl};
-        for k = 1 : M-1
-            S_ = {};
-            for i = 1 : size(S,1)
-                Stemp = Slice(cell2mat(S(i,2)),k,RefPoint);
-                for j = 1 : size(Stemp,1)
-                    temp(1) = {cell2mat(Stemp(j,1))*cell2mat(S(i,1))};
-                    temp(2) = Stemp(j,2);
-                    S_      = Add(temp,S_);
+        [N,M]  = size(PopObj);
+        fmin   = min(min(PopObj,[],1),zeros(1,M));
+        fmax   = max(optimum,[],1);
+        PopObj = (PopObj-repmat(fmin,N,1))./repmat((fmax-fmin)*1.1,N,1);
+        PopObj(any(PopObj>1,2),:) = [];
+        RefPoint = ones(1,M);
+        if isempty(PopObj)
+            score = 0;
+        elseif M < 4
+            % Calculate the exact HV value
+            pl = sortrows(PopObj);
+            S  = {1,pl};
+            for k = 1 : M-1
+                S_ = {};
+                for i = 1 : size(S,1)
+                    Stemp = Slice(cell2mat(S(i,2)),k,RefPoint);
+                    for j = 1 : size(Stemp,1)
+                        temp(1) = {cell2mat(Stemp(j,1))*cell2mat(S(i,1))};
+                        temp(2) = Stemp(j,2);
+                        S_      = Add(temp,S_);
+                    end
                 end
+                S = S_;
             end
-            S = S_;
-        end
-        Score = 0;
-        for i = 1 : size(S,1)
-            p     = Head(cell2mat(S(i,2)));
-            Score = Score + cell2mat(S(i,1))*abs(p(M)-RefPoint(M));
+            score = 0;
+            for i = 1 : size(S,1)
+                p     = Head(cell2mat(S(i,2)));
+                score = score + cell2mat(S(i,1))*abs(p(M)-RefPoint(M));
+            end
+        else
+            % Estimate the HV value by Monte Carlo estimation
+            SampleNum = 1e6;
+            MaxValue  = RefPoint;
+            MinValue  = min(PopObj,[],1);
+            Samples   = unifrnd(repmat(MinValue,SampleNum,1),repmat(MaxValue,SampleNum,1));
+            for i = 1 : size(PopObj,1)
+                drawnow();
+                domi = true(size(Samples,1),1);
+                m    = 1;
+                while m <= M && any(domi)
+                    domi = domi & PopObj(i,m) <= Samples(:,m);
+                    m    = m + 1;
+                end
+                Samples(domi,:) = [];
+            end
+            score = prod(MaxValue-MinValue)*(1-size(Samples,1)/SampleNum);
         end
     end
 end
