@@ -1,4 +1,4 @@
-function nop(Algorithm, Problem)
+function output(Algorithm, Problem)
     if Problem.FE >= Problem.maxFE
         
         folder = fullfile('Data',class(Algorithm));
