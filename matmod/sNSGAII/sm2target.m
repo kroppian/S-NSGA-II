@@ -1,6 +1,11 @@
 function newPop = sm2target(Pop, lb, ub, newSparsities)
 
     % Sparse Mutate to a target
+    
+    if numel(Pop) == 0 
+        newPop = Pop;
+        return;
+    end
 
     [~,D] = size(Pop);
 

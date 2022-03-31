@@ -37,7 +37,7 @@ function Offspring = sparseOperatorGA(Parent, Parameter)
             %% Genetic operators for real encoding
 
             if s_x_on 
-                Offspring = cropover(Parent, Problem.lower, Problem.upper, {proC,disC});
+                Offspring = cropover_v1(Parent, Problem.lower, Problem.upper, {proC,disC});
             else
                 % Simulated binary crossover
                 Offspring = sbx(Parent, Problem.lower, Problem.upper, proC, disC);
