@@ -23,8 +23,7 @@ function result = polyMutate(genome, lb, ub, eta)
  
     muted_genome = genome + deltaq .* (ub - lb);
 
-    genome = min(max(genome,lb),ub);
-
+    muted_genome = min(max(muted_genome,lb),ub);
     
     result = muted_genome;
 
