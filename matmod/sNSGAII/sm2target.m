@@ -68,10 +68,10 @@ function newPop = sm2target(Pop, lb, ub, newSparsities)
     %% Make the mutations
     
     % Find the min/max of the genome positions to mutate 
-    [newNzsRows, ~] = find(newNzs);
+    [~, newNzsCols] = find(newNzs);
 
-    newNzsLb = lb(newNzsRows);
-    newNzsUb = ub(newNzsRows);
+    newNzsLb = lb(newNzsCols);
+    newNzsUb = ub(newNzsCols);
 
     Pop(newNzs) = newNzsLb + rand(1,sum(newNzs, 'all')) .* (newNzsUb - newNzsLb);
     Pop(newZs) = zeros(sum(newZs, 'all'), 1);

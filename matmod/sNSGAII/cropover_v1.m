@@ -28,9 +28,9 @@ function newPop = cropover_v1(Parent, lb, ub, Parameter)
 
     %% Step 1: crossover on positions are both non-zero or both zero
     
-    [rows2sbx, ~] = find(matching);
+    [~,genes2sbx] = find(matching);
 
-    sbx_resuls = sbx([Parent1(matching)';Parent2(matching)'], lb(rows2sbx), ub(rows2sbx), proC, disC);
+    sbx_resuls = sbx([Parent1(matching)';Parent2(matching)'], lb(genes2sbx), ub(genes2sbx), proC, disC);
 
     Offspring1(matching) = sbx_resuls(1,:)';
     Offspring2(matching) = sbx_resuls(2,:)';

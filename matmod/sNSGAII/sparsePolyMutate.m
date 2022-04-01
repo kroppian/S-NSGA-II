@@ -29,7 +29,7 @@ function newPop = sparsePolyMutate(Pop, lb, ub, Parameter)
     
     toMutate(nonZeroMask) = toMutateNZ;
     
-    [genomesToMutate, ~] = find(toMutate);
+    [~, genomesToMutate] = find(toMutate);
 
     lb_pm = lb(genomesToMutate)';
     ub_pm = ub(genomesToMutate)';
