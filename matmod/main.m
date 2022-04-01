@@ -2,6 +2,7 @@
 clear
 
 addpath("configs");
+addpath("utilities");
 
 %comparative
 %effective
@@ -21,11 +22,21 @@ res.medSparsities = medSparsities;
 % Get a last generation cross section of the results 
 res_final = res(res.gen == res.max_gen,:);
 
+%% Genome observation
+
+%test_pop_mut_off = res_final{res_final.run == 1 & res_final.D == 100 & res_final.alg == "SparseEA2", 'population'};
+test_pop_mut_on = res_final{res_final.run == 2 & res_final.D == 100 & res_final.s_mut_on, 'population'};
+test_pop_mut_off = res_final{res_final.run == 2 & res_final.D == 100 & (~res_final.s_mut_on), 'population'};
+
+
+test_pop_mut_off = test_pop_mut_off.best.decs;
+test_pop_mut_on = test_pop_mut_on.best.decs;
+
 %% Quick plot
 % Plot the sparsity over generations
 targetSparsity = config.defaultSparsity;
-sample_s_mut_on  = res(res.run == 1 & res.D == 1000 & res.s == targetSparsity & res.s_mut_on, :);
-sample_s_mut_off = res(res.run == 1 & res.D == 1000 & res.s == targetSparsity & (~res.s_mut_on), :);
+sample_s_mut_on  = res(res.run == 1 & res.D == 100 & res.s == targetSparsity & res.s_mut_on, :);k
+sample_s_mut_off = res(res.run == 1 & res.D == 100 & res.s == targetSparsity & (~res.s_mut_on), :);
 
 subplot(2,1,1);
 plot(sample_s_mut_on.medSparsities); hold on;
