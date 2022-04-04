@@ -32,17 +32,26 @@ function results = runOptBatch(config)
         sparsity = scenarios(s, 1);
         decision_vars = scenarios(s, 2);
 
-        algorithm = config.algorithms{scenarios(s, 3)};
-        sps_on    = config.sps_on{scenarios(s, 3)};
-        s_mut_on  = config.s_mutation_on{scenarios(s, 3)};
-        s_x_on    = config.s_x_on{scenarios(s, 3)};
+        algorithm           = config.algorithms{scenarios(s, 3)};
+        sampling_method_raw = config.sampling_method{scenarios(s, 3)};
+        mutation_method     = config.mutation_method{scenarios(s, 3)};
+        crossover_method    = config.crossover_method{scenarios(s, 3)};
+
+        if class(sampling_method_raw) == "cell"
+            sampling_method = sampling_method_raw{1};
+            sampling_lb = sampling_method_raw{2};
+            sampling_ub = sampling_method_raw{3};
+        else
+            sampling_method = sampling_method_raw;
+        end
+        
 
         rep = scenarios(s, 4);
 
         if rep == 1 && func2str(algorithm) == "sNSGAII"
-            fprintf("Running algorithm %s(SPS:%s/s_mut:%s/s_x:%s) with %d decision variables and sparsity %f\n", ...
-                     func2str(algorithm), num2str(sps_on), ...
-                     num2str(s_mut_on), num2str(s_x_on), decision_vars, sparsity);
+            fprintf("Running algorithm %s(%s/%s/%s) with %d decision variables and sparsity %f\n", ...
+                     func2str(algorithm), func2str(sampling_method), ...
+                     func2str(mutation_method), func2str(crossover_method), decision_vars, sparsity);
         elseif rep == 1
             fprintf("Running algorithm %s with %d decision variables and sparsity %f\n", ...
                      func2str(algorithm), decision_vars, sparsity);
@@ -56,7 +65,7 @@ function results = runOptBatch(config)
 
         if func2str(algorithm) == "sNSGAII"
             platemo(                                             ...
-                      'algorithm',  {algorithm, 0.5, 1, sps_on, s_mut_on, s_x_on} , ...
+                      'algorithm',  {algorithm, {sampling_method, sampling_lb, sampling_ub}, mutation_method, crossover_method} , ...
                       'problem'  ,  {config.prob , sparsity}               , ...
                       'N'        ,  50                                   , ...
                       'maxFE'    ,  20000                                , ...
@@ -114,11 +123,11 @@ function results = runOptBatch(config)
         run_history.HV       = metrics.HV;
         run_history.gen      = (1:generations)';
         run_history.max_gen  = ones(generations,1) * generations;
-        run_history.sps_on   = ones(generations, 1) * sps_on;
-        run_history.s_mut_on = ones(generations, 1) * s_mut_on;
-        run_history.s_x_on   = ones(generations, 1) * s_x_on;
-    
-        
+        run_history.sps_on   = ones(generations, 1) * (func2str(sampling_method) ~= "nop");
+        run_history.s_mut_on = ones(generations, 1) * (func2str(mutation_method) ~= "nop");
+        run_history.s_x_on   = ones(generations, 1) * (func2str(crossover_method) ~= "nop");
+
+       
         alg_name = cell(generations, 1);
         [alg_name{:}] = deal(func2str(algorithm));
         run_history.alg = alg_name;

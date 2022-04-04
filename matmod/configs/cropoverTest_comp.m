@@ -16,17 +16,17 @@ end
 config = run_config(platPath,                                                 ...    %   platPath          
                     sNSGAIIPath,                                              ...    %   sNSGAIIPath       
                     4,                                                        ...    %   repetitions        ( TODO revert)
-                    {@sNSGAII, @SparseEA2},                                    ...    %   algorithms          
-                    {true, false},                                            ...    %   sps_on 
-                    {true, false},                                            ...    %   s_mutation_on         
-                    {true, false},                                            ...    %   s_x_on            
+                    {@sNSGAII, @SparseEA2},                                   ...    %   algorithms          
+                    {{@stripedSparseSampler, 0.5, 1}, @nop},                  ...    %   sampling_method
+                    {@sparsePolyMutate, @nop},                                ...    %   mutation_method      
+                    {@cropover_v1, @nop},                                     ...    %   crossover_method   
                     ["With works", "Without works"],                          ...    %   labels         
                     "Mutation",                                               ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
                     @SMOP1,                                                   ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
-                    1000,                                                     ...    %   defaultDecVar     
+                    100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
                     [100, 500, 1000, 2500],                                   ...    %   Dz                (TODO revert)             
                     linspace(0.05, 0.45,2),                                   ...    %   sparsities        (TODO revert)

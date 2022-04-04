@@ -9,9 +9,9 @@ function Offspring = sparseOperatorGA(Parent, Parameter)
 
     %% Parameter setting
     if nargin > 1
-        [proC,disC,proM,disM,proSM,disSM,s_mut_on,s_x_on] = deal(Parameter{:});
+        [proC,disC,proM,disM,proSM,disSM,mutation_method,crossover_method] = deal(Parameter{:});
     else
-        [proC,disC,proM,disM,proSM,disSM,s_mut_on,s_x_on] = deal(1,20,1,20,true,true);
+        [proC,disC,proM,disM,proSM,disSM,mutation_method,crossover_method] = deal(1,20,1,20,true,true);
     end
     if isa(Parent(1),'SOLUTION')
         calObj = true;
@@ -34,33 +34,10 @@ function Offspring = sparseOperatorGA(Parent, Parameter)
         case 'permutation'
             error('Permutation encoding not supported.');
         otherwise
-            %% Genetic operators for real encoding
 
-            if s_x_on 
-                Offspring = cropover_v1(Parent, Problem.lower, Problem.upper, {proC,disC});
-            else
-                % Simulated binary crossover
-                Offspring = sbx(Parent, Problem.lower, Problem.upper, proC, disC);
-            end
+            Offspring = crossover_method(Parent, Problem.lower, Problem.upper, {proC,disC});
 
-            if s_mut_on
-                Offspring = sparsePolyMutate(Offspring, Problem.lower, Problem.upper, {proM,disM, proSM,disSM});
-            else
-                
-                Lower = repmat(Problem.lower,N,1);
-                Upper = repmat(Problem.upper,N,1);
-                Site  = rand(N,D) < proM/D;
-                mu    = rand(N,D);
-                temp  = Site & mu<=0.5;
-                Offspring       = min(max(Offspring,Lower),Upper);
-                Offspring(temp) = Offspring(temp)+(Upper(temp)-Lower(temp)).*((2.*mu(temp)+(1-2.*mu(temp)).*...
-                                  (1-(Offspring(temp)-Lower(temp))./(Upper(temp)-Lower(temp))).^(disM+1)).^(1/(disM+1))-1);
-                temp = Site & mu>0.5; 
-                Offspring(temp) = Offspring(temp)+(Upper(temp)-Lower(temp)).*(1-(2.*(1-mu(temp))+2.*(mu(temp)-0.5).*...
-                                  (1-(Upper(temp)-Offspring(temp))./(Upper(temp)-Lower(temp))).^(disM+1)).^(1/(disM+1)));
-            end
-
-
+            Offspring = mutation_method(Offspring, Problem.lower, Problem.upper, {proM,disM, proSM,disSM});        
             
     end
     if calObj
