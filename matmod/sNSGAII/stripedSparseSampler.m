@@ -42,7 +42,7 @@ function Population = stripedSparseSampler(prob, sLower, sUpper)
 
 
     %% Sparse sample for the rest of the population 
-    for indv = (stripeCount*10+1):prob.N
+    for indv = (stripeCount*20+1):prob.N
         % generate the number of zeros 
         zeroCount = randi(round([sLower*varCount, sUpper*varCount]));
         zeroIndices = randperm(varCount, zeroCount);
