@@ -50,13 +50,19 @@ function results = runOptBatch(config)
 
         rep = scenarios(s, 4);
 
+        raw_algorithm = func2str(algorithm);
+        if raw_algorithm == "sNSGAII"
+            annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
+        else
+            annotated_alg = raw_algorithm;
+        end
+
         if rep == 1 && func2str(algorithm) == "sNSGAII"
-            fprintf("Running algorithm %s(%s/%s/%s) with %d decision variables and sparsity %f\n", ...
-                     func2str(algorithm), func2str(sampling_method), ...
-                     func2str(mutation_method), func2str(crossover_method), decision_vars, sparsity);
+            fprintf("Running algorithm %s with %d decision variables and sparsity %f\n", ...
+                     annotated_alg, decision_vars, sparsity);
         elseif rep == 1
             fprintf("Running algorithm %s with %d decision variables and sparsity %f\n", ...
-                     func2str(algorithm), decision_vars, sparsity);
+                     annotated_alg, decision_vars, sparsity);
         end
 
     
@@ -130,14 +136,7 @@ function results = runOptBatch(config)
         run_history.s_x_on   = ones(generations, 1) * (func2str(crossover_method) ~= "nop");
         run_history.stripe_s = ones(generations, 1) * (func2str(sampling_method)  == "stripedSparseSampler");
 
-       
         alg_name = cell(generations, 1);
-        raw_algorithm = func2str(algorithm);
-        if raw_algorithm == "sNSGAII"
-            annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
-        else
-            annotated_alg = raw_algorithm;
-        end
         [alg_name{:}] = deal(annotated_alg);
         run_history.alg = alg_name;
 
