@@ -43,6 +43,8 @@ function results = runOptBatch(config)
             sampling_ub = sampling_method_raw{3};
         else
             sampling_method = sampling_method_raw;
+            sampling_lb = 0.5;
+            sampling_ub = 1;
         end
         
 
@@ -123,13 +125,20 @@ function results = runOptBatch(config)
         run_history.HV       = metrics.HV;
         run_history.gen      = (1:generations)';
         run_history.max_gen  = ones(generations,1) * generations;
-        run_history.sps_on   = ones(generations, 1) * (func2str(sampling_method) ~= "nop");
+        run_history.sps_on   = ones(generations, 1) * (func2str(sampling_method) == "sparseSampler");
         run_history.s_mut_on = ones(generations, 1) * (func2str(mutation_method) ~= "nop");
         run_history.s_x_on   = ones(generations, 1) * (func2str(crossover_method) ~= "nop");
+        run_history.stripe_s = ones(generations, 1) * (func2str(sampling_method)  == "stripedSparseSampler");
 
        
         alg_name = cell(generations, 1);
-        [alg_name{:}] = deal(func2str(algorithm));
+        raw_algorithm = func2str(algorithm);
+        if raw_algorithm == "sNSGAII"
+            annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
+        else
+            annotated_alg = raw_algorithm;
+        end
+        [alg_name{:}] = deal(annotated_alg);
         run_history.alg = alg_name;
 
         % metrics

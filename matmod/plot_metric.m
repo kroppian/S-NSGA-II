@@ -30,7 +30,7 @@ function plot_metric(metric, decVarName, config, res)
 
     repetition = 1:max(res.run);
     decVars = unique(res{:,decVarName});
-    algs = config.algorithms;
+    algs = unique(res.alg)';
 
     numRepetitions = numel(repetition);
     numDependentVars = numel(decVars);
@@ -57,8 +57,8 @@ function plot_metric(metric, decVarName, config, res)
 
     % Add the various algorithms to the legend 
     for a = 1:numAlgorithms
-        legend_entries{a*2} = config.labels{a};
-        legend_entries{a*2+1} = config.labels(a) + " CI";
+        legend_entries{a*2} = algs{a};
+        legend_entries{a*2+1} = algs(a) + " CI";
 
     end
 
@@ -94,7 +94,7 @@ function plot_metric(metric, decVarName, config, res)
         for decVar = 1:numDependentVars
             %% metric processing
 
-            current_alg = func2str(algs{alg});
+            current_alg = algs{alg};
             current_dec_var_value = decVars(decVar);
             decResults = res{res{:,decVarName} == current_dec_var_value & strcmp(res.alg, current_alg), metric};
 

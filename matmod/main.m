@@ -7,8 +7,8 @@ addpath("utilities");
 %comparative
 %effective
 %mutationTest
-%cropoverTest_effective
-cropoverTest_comp
+cropoverTest_effective
+%cropoverTest_comp
 
 
 %% Run optimization
@@ -22,55 +22,54 @@ res.medSparsities = medSparsities;
 % Get a last generation cross section of the results 
 res_final = res(res.gen == res.max_gen,:);
 
+run = 3;
+
 %% Genome observation
 
 %test_pop_mut_off = res_final{res_final.run == 1 & res_final.D == 100 & res_final.alg == "SparseEA2", 'population'};
-test_pop_mut_on = res_final{res_final.run == 2 & res_final.D == 100 & res_final.s_mut_on, 'population'};
-test_pop_mut_off = res_final{res_final.run == 2 & res_final.D == 100 & (~res_final.s_mut_on), 'population'};
+test_pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
+test_pop_new        = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
 
-
-test_pop_mut_off = test_pop_mut_off.best.decs;
-test_pop_mut_on = test_pop_mut_on.best.decs;
+test_pop_status_quo = test_pop_status_quo.best.decs;
+test_pop_new        = test_pop_new.best.decs;
 
 %% Quick plot
 % Plot the sparsity over generations
 targetSparsity = config.defaultSparsity;
-sample_s_mut_on  = res(res.run == 1 & res.D == 100 & res.s == targetSparsity & res.s_mut_on, :);k
-sample_s_mut_off = res(res.run == 1 & res.D == 100 & res.s == targetSparsity & (~res.s_mut_on), :);
+sample_status_quo  = res(res.run == run & res.D == 100 & res.s == targetSparsity & (~res.stripe_s), :);
+sample_new         = res(res.run == run & res.D == 100 & res.s == targetSparsity & res.stripe_s, :);
 
 subplot(2,1,1);
-plot(sample_s_mut_on.medSparsities); hold on;
-plot(sample_s_mut_off.medSparsities); hold on;
-plot(ones(length(sample_s_mut_on.medSparsities),1)*(1 -targetSparsity)); hold on;
-legend("sparse mutation on", "sparse mutation off", "Optimal sparsity");
+plot(sample_status_quo.medSparsities); hold on;
+plot(sample_new.medSparsities); hold on;
+plot(ones(length(sample_status_quo.medSparsities),1)*(1 -targetSparsity)); hold on;
+legend("Status quo", "New method", "Optimal sparsity");
 xlabel("Generation");
 ylabel("Median population sparsity");
 title(func2str(config.prob));
 
 subplot(2,1,2);
-plot(sample_s_mut_on.HV);
+plot(sample_status_quo.HV);
 hold on;
-plot(sample_s_mut_off.HV);
-legend("sparse mutation on", "sparse mutation off");
+plot(sample_new.HV);
+legend("Status quo", "New method");
 xlabel("Generation");
 ylabel("Median solution HV");
 
 %% Checking out individual fronts
-run = 3;
-s_mut_on_pop = res_final{res_final.run == run & res_final.D == 100 & res_final.alg == "sNSGAII", 'population'};
-s_mut_off_pop = res_final{res_final.run == run & res_final.D == 100 & res_final.alg == "SparseEA2", 'population'};
+pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
+pop_new = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
 
-s_mut_on_pop = s_mut_on_pop.best.objs;
-s_mut_off_pop = s_mut_off_pop.best.objs; 
+pop_status_quo = pop_status_quo.best.objs; 
+pop_new = pop_new.best.objs;
 
 figure
-scatter(s_mut_on_pop(:,1), s_mut_on_pop(:,2));
+scatter(pop_new(:,1), pop_new(:,2));
 hold on;
-scatter(s_mut_off_pop(:,1), s_mut_off_pop(:,2));
-
+scatter(pop_status_quo(:,1), pop_status_quo(:,2));
+legend("New method", "Status quo");
 
 %% Full metric plots
-
 plot_metric("HV", "D", config, res_final);
 
 

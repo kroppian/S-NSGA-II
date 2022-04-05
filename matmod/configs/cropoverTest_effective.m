@@ -1,6 +1,6 @@
 max_ref = 7; 
 
-comp = 'b';
+comp = 'c';
 
 if comp == 'a'
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
@@ -17,18 +17,19 @@ config = run_config(platPath,                                                 ..
                     sNSGAIIPath,                                              ...    %   sNSGAIIPath       
                     4,                                                        ...    %   repetitions        ( TODO revert)
                     {@sNSGAII, @sNSGAII},                                     ...    %   algorithms          
-                    {true, true},                                             ...    %   sps_on 
-                    {true, false},                                            ...    %   s_mutation_on         
-                    {true, false},                                            ...    %   s_x_on            
-                    ["With works", "Without works"],                          ...    %   labels         
+                    { {@stripedSparseSampler, 0.5, 1},                        ...    %   pop sampling 
+                      {@sparseSampler, 0.5, 1}},  ...  
+                    {@sparsePolyMutate, @sparsePolyMutate},                   ...    %   mutation_method      
+                    {@cropover_v1, @cropover_v1},                             ...    %   crossover_method            
+                    ["With mutation", "Without mutation"],                    ...    %   labels         
                     "Mutation",                                               ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
                     @SMOP1,                                                   ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
-                    1000,                                                     ...    %   defaultDecVar     
+                    100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
-                    [100, 500, 1000, 2500],                                   ...    %   Dz                (TODO revert)             
+                    [100, 500],                                               ...    %   Dz                (TODO revert)             
                     linspace(0.05, 0.45,2),                                   ...    %   sparsities        (TODO revert)
                     "compDecVar")       ;                                            %   runType           
 
