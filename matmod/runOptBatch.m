@@ -21,7 +21,21 @@ function results = runOptBatch(config)
     num_algs = size(config.algorithms,2);
     num_reps = config.repetitions;
  
-    table_collection = cell(num_sparsities*num_decVars*num_algs*num_reps);
+    population_collection = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    evaluation_collection = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    run_collections       = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    D_collections         = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    s_collections         = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    HV_collections        = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    gen_collections       = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    max_gen_collections   = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    sps_on_collections    = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    s_mut_on_collections  = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    s_x_on_collections    = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    stripe_s_collections  = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    alg_collection        = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+    time_collection       = cell(num_sparsities*num_decVars*num_algs*num_reps,1);
+
 
     scenarios = cartesian(config.sparsities, config.Dz, 1:num_algs, 1:num_reps);
     %% Main 
@@ -117,48 +131,57 @@ function results = runOptBatch(config)
         raw_run_history = load(output_path, 'result');
         metrics = load(output_path, 'metric');
         metrics = metrics.metric;
-        
-        % massage the data into a nice table
-        run_history = cell2table(raw_run_history.result, ...
-            'VariableNames',{'evaluations', 'population'});
-        
-        generations = size(run_history,1);
+
+        evaluation_collection{s} = cell2mat(raw_run_history.result(:,1));
+        population_collection{s} = raw_run_history.result(:,2);
+
+        generations = size(raw_run_history.result,1);
+
 
         % configuration
-        run_history.run      = ones(generations, 1) * rep;
-        run_history.D        = ones(generations, 1) * decision_vars;
-        run_history.s        = ones(generations, 1) * sparsity;
-        run_history.HV       = metrics.HV;
-        run_history.gen      = (1:generations)';
-        run_history.max_gen  = ones(generations,1) * generations;
-        run_history.sps_on   = ones(generations, 1) * (func2str(sampling_method) == "sparseSampler");
-        run_history.s_mut_on = ones(generations, 1) * (func2str(mutation_method) ~= "nop");
-        run_history.s_x_on   = ones(generations, 1) * (func2str(crossover_method) ~= "nop");
-        run_history.stripe_s = ones(generations, 1) * (func2str(sampling_method)  == "stripedSparseSampler");
+        run_collections{s}      = ones(generations, 1) * rep;
+        D_collections{s}        = ones(generations, 1) * decision_vars;
+        s_collections{s}        = ones(generations, 1) * sparsity;
+        HV_collections{s}       = metrics.HV;
+        gen_collections{s}      = (1:generations)';
+        max_gen_collections{s}  = ones(generations,1) * generations;
+        sps_on_collections{s}   = ones(generations, 1) * (func2str(sampling_method) == "sparseSampler");
+        s_mut_on_collections{s} = ones(generations, 1) * (func2str(mutation_method) ~= "nop");
+        s_x_on_collections{s}   = ones(generations, 1) * (func2str(crossover_method) ~= "nop");
+        stripe_s_collections{s} = ones(generations, 1) * (func2str(sampling_method)  == "stripedSparseSampler");
 
         alg_name = cell(generations, 1);
         [alg_name{:}] = deal(annotated_alg);
-        run_history.alg = alg_name;
+        alg_collection{s} = alg_name;
 
         % metrics
-        run_history.time = ones(generations, 1) * metrics.runtime;
-
-        % Save it for compilation later
-        table_collection{s} = run_history;
-        
+        time_collection{s} = ones(generations, 1) * metrics.runtime;
         
         cd(workingDir);
 
     end
     
-    result_table = table_collection{1};
-    fprintf("Compiling tables: [")
-    for idx = 2:size(scenarios,1)
-        fprintf(".");
-        result_table = [result_table; table_collection{idx}];
-    end
-    fprintf("] done.\n");
+    evaluation_col = vertcat(evaluation_collection{:});
+    population_col = vertcat(population_collection{:});
+    run_col        = vertcat(run_collections{:});
+    D_col          = vertcat(D_collections{:});
+    s_col          = vertcat(s_collections{:});
+    HV_col         = vertcat(HV_collections{:});
+    gen_col        = vertcat(gen_collections{:});
+    max_gen_col    = vertcat(max_gen_collections{:});
+    sps_on_col     = vertcat(sps_on_collections{:});
+    s_mut_on_col   = vertcat(s_mut_on_collections{:});
+    s_x_on_col     = vertcat(s_x_on_collections{:});
+    stripe_s_col   = vertcat(stripe_s_collections{:});
+    alg_col        = vertcat(alg_collection{:});
+    time_col       = vertcat(time_collection{:});
 
+    result_table = table(evaluation_col, population_col, run_col, ...
+          D_col, s_col, HV_col, gen_col, max_gen_col, sps_on_col, ...
+          s_mut_on_col, s_x_on_col, stripe_s_col, alg_col, time_col, ...
+          'VariableNames',{'evaluations', 'population', 'run', 'D', ...
+          's', 'HV', 'gen', 'max_gen', 'sps_on', 's_mut_on', 's_x_on', ...
+          'stripe_s', 'alg', 'time'});
 
     results = result_table;
     

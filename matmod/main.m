@@ -7,8 +7,8 @@ addpath("utilities");
 %comparative
 %effective
 %mutationTest
-cropoverTest_effective
-%cropoverTest_comp
+%cropoverTest_effective
+cropoverTest_comp
 
 
 %% Run optimization
@@ -30,8 +30,8 @@ run = 3;
 test_pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
 test_pop_new        = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
 
-test_pop_status_quo = test_pop_status_quo.best.decs;
-test_pop_new        = test_pop_new.best.decs;
+test_pop_status_quo = test_pop_status_quo{1}.best.decs;
+test_pop_new        = test_pop_new{1}.best.decs;
 
 %% Quick plot
 % Plot the sparsity over generations
@@ -60,8 +60,8 @@ ylabel("Median solution HV");
 pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
 pop_new = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
 
-pop_status_quo = pop_status_quo.best.objs; 
-pop_new = pop_new.best.objs;
+pop_status_quo = pop_status_quo{1}.best.objs; 
+pop_new = pop_new{1}.best.objs;
 
 figure
 scatter(pop_new(:,1), pop_new(:,2));
@@ -70,7 +70,7 @@ scatter(pop_status_quo(:,1), pop_status_quo(:,2));
 legend("New method", "Status quo");
 
 %% Full metric plots
-plot_metric("HV", "D", config, res_final);
+plot_metric("HV",   "D", config, res_final);
 
 
 
