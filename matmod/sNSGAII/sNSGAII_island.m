@@ -1,4 +1,4 @@
-classdef sNSGAII-islands < ALGORITHM
+classdef sNSGAII_island < ALGORITHM
 % <multi> <real/binary/permutation> <constrained/none>
 % Nondominated sorting genetic algorithm II
 
@@ -75,7 +75,6 @@ classdef sNSGAII-islands < ALGORITHM
             
             %% Final Optimization
             while Algorithm.NotTerminated(Population)
-
                 MatingPool = TournamentSelection(2,Problem.N,FrontNo,-CrowdDis);
 
                 Offspring  = sparseOperatorGA(Population(MatingPool), ...
