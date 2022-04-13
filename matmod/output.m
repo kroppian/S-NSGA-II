@@ -24,10 +24,15 @@ function output(Algorithm, Problem)
         gens_recorded = size(result,1);
 
         metric.HV = ones(gens_recorded,1)*-99;
-        %metric.nds = 
+        metric.nds = ones(gens_recorded,1)*-99;
 
         for p = 1:gens_recorded
             metric.HV(p) = HV(result{p,2}, Problem.optimum);
+        end
+
+        for p = 1:gens_recorded
+            pop = result{p,2};
+            metric.nds(p) = size(pop.best,  2);
         end
 
         save([file,'.mat'],'result','metric');
