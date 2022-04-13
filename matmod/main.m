@@ -10,13 +10,20 @@ addpath("utilities");
 %cropoverTest_effective
 cropoverTest_comp
 
+if config.saveData
+    file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '.mat');
+    fullSavePath = strcat(config.savePath, file_name);
+    if ~exist(config.savePath, 'dir')
+        error("Output path does not exist.");
+    end
+end
+
 
 %% Run optimization
 res = runOptBatch(config);
 
 if config.saveData
-    file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '.mat');
-    save(strcat(config.savePath, file_name), 'res');
+    save(fullSavePath, 'res');
 end
 
 %% Post processing
