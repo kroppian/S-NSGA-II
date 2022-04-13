@@ -21,13 +21,15 @@ classdef run_config
         Dz                 
         sparsities         
         runType            
+        saveData
+        savePath
     end
     
     methods
         function obj = run_config(platPath, sNSGAIIPath, repetitions, ...
                 algorithms, sampling_method, mutation_method, crossover_method, labels, run_label, max_ref, ...
                 refPoints, prob, indep_var_dec_vars, defaultDecVar, ...
-                defaultSparsity, Dz, sparsities, runType)
+                defaultSparsity, Dz, sparsities, runType, saveData, savePath)
             
             %RESULT Construct an instance of this class
             %   Detailed explanation goes here
@@ -49,6 +51,8 @@ classdef run_config
             obj.Dz                 = Dz;
             obj.sparsities         = sparsities;
             obj.runType            = runType;
+            obj.saveData           = saveData;
+            obj.savePath           = savePath;
             
             addpath(genpath(obj.platPath));
 

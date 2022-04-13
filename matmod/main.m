@@ -14,6 +14,10 @@ cropoverTest_comp
 %% Run optimization
 res = runOptBatch(config);
 
+if config.saveData
+    file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '.mat');
+    save(strcat(config.savePath, file_name), 'res');
+end
 
 %% Post processing
 medSparsities = calcMedianSparsities(res);

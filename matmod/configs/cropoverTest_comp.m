@@ -15,22 +15,25 @@ end
 
 config = run_config(platPath,                                                 ...    %   platPath          
                     sNSGAIIPath,                                              ...    %   sNSGAIIPath       
-                    4,                                                        ...    %   repetitions        ( TODO revert)
-                    {@sNSGAII, @SparseEA2},                                   ...    %   algorithms          
-                    {{@stripedSparseSampler, 0.5, 1}, @nop},                  ...    %   sampling_method
-                    {@sparsePolyMutate, @nop},                                ...    %   mutation_method      
-                    {@cropover_v1, @nop},                                     ...    %   crossover_method   
-                    ["With works", "Without works"],                          ...    %   labels         
-                    "Mutation",                                               ...    %   run_label         
+                    30,                                                       ...    %   repetitions    
+                    {@sNSGAII       , @SparseEA, @SparseEA2},                 ...    %   algorithms          
+                    {{@stripedSparseSampler, 0.5, 1}, @nop, @nop},            ...    %   sampling_method
+                    {@sparsePolyMutate, @nop, @nop},                          ...    %   mutation_method      
+                    {@cropover_v1, @nop, @nop},                               ...    %   crossover_method   
+                    ["sNSGA-II", "Without works"],                            ...    %   labels         
+                    "sNSGAIIComparative",                                  ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
                     @SMOP1,                                                   ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
                     100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
-                    [100, 500, 1000, 2500],                                   ...    %   Dz                (TODO revert)             
+                    [100, 500, 1000, 2500, 5000, 7500],                       ...    %   Dz                          
                     linspace(0.05, 0.45,2),                                   ...    %   sparsities        (TODO revert)
-                    "compDecVar")       ;                                            %   runType           
+                    "compDecVar",                                             ...    %   runType           
+                    true,                                                     ...    %   saveData
+                    "C:\Users\Ian Kropp\Downloads\"                           ...    %   savePath
+                    ); 
 
 
 
