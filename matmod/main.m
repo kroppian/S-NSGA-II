@@ -22,9 +22,6 @@ end
 %% Run optimization
 res = runOptBatch(config);
 
-if config.saveData
-    save(fullSavePath, 'res');
-end
 
 %% Post processing
 medSparsities = calcMedianSparsities(res);
@@ -32,6 +29,10 @@ res.medSparsities = medSparsities;
 
 % Get a last generation cross section of the results 
 res_final = res(res.gen == res.max_gen,:);
+
+if config.saveData
+    save(fullSavePath, 'res_final');
+end
 
 run = 3;
 
