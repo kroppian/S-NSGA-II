@@ -1,6 +1,6 @@
 max_ref = 7; 
 
-comp = 'b';
+comp = 'd';
 
 if comp == 'a'
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
@@ -11,6 +11,9 @@ elseif comp == 'b'
 elseif comp == 'c'
     platPath = '/Users/iankropp/Projects/PlatEMO-3.4/PlatEMO';
     sNSGAIIPath = '/Users/iankropp/Projects/cropover/matmod/sNSGAII';
+elseif comp == 'd'
+    platPath = '/home/ian/Projects/PlatEMO-3.4/PlatEMO';
+    sNSGAIIPath = '/home/ian/Projects/cropover/matmod/sNSGAII';
 end
 
 config = run_config(platPath,                                                 ...    %   platPath          
@@ -21,10 +24,10 @@ config = run_config(platPath,                                                 ..
                     {@sparsePolyMutate, @nop, @nop},                          ...    %   mutation_method      
                     {@cropover_v1, @nop, @nop},                               ...    %   crossover_method   
                     ["sNSGA-II", "Without works"],                            ...    %   labels         
-                    "sNSGAIIComparative",                                  ...    %   run_label         
+                    "sNSGAIIComparative",                                     ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
-                    @SMOP1,                                                   ...    %   prob              
+                    @SMOP2,                                                   ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
                     100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
@@ -32,7 +35,7 @@ config = run_config(platPath,                                                 ..
                     linspace(0.05, 0.45,2),                                   ...    %   sparsities        (TODO revert)
                     "compDecVar",                                             ...    %   runType           
                     true,                                                     ...    %   saveData
-                    "C:\Users\Ian Kropp\Downloads\"                           ...    %   savePath
+                    "/mnt/nas/kroppian/sNSGAIIRuns/"                          ...    %   savePath
                     ); 
 
 
