@@ -7,13 +7,21 @@ print_latex_table = false;
 print_pval_latex_table = true;
 
 % Analysis metrics
-metrics = {'hv', 'runTimes', 'numNonDom'};
+metrics = {'HV', 'time', 'nds'};
+
 
 
 %% Uncomment for comparative decision variable runs
-load('/Volumes/data/Gilgamesh/kroppian/spsRuns/2021-10-04/comparative_decVar_resultsTable.mat')
-baseMethods = {'SparseEA'};
-proposedMethod = 'NSGAII-SPS';
+output_files = { ...
+    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP1.mat', ...
+    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP2.mat', ...
+    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP3.mat', ...
+    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP4.mat'};
+
+testProblemsUsed = {'SMOP1', 'SMOP2', 'SMOP3', 'SMOP4'};
+
+baseMethods = {'SparseEA', 'SparseEA2'};
+proposedMethod = 'sNSGAII-stripedSparseSampler-sparsePolyMutate-cropover_v1';
 include_dep_var = true;
 include_test_prob = true;
 include_hv = true;
@@ -21,6 +29,35 @@ include_runTime = true;
 include_numNonDom = true;
 include_backslash = true;
 usesDecVar = true;
+cropoverTest_comp;
+
+% compile into a single table
+
+% load first table to start things off
+disp('Loading tables...');
+
+load(output_files{1});
+resultsTable = res_final;
+
+test_prob = cell(size(res_final,1), 1);
+[test_prob{:}] = deal(testProblemsUsed{1});
+resultsTable.testProbs = test_prob;
+
+% concatenate the rest of the files
+for t = 2:numel(output_files)
+    load(output_files{t});
+
+    % add test problem
+    test_prob = cell(size(res_final,1), 1);
+    [test_prob{:}] = deal(testProblemsUsed{t});
+    res_final.testProbs = test_prob;
+
+    % concatenate on master list
+    resultsTable = [resultsTable; res_final];
+
+end
+disp('Done.');
+
 % end -- comparative decision variable runs
 
 %% Uncomment for effective decision variable runs
@@ -52,13 +89,11 @@ usesDecVar = true;
 
 %% Result set up
 % Choose the HV you want to use for the analysis
-resultsTable.('hv') = resultsTable.('hv2');
-
 
 numbaseMeths = numel(baseMethods);
 numTestProbs = numel(testProblemsUsed);
 if usesDecVar
-    numDependentVar  = numel(decVarsUsed);
+    numDependentVar  = numel(config.Dz);
 else
     numDependentVar = numel(sparsitiesUsed);
 end
@@ -75,29 +110,29 @@ end
 
 testProb = cell(numRows, 1);
 baseMethod = cell(numRows, 1);
-median_hv_base = ones(numRows, 1)*-1;
-median_hv_prop = ones(numRows, 1)*-1;
-sig_hv = ones(numRows, 1)*-1;
-pval_hv = ones(numRows, 1)*-1;
-median_runTimes_base = ones(numRows, 1)*-1;
-median_runTimes_prop = ones(numRows, 1)*-1;
-sig_runTimes = ones(numRows, 1)*-1;
-pval_runTimes = ones(numRows, 1)*-1;
-median_numNonDom_base = ones(numRows, 1)*-1;
-median_numNonDom_prop = ones(numRows, 1)*-1;
-sig_numNonDom = ones(numRows, 1);
-pval_runTimes = ones(numRows, 1);
+median_HV_base = ones(numRows, 1)*-1;
+median_HV_prop = ones(numRows, 1)*-1;
+sig_HV = ones(numRows, 1)*-1;
+pval_HV = ones(numRows, 1)*-1;
+median_time_base = ones(numRows, 1)*-1;
+median_time_prop = ones(numRows, 1)*-1;
+sig_time = ones(numRows, 1)*-1;
+pval_time = ones(numRows, 1)*-1;
+median_nds_base = ones(numRows, 1)*-1;
+median_nds_prop = ones(numRows, 1)*-1;
+sig_nds = ones(numRows, 1);
+pval_time = ones(numRows, 1);
 
 if usesDecVar
     sigTable = table(numDecVars, baseMethod, testProb,  ... 
-        median_hv_prop, median_hv_base, sig_hv, pval_hv, ...
-        median_runTimes_prop, median_runTimes_base, sig_runTimes, pval_runTimes, ...
-        median_numNonDom_prop, median_numNonDom_base, sig_numNonDom, pval_runTimes);
+        median_HV_prop, median_HV_base, sig_HV, pval_HV, ...
+        median_time_prop, median_time_base, sig_time, pval_time, ...
+        median_nds_prop, median_nds_base, sig_nds, pval_time);
 else
     sigTable = table(sparsities, baseMethod, testProb,  ... 
-        median_hv_prop, median_hv_base, sig_hv, pval_hv, ...
-        median_runTimes_prop, median_runTimes_base, sig_runTimes, pval_runTimes, ...
-        median_numNonDom_prop, median_numNonDom_base, sig_numNonDom, pval_runTimes);    
+        median_HV_prop, median_HV_base, sig_HV, pval_HV, ...
+        median_time_prop, median_time_base, sig_time, pval_time, ...
+        median_nds_prop, median_nds_base, sig_nds, pval_time);    
 end
     
     
@@ -127,9 +162,9 @@ for m_metric = 1:numel(metrics)
                 currentTestProb = testProblemsUsed{test_prob_i};
                 
                 if usesDecVar
-                    current_dep_var = decVarsUsed(d);
+                    current_dep_var = config.Dz(d);
                     sigTable.numDecVars(row) = current_dep_var;
-                    dep_var_mask = resultsTable.numDecVars == current_dep_var;
+                    dep_var_mask = resultsTable.D == current_dep_var;
                 else
                     current_dep_var = sparsitiesUsed(d);
                     sigTable.sparsities(row) = current_dep_var;
@@ -144,13 +179,13 @@ for m_metric = 1:numel(metrics)
                 %% Perform significance testing
 
                 % Retrieve the data for the proposed method
-                method_mask = strcmp(resultsTable.algorithm, proposedMethod);
+                method_mask = strcmp(resultsTable.alg, proposedMethod);
                 mask = method_mask & test_prob_mask & dep_var_mask;
                 propMethRaw = resultsTable.(metric);
                 propMethRaw = propMethRaw(mask,:);
 
                 % Retrieve the data for the base method 
-                method_mask = strcmp(resultsTable.algorithm, currentBaseMethod);
+                method_mask = strcmp(resultsTable.alg, currentBaseMethod);
                 mask = method_mask & test_prob_mask & dep_var_mask;
                 baseMethRaw = resultsTable.(metric);
                 baseMethRaw = baseMethRaw(mask,:);
@@ -236,16 +271,16 @@ if print_latex_table
         
         % HV      
         if include_hv 
-            fprintf("%.2f(%.2f)%s & ", round(sigTable(row,:).median_hv_prop,  2), ...
-                    round(sigTable(row,:).median_hv_base, 2), ...
-                    sig_number_2_char(sigTable(row,:).sig_hv));
+            fprintf("%.2f(%.2f)%s & ", round(sigTable(row,:).median_HV_prop,  2), ...
+                    round(sigTable(row,:).median_HV_base, 2), ...
+                    sig_number_2_char(sigTable(row,:).sig_HV));
         end
         
         % Run times
-        if include_runTime
-            fprintf("%.2f(%.2f)%s & ", round(sigTable(row,:).median_runTimes_prop, 2), ...
-                       round(sigTable(row,:).median_runTimes_base, 2), ...
-                       sig_number_2_char_opp(sigTable(row,:).sig_runTimes));
+        if include_runTime 
+            fprintf("%.2f(%.2f)%s & ", round(sigTable(row,:).median_time_prop, 2), ...
+                       round(sigTable(row,:).median_time_base, 2), ...
+                       sig_number_2_char_opp(sigTable(row,:).sig_time));
         end
 
         if include_numNonDom
@@ -284,12 +319,12 @@ if print_pval_latex_table
                 
         % HV      
         if include_hv 
-            if sigTable(row,:).pval_hv == 1
-                fprintf("%d%s & ", sigTable(row,:).pval_hv, ...
-                    sig_number_2_char_opp(sigTable(row,:).sig_hv));
+            if sigTable(row,:).pval_HV == 1
+                fprintf("%d%s & ", sigTable(row,:).pval_HV, ...
+                    sig_number_2_char_opp(sigTable(row,:).sig_HV));
             else
-                fprintf("%1.3e%s & ", sigTable(row,:).pval_hv, ...
-                    sig_number_2_char(sigTable(row,:).sig_hv));
+                fprintf("%1.3e%s & ", sigTable(row,:).pval_HV, ...
+                    sig_number_2_char(sigTable(row,:).sig_HV));
             end
 
         end
@@ -297,24 +332,24 @@ if print_pval_latex_table
         
         % Run times
         if include_runTime
-            if sigTable(row,:).pval_runTimes == 1
-                fprintf("%d%s & ", sigTable(row,:).pval_runTimes, ...
-                    sig_number_2_char_opp(sigTable(row,:).sig_runTimes));
+            if sigTable(row,:).pval_time == 1
+                fprintf("%d%s & ", sigTable(row,:).pval_time, ...
+                    sig_number_2_char_opp(sigTable(row,:).sig_time));
             else
-                fprintf("%1.3e%s & ", sigTable(row,:).pval_runTimes, ...
-                    sig_number_2_char_opp(sigTable(row,:).sig_runTimes));
+                fprintf("%1.3e%s & ", sigTable(row,:).pval_time, ...
+                    sig_number_2_char_opp(sigTable(row,:).sig_time));
             end
 
         end
 
 
         if include_numNonDom
-            if sigTable(row,:).pval_numNonDom == 1
-                fprintf("%d%s", sigTable(row,:).pval_numNonDom, ...
-                    sig_number_2_char(sigTable(row,:).sig_numNonDom));                  
+            if sigTable(row,:).pval_nds == 1
+                fprintf("%d%s", sigTable(row,:).pval_nds, ...
+                    sig_number_2_char(sigTable(row,:).sig_nds));                  
             else
-                fprintf("%1.3e%s", sigTable(row,:).pval_numNonDom, ...
-                    sig_number_2_char(sigTable(row,:).sig_numNonDom));                
+                fprintf("%1.3e%s", sigTable(row,:).pval_nds, ...
+                    sig_number_2_char(sigTable(row,:).sig_nds));                
             end
         end
         % Number of non-dominated points 
