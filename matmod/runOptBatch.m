@@ -141,6 +141,7 @@ function results = runOptBatch(config)
         D_collections{s}        = ones(generations, 1) * decision_vars;
         s_collections{s}        = ones(generations, 1) * sparsity;
         HV_collections{s}       = metrics.HV;
+        nds_collections{s}      = metrics.nds;
         gen_collections{s}      = (1:generations)';
         max_gen_collections{s}  = ones(generations,1) * generations;
         sps_on_collections{s}   = ones(generations, 1) * (func2str(sampling_method) == "sparseSampler");
@@ -165,6 +166,7 @@ function results = runOptBatch(config)
     D_col          = vertcat(D_collections{:});
     s_col          = vertcat(s_collections{:});
     HV_col         = vertcat(HV_collections{:});
+    nds_col        = vertcat(nds_collections{:});
     gen_col        = vertcat(gen_collections{:});
     max_gen_col    = vertcat(max_gen_collections{:});
     sps_on_col     = vertcat(sps_on_collections{:});
@@ -175,10 +177,10 @@ function results = runOptBatch(config)
     time_col       = vertcat(time_collection{:});
 
     result_table = table(evaluation_col, population_col, run_col, ...
-          D_col, s_col, HV_col, gen_col, max_gen_col, sps_on_col, ...
+          D_col, s_col, HV_col, nds_col, gen_col, max_gen_col, sps_on_col, ...
           s_mut_on_col, s_x_on_col, stripe_s_col, alg_col, time_col, ...
           'VariableNames',{'evaluations', 'population', 'run', 'D', ...
-          's', 'HV', 'gen', 'max_gen', 'sps_on', 's_mut_on', 's_x_on', ...
+          's', 'HV', 'nds', 'gen', 'max_gen', 'sps_on', 's_mut_on', 's_x_on', ...
           'stripe_s', 'alg', 'time'});
 
     results = result_table;
