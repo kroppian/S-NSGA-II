@@ -3,12 +3,14 @@
 load("testDataSPM.mat");
 addpath("..");
 addpath("../..");
-config_mutationTest;
+addpath("../../configs");
+
+mutationTest;
 
 prob = SMOP1(100, 99, 2, 100);
 
 % Perform mutation
-newParent = sparsePolyMutate(Parent, prob);
+newParent = sparsePolyMutate(Parent, prob.upper, prob.lower);
 
 %% Performance measures
 

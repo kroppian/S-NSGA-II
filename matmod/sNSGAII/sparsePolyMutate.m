@@ -5,7 +5,7 @@ function newPop = sparsePolyMutate(Pop, lb, ub, Parameter)
     % Each column is a different genome
     
     
-    if nargin > 2
+    if nargin > 3
         [probMut,distrMut, probSMut, distrSMut] = deal(Parameter{:});
     else
         [probMut,distrMut, probSMut, distrSMut] = deal(1,20,1,20);
