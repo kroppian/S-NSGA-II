@@ -24,8 +24,10 @@ function Population = stripedSparseSampler(prob, sLower, sUpper)
 
     stripeCount = numel(stripeWidths);
 
+    cycles = prob.N/stripeCount;
+
     stripePos = 1; 
-    for sw = 1:stripeCount*20
+    for sw = 1:stripeCount*cycles
         mask(sw, :) = true;
         currentStripeWidth = mod((sw-1), stripeCount) + 1;
 
@@ -42,7 +44,7 @@ function Population = stripedSparseSampler(prob, sLower, sUpper)
 
 
     %% Sparse sample for the rest of the population 
-    for indv = (stripeCount*20+1):prob.N
+    for indv = (stripeCount*cycles+1):prob.N
         % generate the number of zeros 
         zeroCount = randi(round([sLower*varCount, sUpper*varCount]));
         zeroIndices = randperm(varCount, zeroCount);
@@ -55,7 +57,7 @@ function Population = stripedSparseSampler(prob, sLower, sUpper)
     Population = SOLUTION(sparse_pop);
 
     function stripeWidths = calcStripeWidths(s, D)
-        stripeWidth = floor((1-s)*D);
+        stripeWidth = floor(round((1-s)*D, 5));
     
         stripeCount = floor(D/stripeWidth);
     
