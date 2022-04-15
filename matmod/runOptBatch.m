@@ -65,13 +65,13 @@ function results = runOptBatch(config)
         rep = scenarios(s, 4);
 
         raw_algorithm = func2str(algorithm);
-        if raw_algorithm == "sNSGAII"
+        if raw_algorithm == "sNSGAII" || raw_algorithm == "sNSGAII_island"
             annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
         else
             annotated_alg = raw_algorithm;
         end
 
-        if rep == 1 && func2str(algorithm) == "sNSGAII"
+        if rep == 1 && func2str(algorithm) == "sNSGAII" || raw_algorithm == "sNSGAII_island"
             fprintf("Running algorithm %s with %d decision variables and sparsity %f\n", ...
                      annotated_alg, decision_vars, sparsity);
         elseif rep == 1
@@ -85,7 +85,7 @@ function results = runOptBatch(config)
         addpath(workingDir);
         
 
-        if func2str(algorithm) == "sNSGAII"
+        if func2str(algorithm) == "sNSGAII" || raw_algorithm == "sNSGAII_island"
             platemo(                                             ...
                       'algorithm',  {algorithm, {sampling_method, sampling_lb, sampling_ub}, mutation_method, crossover_method} , ...
                       'problem'  ,  {config.prob , sparsity}             , ...

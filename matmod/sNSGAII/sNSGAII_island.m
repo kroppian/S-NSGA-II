@@ -25,6 +25,11 @@ classdef sNSGAII_island < ALGORITHM
 
             global_pop = [];
 
+            slb = sampling_method{2};
+            sub = sampling_method{3};
+
+            targetSparsities = linspace(slb, sub, island_count);
+
             for i = 1:island_count
 
                 final_pop = {};
@@ -35,7 +40,7 @@ classdef sNSGAII_island < ALGORITHM
                     %% Generate random population
         
                     sampler = sampling_method{1};
-                    Population = sampler(Problem, sampling_method{2}, sampling_method{3});
+                    Population = sampler(Problem, targetSparsities(i), targetSparsities(i));
         
                     [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Problem.N);
 
