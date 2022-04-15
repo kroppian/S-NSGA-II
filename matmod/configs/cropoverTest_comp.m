@@ -1,6 +1,6 @@
 max_ref = 7; 
 
-comp = 'd';
+comp = 'c';
 
 if comp == 'a'
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
@@ -18,23 +18,23 @@ end
 
 config = run_config(platPath,                                                 ...    %   platPath          
                     sNSGAIIPath,                                              ...    %   sNSGAIIPath       
-                    30,                                                       ...    %   repetitions    
-                    {@sNSGAII       , @SparseEA, @SparseEA2},                 ...    %   algorithms          
-                    {{@stripedSparseSampler, 0.5, 1}, @nop, @nop},            ...    %   sampling_method
-                    {@sparsePolyMutate, @nop, @nop},                          ...    %   mutation_method      
-                    {@cropover_v1, @nop, @nop},                               ...    %   crossover_method   
+                    4,                                                        ...    %   repetitions    
+                    {@sNSGAII_island       , @SparseEA2},                     ...    %   algorithms          
+                    {{@stripedSparseSampler, 0.5, 0.99}, @nop},               ...    %   sampling_method
+                    {@sparsePolyMutate,  @nop},                               ...    %   mutation_method      
+                    {@cropover_v1, @nop},                                     ...    %   crossover_method   
                     ["sNSGA-II", "Without works"],                            ...    %   labels         
                     "sNSGAIIComparative",                                     ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
-                    @SMOP2,                                                   ...    %   prob              
+                    @SMOP3,                                                   ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
                     100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
-                    [100, 500, 1000, 2500, 5000, 7500],                       ...    %   Dz                          
+                    [100, 500, 1000 ],                                        ...    %   Dz                          
                     linspace(0.05, 0.45,2),                                   ...    %   sparsities        (TODO revert)
                     "compDecVar",                                             ...    %   runType           
-                    true,                                                     ...    %   saveData
+                    false,                                                    ...    %   saveData
                     "/mnt/nas/kroppian/sNSGAIIRuns/"                          ...    %   savePath
                     ); 
 

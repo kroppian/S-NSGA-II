@@ -23,7 +23,7 @@ classdef sNSGAII_island < ALGORITHM
             [ sampling_method, mutation_method, crossover_method ] = Algorithm.ParameterSet({@sparseSampler, 0.5, 1}, @sparsePolyMutate, @cropover_v1);
             
             %% Set up islands
-            island_count = 4; 
+            island_count = 6; 
 
             global_pop = [];
 
@@ -31,6 +31,11 @@ classdef sNSGAII_island < ALGORITHM
             sub = sampling_method{3};
 
             targetSparsities = linspace(slb, sub, island_count);
+
+            origMaxFE = Problem.maxFE;
+            Problem.maxFE = Problem.maxFE / island_count;
+
+
 
             for i = 1:island_count
 
