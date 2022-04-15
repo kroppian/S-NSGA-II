@@ -32,8 +32,8 @@ classdef sNSGAII_island < ALGORITHM
 
             targetSparsities = linspace(slb, sub, island_count);
 
-            origMaxFE = Problem.maxFE;
-            Problem.maxFE = Problem.maxFE / island_count;
+%             origMaxFE = Problem.maxFE;
+%             Problem.maxFE = Problem.maxFE / island_count;
 
 
 
