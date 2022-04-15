@@ -1,9 +1,11 @@
 
-
+clear;
 
 addpath("..");
 addpath("../..");
 addpath("../../configs");
+addpath("../../utilities");
+
 
 cropoverTest_comp;
 
