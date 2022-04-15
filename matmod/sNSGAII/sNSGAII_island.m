@@ -18,6 +18,8 @@ classdef sNSGAII_island < ALGORITHM
     methods
         function main(Algorithm,Problem)
             
+            tStart = tic;
+            
             [ sampling_method, mutation_method, crossover_method ] = Algorithm.ParameterSet({@sparseSampler, 0.5, 1}, @sparsePolyMutate, @cropover_v1);
             
             %% Set up islands
@@ -89,7 +91,10 @@ classdef sNSGAII_island < ALGORITHM
                 
             end
 
+            obj.metric.runtime = toc(tStart);
+
         end
+        
 
     end
     
