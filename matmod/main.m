@@ -8,7 +8,7 @@ addpath("utilities");
 %effective
 %mutationTest
 %cropoverTest_effective
-cropoverTest_comp
+sNSGA_comparative
 
 if config.saveData
     file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '.mat');
@@ -82,6 +82,8 @@ scatter(pop_status_quo(:,1), pop_status_quo(:,2));
 legend("New method", "Status quo");
 
 %% Full metric plots
+% Example load command: 
+% load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP1.mat')
 plot_metric("HV",   "D", config, res_final);
 
 
