@@ -27,11 +27,11 @@ config = run_config(platPath,                                                 ..
                     "sNSGAIIComparative",                                     ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
-                    @SMOP7,                                                   ...    %   prob              
+                    @SMOP1,                                                   ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
                     100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
-                    [100, 500, 1000, 2500],                                   ...    %   Dz                          
+                    [100, 200, 400, 800, 1600, 3200, 6400],                   ...    %   Dz                          
                     linspace(0.05, 0.45,2),                                   ...    %   sparsities        (TODO revert)
                     "compDecVar",                                             ...    %   runType           
                     true,                                                     ...    %   saveData
