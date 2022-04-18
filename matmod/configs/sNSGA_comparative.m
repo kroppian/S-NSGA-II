@@ -20,10 +20,10 @@ config = run_config(platPath,                                                 ..
                     sNSGAIIPath,                                              ...    %   sNSGAIIPath       
                     30,                                                       ...    %   repetitions    
                     {@sNSGAII_island , @SparseEA, @SparseEA2},                ...    %   algorithms          
-                    {{@stripedSparseSampler, 0.5, 0.99}, @nop, @nop},            ...    %   sampling_method
+                    {{@stripedSparseSampler, 0.5, 0.99}, @nop, @nop},         ...    %   sampling_method
                     {@sparsePolyMutate, @nop, @nop},                          ...    %   mutation_method      
                     {@cropover_v1, @nop, @nop},                               ...    %   crossover_method   
-                    ["sNSGA-II", "Without works"],                            ...    %   labels         
+                    ["sNSGA-II", "SparseEA", "SparseEA2"],                    ...    %   labels         
                     "sNSGAIIComparative",                                     ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
