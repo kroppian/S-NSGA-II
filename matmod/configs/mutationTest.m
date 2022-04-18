@@ -1,6 +1,6 @@
 max_ref = 7; 
 
-comp = 'c';
+comp = 'd';
 
 if comp == 'a'
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
@@ -11,6 +11,9 @@ elseif comp == 'b'
 elseif comp == 'c'
     platPath = '/Users/iankropp/Projects/PlatEMO-3.4/PlatEMO';
     sNSGAIIPath = '/Users/iankropp/Projects/cropover/matmod/sNSGAII';
+  elseif comp == 'd'
+    platPath = '/home/ian/Projects/PlatEMO-3.4/PlatEMO';
+    sNSGAIIPath = '/home/ian/Projects/cropover/matmod/sNSGAII';
 end
 
 config = run_config(platPath,                                                 ...    %   platPath          
