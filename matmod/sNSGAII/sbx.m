@@ -1,5 +1,8 @@
-function Offspring = sbx(Parent, lb, ub, proC, disC)
+function Offspring = sbx(Parent, lb, ub, Parameter)
     
+    [proC,disC] = deal(Parameter{:});
+
+
     Parent1 = Parent(1:floor(end/2),:);
     Parent2 = Parent(floor(end/2)+1:floor(end/2)*2,:);
     [N,D]   = size(Parent1);

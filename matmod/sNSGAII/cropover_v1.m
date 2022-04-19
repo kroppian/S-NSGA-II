@@ -30,7 +30,7 @@ function newPop = cropover_v1(Parent, lb, ub, Parameter)
     
     [~,genes2sbx] = find(matching);
 
-    sbx_resuls = sbx([Parent1(matching)';Parent2(matching)'], lb(genes2sbx), ub(genes2sbx), proC, disC);
+    sbx_resuls = sbx([Parent1(matching)';Parent2(matching)'], lb(genes2sbx), ub(genes2sbx), {proC, disC});
 
     Offspring1(matching) = sbx_resuls(1,:)';
     Offspring2(matching) = sbx_resuls(2,:)';

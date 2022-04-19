@@ -37,7 +37,14 @@ function Offspring = sparseOperatorGA(Parent, Parameter)
 
             Offspring = crossover_method(Parent, Problem.lower, Problem.upper, {proC,disC});
 
-            Offspring = mutation_method(Offspring, Problem.lower, Problem.upper, {proM,disM, proSM,disSM});        
+            if func2str(mutation_method) == "polyMutate"
+                mutation_params = {proM,disM};
+            else
+                mutation_params = {proM,disM, proSM,disSM};
+            end
+            Offspring = mutation_method(Offspring, Problem.lower, Problem.upper, mutation_params);        
+
+
             
     end
     if calObj

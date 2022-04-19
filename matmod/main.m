@@ -7,8 +7,8 @@ addpath("utilities");
 %comparative
 %effective
 %mutationTest
-%cropoverTest_effective
-sNSGA_comparative
+sNSGA_eff;
+%sNSGA_comparative;
 
 if config.saveData
     file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '.mat');
