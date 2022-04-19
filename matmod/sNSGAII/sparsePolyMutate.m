@@ -36,7 +36,7 @@ function newPop = sparsePolyMutate(Pop, lb, ub, Parameter)
 
 
     % mutate values
-    Pop(toMutate) = polyMutate(  Pop(toMutate), ...
+    Pop(toMutate) = polyMutateCore(  Pop(toMutate), ...
                                     lb_pm, ub_pm, distrMut);
         
     %% Sparsity mutations 
@@ -54,7 +54,7 @@ function newPop = sparsePolyMutate(Pop, lb, ub, Parameter)
 
     newSparsities = sparsities;
 
-    newSparsities(mutateMask) = polyMutate(sparsities(mutateMask), lb_sp, ub_sp, distrSMut);
+    newSparsities(mutateMask) = polyMutateCore(sparsities(mutateMask), lb_sp, ub_sp, distrSMut);
 
     newSparsities = min(max(newSparsities,0),1);
 
