@@ -37,6 +37,8 @@ run = 3;
 
 %% Genome observation
 
+
+
 %test_pop_mut_off = res_final{res_final.run == 1 & res_final.D == 100 & res_final.alg == "SparseEA2", 'population'};
 test_pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
 test_pop_new        = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
@@ -46,14 +48,41 @@ test_pop_new        = test_pop_new{1}.best.decs;
 
 %% Quick plot
 % Plot the sparsity over generations
+
+algorithms = unique(res_final.alg); 
+
+%med_sparsities = ones(config.repetitions, numel(algorithms))*-99;
+
+legend_entries = cell(numel(algorithms)+1,1); 
+
+max_gen = -1; 
+
+for a = 1:numel(algorithms)
+    alg = algorithms{a};
+    
+    medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'medSparsities'};
+
+    plot(medSparsity);
+
+    legend_entries{a} = alg; 
+
+    max_gen = max(max_gen, numel(medSparsity));
+
+    hold on;
+end
+
 targetSparsity = config.defaultSparsity;
-sample_status_quo  = res(res.run == run & res.D == 100 & res.s == targetSparsity & (~res.stripe_s), :);
-sample_new         = res(res.run == run & res.D == 100 & res.s == targetSparsity & res.stripe_s, :);
+plot(ones(max_gen,1)*(1 -targetSparsity)); 
+
+legend_entries{numel(algorithms) + 1} = "Target sparsity";
+
+legend(legend_entries);
+
+
 
 subplot(2,1,1);
 plot(sample_status_quo.medSparsities); hold on;
 plot(sample_new.medSparsities); hold on;
-plot(ones(length(sample_status_quo.medSparsities),1)*(1 -targetSparsity)); hold on;
 legend("Status quo", "New method", "Optimal sparsity");
 xlabel("Generation");
 ylabel("Median population sparsity");
