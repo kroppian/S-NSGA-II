@@ -3,6 +3,7 @@ clear
 
 addpath("configs");
 addpath("utilities");
+addpath("plotting");
 
 
 %sNSGA_eff;
@@ -44,56 +45,10 @@ test_pop_new        = res_final{res_final.run == run & res_final.D == 100 & res_
 test_pop_status_quo = test_pop_status_quo{1}.best.decs;
 test_pop_new        = test_pop_new{1}.best.decs;
 
-%% Quick plot
-% Plot the sparsity/HV over generations
+%% Plot the sparsity/HV over generations
 
-%algorithms = unique(res_final.alg); 
+plot_generational_info(res, config, run);
 
-alg_count = numel(unique(res_final.alg));
-legend_entries = cell(alg_count+1 ,1);
-
-max_gen = -1; 
-
-subplot(2,1,1);
-
-% Plot each algorithm sparsity performance 
-for a = 1:alg_count
-    alg = genRunId(config, a);
-    medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'medSparsities'};
-    plot(medSparsity);
-    legend_entries{a} = config.labels{a}; 
-    %legend_entries{a} = cleanLegendEntry(alg); 
-
-    max_gen = max(max_gen, numel(medSparsity));
-    hold on;
-end
-
-% Plot optimal sparsity 
-targetSparsity = config.defaultSparsity;
-plot(ones(max_gen,1)*(1 -targetSparsity)); 
-
-% labeling 
-legend_entries{alg_count + 1} = "Target sparsity";
-legend(legend_entries);
-
-xlabel("Generation");
-ylabel("Median population sparsity");
-title(func2str(config.prob));
-
-% Next, hypervolume 
-subplot(2,1,2);
-
-% Plot each algorithm HV performance 
-for a = 1:alg_count
-    alg = genRunId(config, a);
-    medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'HV'};
-    plot(medSparsity);
-    max_gen = max(max_gen, numel(medSparsity));
-    hold on;
-end
-
-xlabel("Generation");
-ylabel("Population HV");
 
 %% Checking out individual fronts
 pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
