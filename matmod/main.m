@@ -37,8 +37,6 @@ run = 3;
 
 %% Genome observation
 
-
-
 %test_pop_mut_off = res_final{res_final.run == 1 & res_final.D == 100 & res_final.alg == "SparseEA2", 'population'};
 test_pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
 test_pop_new        = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
@@ -47,52 +45,51 @@ test_pop_status_quo = test_pop_status_quo{1}.best.decs;
 test_pop_new        = test_pop_new{1}.best.decs;
 
 %% Quick plot
-% Plot the sparsity over generations
+% Plot the sparsity/HV over generations
 
 algorithms = unique(res_final.alg); 
-
-%med_sparsities = ones(config.repetitions, numel(algorithms))*-99;
 
 legend_entries = cell(numel(algorithms)+1,1); 
 
 max_gen = -1; 
 
+subplot(2,1,1);
+
+% Plot each algorithm sparsity performance 
 for a = 1:numel(algorithms)
     alg = algorithms{a};
-    
     medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'medSparsities'};
-
     plot(medSparsity);
-
     legend_entries{a} = alg; 
-
     max_gen = max(max_gen, numel(medSparsity));
-
     hold on;
 end
 
+% Plot optimal sparsity 
 targetSparsity = config.defaultSparsity;
 plot(ones(max_gen,1)*(1 -targetSparsity)); 
 
+% labeling 
 legend_entries{numel(algorithms) + 1} = "Target sparsity";
-
 legend(legend_entries);
 
-
-
-subplot(2,1,1);
-plot(sample_status_quo.medSparsities); hold on;
-plot(sample_new.medSparsities); hold on;
-legend("Status quo", "New method", "Optimal sparsity");
 xlabel("Generation");
 ylabel("Median population sparsity");
 title(func2str(config.prob));
 
+% Next, hypervolume 
 subplot(2,1,2);
-plot(sample_status_quo.HV);
-hold on;
-plot(sample_new.HV);
-legend("Status quo", "New method");
+
+% Plot each algorithm HV performance 
+for a = 1:numel(algorithms)
+    alg = algorithms{a};
+    medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'HV'};
+    plot(medSparsity);
+    legend_entries{a} = alg; 
+    max_gen = max(max_gen, numel(medSparsity));
+    hold on;
+end
+
 xlabel("Generation");
 ylabel("Median solution HV");
 
