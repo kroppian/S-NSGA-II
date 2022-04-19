@@ -50,6 +50,8 @@ plot_generational_info(res, config, run);
 
 plot_final_pareto(res_final, config, run);
 
+plot_strip_scatter(res_final, config);
+
 % Full metric plots
 % Example load command: 
 % load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP1.mat')
