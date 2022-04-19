@@ -47,20 +47,23 @@ test_pop_new        = test_pop_new{1}.best.decs;
 %% Quick plot
 % Plot the sparsity/HV over generations
 
-algorithms = unique(res_final.alg); 
+%algorithms = unique(res_final.alg); 
 
-legend_entries = cell(numel(algorithms)+1,1); 
+alg_count = numel(unique(res_final.alg));
+legend_entries = cell(alg_count+1 ,1);
 
 max_gen = -1; 
 
 subplot(2,1,1);
 
 % Plot each algorithm sparsity performance 
-for a = 1:numel(algorithms)
-    alg = algorithms{a};
+for a = 1:alg_count
+    alg = genRunId(config, a);
     medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'medSparsities'};
     plot(medSparsity);
-    legend_entries{a} = alg; 
+    legend_entries{a} = config.labels{a}; 
+    %legend_entries{a} = cleanLegendEntry(alg); 
+
     max_gen = max(max_gen, numel(medSparsity));
     hold on;
 end
@@ -70,7 +73,7 @@ targetSparsity = config.defaultSparsity;
 plot(ones(max_gen,1)*(1 -targetSparsity)); 
 
 % labeling 
-legend_entries{numel(algorithms) + 1} = "Target sparsity";
+legend_entries{alg_count + 1} = "Target sparsity";
 legend(legend_entries);
 
 xlabel("Generation");
@@ -81,17 +84,16 @@ title(func2str(config.prob));
 subplot(2,1,2);
 
 % Plot each algorithm HV performance 
-for a = 1:numel(algorithms)
-    alg = algorithms{a};
+for a = 1:alg_count
+    alg = genRunId(config, a);
     medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'HV'};
     plot(medSparsity);
-    legend_entries{a} = alg; 
     max_gen = max(max_gen, numel(medSparsity));
     hold on;
 end
 
 xlabel("Generation");
-ylabel("Median solution HV");
+ylabel("Population HV");
 
 %% Checking out individual fronts
 pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
