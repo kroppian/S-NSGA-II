@@ -4,10 +4,9 @@ clear
 addpath("configs");
 addpath("utilities");
 
-%comparative
-%effective
-%mutationTest
-sNSGA_eff;
+
+%sNSGA_eff;
+sNSGA_eff_500;
 %sNSGA_comparative;
 
 if config.saveData
