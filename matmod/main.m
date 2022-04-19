@@ -7,7 +7,7 @@ addpath("plotting");
 
 
 %sNSGA_eff;
-sNSGA_eff_500;
+sNSGA_eff_400;
 %sNSGA_comparative;
 
 if config.saveData
@@ -45,25 +45,12 @@ test_pop_new        = res_final{res_final.run == run & res_final.D == 100 & res_
 test_pop_status_quo = test_pop_status_quo{1}.best.decs;
 test_pop_new        = test_pop_new{1}.best.decs;
 
-%% Plot the sparsity/HV over generations
-
+%% Plotting
 plot_generational_info(res, config, run);
 
+plot_final_pareto(res_final, config, run);
 
-%% Checking out individual fronts
-pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
-pop_new = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
-
-pop_status_quo = pop_status_quo{1}.best.objs; 
-pop_new = pop_new{1}.best.objs;
-
-figure
-scatter(pop_new(:,1), pop_new(:,2));
-hold on;
-scatter(pop_status_quo(:,1), pop_status_quo(:,2));
-legend("New method", "Status quo");
-
-%% Full metric plots
+% Full metric plots
 % Example load command: 
 % load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP1.mat')
 plot_metric("HV",   "D", config, res_final);
