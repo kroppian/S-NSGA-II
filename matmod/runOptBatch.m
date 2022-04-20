@@ -130,8 +130,7 @@ function results = runOptBatch(config)
                         func2str(algorithm), ...
                         func2str(config.prob), ...
                         2, decision_vars, proc_id));
-    
-    
+
         raw_run_history = load(output_path, 'result');
         metrics = load(output_path, 'metric');
         metrics = metrics.metric;
@@ -161,7 +160,29 @@ function results = runOptBatch(config)
 
         % metrics
         time_collection{s} = ones(generations, 1) * metrics.runtime;
+    
+        % Delete generations if not needed
+        if ~config.saveAllGens
+            evaluation_collection{s} = evaluation_collection{s}(end);
+            population_collection{s} = population_collection{s}(end);
+            run_collections{s}       = run_collections{s}(end);
+            D_collections{s}         = D_collections{s}(end);
+            s_collections{s}         = s_collections{s}(end);
+            HV_collections{s}        = HV_collections{s}(end);
+            nds_collections{s}       = nds_collections{s}(end);
+            gen_collections{s}       = gen_collections{s}(end);
+            max_gen_collections{s}   = max_gen_collections{s}(end);
+            sps_on_collections{s}    = sps_on_collections{s}(end);
+            s_mut_on_collections{s}  = s_mut_on_collections{s}(end);
+            s_x_on_collections{s}    = s_x_on_collections{s}(end);
+            stripe_s_collections{s}  = stripe_s_collections{s}(end);
+            alg_collection{s}        = alg_collection{s}(end);
+            time_collection{s}       = time_collection{s}(end);
+        end
+
         
+
+
         cd(workingDir);
 
     end

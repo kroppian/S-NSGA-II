@@ -51,8 +51,9 @@ config = run_config(platPath,                               ...    % platPath
                     linspace(0.05, 0.45,2),                 ...    % sparsities        (TODO revert)
                     "compDecVar",                           ...    % runType           
                     false,                                  ...    % saveData
-                    "/mnt/nas/kroppian/sNSGAIIRuns/"        ...    % savePath
-                    ); 
+                    "/mnt/nas/kroppian/sNSGAIIRuns/",       ...    % savePath
+                    false                                   ...    % saveAllGens
+                     ); 
 
 
 

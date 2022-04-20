@@ -1,6 +1,6 @@
 max_ref = 7; 
 
-comp = "MAC";
+comp = "WORKPC";
 
 if comp == "EGR"
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
@@ -51,7 +51,8 @@ config = run_config(platPath,                               ...    % platPath
                     linspace(0.05, 0.45,2),                 ...    % sparsities        (TODO revert)
                     "compDecVar",                           ...    % runType           
                     false,                                  ...    % saveData
-                    "/mnt/nas/kroppian/sNSGAIIRuns/"        ...    % savePath
+                    "/mnt/nas/kroppian/sNSGAIIRuns/",       ...    % savePath
+                    false                                   ...    % saveAllGens
                     ); 
 
 
