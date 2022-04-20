@@ -1,4 +1,4 @@
-function score = CalHV(PopObj,optimum)
+function score = CalcHV(PopObj,optimum)
 % <max>
 % Hypervolume
 

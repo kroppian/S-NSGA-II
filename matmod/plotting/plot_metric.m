@@ -8,7 +8,7 @@ function plot_metric(metric, decVarName, config, res)
     SUBTITLE_FONT_SIZE = 14;
     TITLE_FONT_SIZE = 22;
 
-    available_colors = [230, 25 , 75 ; 60 , 180, 75 ; 255, 225, 25 ; ...
+    available_colors = [230, 25 , 75 ; 60 , 180, 75 ; ...
          0  , 130, 200; 245, 130, 48 ; 145, 30 , 180; 70 , 240, 240; ...
          240, 50 , 230; 210, 245, 60 ; 250, 190, 212; 0  , 128, 128; ...
          220, 190, 255; 170, 110, 40 ; 255, 250, 200; 128, 0  , 0  ; ...
@@ -48,18 +48,24 @@ function plot_metric(metric, decVarName, config, res)
     %% legend logic 
     % Add perfect reference lines if needed
     if metric == "HV"
-        legend_entries = {'Perfect HV'};    
-    elseif metric == "NDS"
-        legend_entries = {'Perfect NDS'};
+        legend_entries = cell(numAlgorithms*2+1,1);
+        legend_entries{1} = 'Perfect HV';    
+        offset = 0; 
+    elseif metric == "nds"
+        legend_entries = cell(numAlgorithms*2+1,1);
+        legend_entries{1} = 'Perfect NDS';    
+        offset = 0; 
     else
-        legend_entries = {};
+        legend_entries = cell(numAlgorithms*2,1);
+        offset = 1; 
+
     end
 
     % Add the various algorithms to the legend 
     for a = 1:numAlgorithms
-        legend_entries{a*2} = algs{a};
-        legend_entries{a*2+1} = algs(a) + " CI";
-
+        % Offset 
+        legend_entries{a*2 - offset} = config.labels{a};
+        legend_entries{a*2+1 - offset} = config.labels{a} + " CI";
     end
 
     if indep_var_dec_vars
@@ -70,13 +76,10 @@ function plot_metric(metric, decVarName, config, res)
         x_label = 'Sparsity (%)';
     end
 
-
-
-
     %% Calculate optimal HV
     if metric == "HV"
         ref_front = config.prob('M',2).GetPF();
-        optimal_hv = CalHV(ref_front, [1, 1]);
+        optimal_hv = CalcHV(ref_front, [1, 1]);
     end
 
     %% Plotting
@@ -113,8 +116,6 @@ function plot_metric(metric, decVarName, config, res)
     end
 
     %% Plot  results
-
-    figure
     
     y_min = 5000000;
     y_max = -5000000;
@@ -129,7 +130,7 @@ function plot_metric(metric, decVarName, config, res)
         hold on
 
     end
-    if metric == "NDS"
+    if metric == "nds"
         x = dependentVars;
         y = ones(1, numel(x))*100;
         plot(x,y, ':k', 'LineWidth', 4);
@@ -196,8 +197,6 @@ function plot_metric(metric, decVarName, config, res)
         else
             margin = y_range*0.1;
         end
-
-
 
         axis([x_min x_max (y_min-margin) (y_max + margin)])
 
