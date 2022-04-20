@@ -6,8 +6,8 @@ addpath("utilities");
 addpath("plotting");
 
 
-%sNSGA_eff;
-sNSGA_eff_400;
+sNSGA_eff;
+%sNSGA_eff_400;
 %sNSGA_comparative;
 
 if config.saveData
@@ -31,7 +31,7 @@ res.medSparsities = medSparsities;
 res_final = res(res.gen == res.max_gen,:);
 
 if config.saveData
-    save(fullSavePath, 'res_final');
+    save(fullSavePath, 'res_final', 'config');
 end
 
 run = 3;
