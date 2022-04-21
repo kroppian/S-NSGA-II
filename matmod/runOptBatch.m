@@ -12,7 +12,7 @@ function results = runOptBatch(config)
     if config.indep_var_dec_vars
         config.sparsities = [config.defaultSparsity];
     else
-        config.Dz = {config.defaultDecVar};
+        config.Dz = [config.defaultDecVar];
     end
 
 
