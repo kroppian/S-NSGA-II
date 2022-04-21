@@ -31,7 +31,7 @@ res.medSparsities = medSparsities;
 res_final = res(res.gen == res.max_gen,:);
 
 if config.saveData
-    save(fullSavePath, 'res_final', 'config');
+    save(fullSavePath, 'res_final', 'config', '-v7.3');
 end
 
 run = 3;
