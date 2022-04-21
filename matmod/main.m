@@ -6,8 +6,8 @@ addpath("utilities");
 addpath("plotting");
 
 
-sNSGA_eff;
-%sNSGA_eff_400;
+%sNSGA_eff_sparsity;
+sNSGA_eff_400;
 %sNSGA_comparative;
 
 if config.saveData
@@ -31,7 +31,12 @@ res.medSparsities = medSparsities;
 res_final = res(res.gen == res.max_gen,:);
 
 if config.saveData
-    save(fullSavePath, 'res_final', 'config', '-v7.3');
+    if config.saveAllGens
+        save(fullSavePath, 'res_final', 'res', 'config', '-v7.3');
+    else        
+        save(fullSavePath, 'res_final', 'config', '-v7.3');
+    end
+
 end
 
 run = 3;
@@ -39,16 +44,20 @@ run = 3;
 %% Genome observation
 
 %test_pop_mut_off = res_final{res_final.run == 1 & res_final.D == 100 & res_final.alg == "SparseEA2", 'population'};
-test_pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
-test_pop_new        = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
-
-test_pop_status_quo = test_pop_status_quo{1}.best.decs;
-test_pop_new        = test_pop_new{1}.best.decs;
+% test_pop_status_quo = res_final{res_final.run == run & res_final.D == 100 & (~res_final.stripe_s), 'population'};
+% test_pop_new        = res_final{res_final.run == run & res_final.D == 100 & res_final.stripe_s, 'population'};
+% 
+% test_pop_status_quo = test_pop_status_quo{1}.best.decs;
+% test_pop_new        = test_pop_new{1}.best.decs;
 
 %% Plotting
+figure;
 plot_generational_info(res, config, run);
 
+figure;
 plot_final_pareto(res_final, config, run);
+
+figure;
 
 plot_strip_scatter(res_final, config);
 
