@@ -9,11 +9,6 @@ function newPop = cropover_v1(Parent, lb, ub, Parameter)
     
     Parent1 = Parent(1:floor(end/2),:);
     Parent2 = Parent(floor(end/2)+1:floor(end/2)*2,:);
-    [~,D]   = size(Parent1);
-
-    % Check the sparsities of the parents
-    Parent1Sparsities = sum(Parent1 == 0, 2) / D;
-    Parent2Sparsities = sum(Parent2 == 0, 2) / D;
 
     % figure out where are zeros/non-zeros
     zMaskP1 = Parent1 == 0;

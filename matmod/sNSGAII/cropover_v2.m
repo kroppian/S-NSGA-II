@@ -1,4 +1,4 @@
-function newPop = cropover_v1(Parent, lb, ub, Parameter)
+function newPop = cropover_v2(Parent, lb, ub, Parameter)
     %% Fetch paramters/setup
 
 
@@ -10,7 +10,6 @@ function newPop = cropover_v1(Parent, lb, ub, Parameter)
 
     Parent1 = Parent(1:floor(end/2),:);
     Parent2 = Parent(floor(end/2)+1:floor(end/2)*2,:);
-    [~,D]   = size(Parent1);
 
     % figure out where are zeros/non-zeros
     zMaskP1 = Parent1 == 0;
@@ -32,7 +31,7 @@ function newPop = cropover_v1(Parent, lb, ub, Parameter)
     
     [~,genes2sbx] = find(matching);
 
-    sbx_results = sbx([Parent1(matching);Parent2(matching)], lb(genes2sbx), ub(genes2sbx), {proC, disC});
+    sbx_results = sbx([Parent1(matching)';Parent2(matching)'], lb(genes2sbx), ub(genes2sbx), {proC, disC});
 
     Offspring1(matching) = sbx_results(1,:);
     Offspring2(matching) = sbx_results(2,:);
