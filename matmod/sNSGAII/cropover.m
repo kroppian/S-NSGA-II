@@ -1,16 +1,19 @@
 function newPop = cropover_v1(Parent, lb, ub, Parameter)
     %% Fetch paramters/setup
 
-
     if nargin > 3
-    [proC,disC] = deal(Parameter{:});
+        [proC,disC] = deal(Parameter{:});
     else
         [proC,disC] = deal(1,20);
     end
-
+    
     Parent1 = Parent(1:floor(end/2),:);
     Parent2 = Parent(floor(end/2)+1:floor(end/2)*2,:);
     [~,D]   = size(Parent1);
+
+    % Check the sparsities of the parents
+    Parent1Sparsities = sum(Parent1 == 0, 2) / D;
+    Parent2Sparsities = sum(Parent2 == 0, 2) / D;
 
     % figure out where are zeros/non-zeros
     zMaskP1 = Parent1 == 0;
@@ -32,10 +35,10 @@ function newPop = cropover_v1(Parent, lb, ub, Parameter)
     
     [~,genes2sbx] = find(matching);
 
-    sbx_results = sbx([Parent1(matching);Parent2(matching)], lb(genes2sbx), ub(genes2sbx), {proC, disC});
+    sbx_resuls = sbx([Parent1(matching)';Parent2(matching)'], lb(genes2sbx), ub(genes2sbx), {proC, disC});
 
-    Offspring1(matching) = sbx_results(1,:);
-    Offspring2(matching) = sbx_results(2,:);
+    Offspring1(matching) = sbx_resuls(1,:)';
+    Offspring2(matching) = sbx_resuls(2,:)';
 
     %% Step 2: swap values that are mismatches between zero and non-zero
     
@@ -54,9 +57,8 @@ function newPop = cropover_v1(Parent, lb, ub, Parameter)
     not_matching_p1 = Parent1(not_matching);
     not_matching_p2 = Parent2(not_matching);
 
-    not_matching_p1_temp = not_matching_p1;
     not_matching_p1(swap_mask) = not_matching_p2(swap_mask);
-    not_matching_p2(swap_mask) = not_matching_p1_temp(swap_mask);
+    not_matching_p2(~swap_mask) = not_matching_p1(~swap_mask);
 
     Offspring1(not_matching) = not_matching_p1;
     Offspring2(not_matching) = not_matching_p2;
