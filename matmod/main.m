@@ -51,21 +51,23 @@ run = 3;
 % test_pop_new        = test_pop_new{1}.best.decs;
 
 %% Plotting
-figure;
-plot_generational_info(res, config, run);
+%load("Z:\Gilgamesh\kroppian\sNSGAIIRuns\400run\sNSGAIIEffective_compDecVar_SMOP2.mat");
+
+D = 100;
 
 figure;
-plot_final_pareto(res_final, config, run);
+plot_generational_info(res, config, run, D);
 
 figure;
+plot_final_pareto(res_final, config, run, D);
 
-plot_strip_scatter(res_final, config);
+figure;
+plot_strip_scatter(res_final, config, D);
 
 % Full metric plots
 % Example load command: 
 % load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP1.mat')
-plot_metric("HV",   "D", config, res_final);
-
+hh
 
 
 

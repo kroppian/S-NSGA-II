@@ -1,4 +1,4 @@
-function plot_strip_scatter(res, config)
+function plot_strip_scatter(res, config, D)
     
     alg_count = numel(unique(res.alg));
     legend_entries = cell(alg_count ,1);
@@ -7,7 +7,7 @@ function plot_strip_scatter(res, config)
     % Plot each algorithm sparsity performance 
     for a = 1:alg_count
         alg = genRunId(config, a);
-        hvs = res{res.D == 400 & strcmp(res.alg, alg), 'HV'};
+        hvs = res{res.D == D & strcmp(res.alg, alg), 'HV'};
 
         jitters = ones(size(hvs))*a + unifrnd(-0.1,0.1,size(hvs));
 

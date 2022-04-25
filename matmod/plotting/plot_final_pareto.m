@@ -1,4 +1,4 @@
-function plot_final_pareto(res, config, run)
+function plot_final_pareto(res, config, run, D)
     
     alg_count = numel(unique(res.alg));
     legend_entries = cell(alg_count ,1);
@@ -7,7 +7,7 @@ function plot_final_pareto(res, config, run)
     % Plot each algorithm sparsity performance 
     for a = 1:alg_count
         alg = genRunId(config, a);
-        final_pop = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'population'};
+        final_pop = res{res.run == run & res.D == D & strcmp(res.alg, alg), 'population'};
 
         y = final_pop{1}.best.objs;
 

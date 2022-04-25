@@ -1,4 +1,4 @@
-function plot_generational_info(res, config, run)
+function plot_generational_info(res, config, run, D)
     
     alg_count = numel(unique(res.alg));
     legend_entries = cell(alg_count+1 ,1);
@@ -10,7 +10,7 @@ function plot_generational_info(res, config, run)
     % Plot each algorithm sparsity performance 
     for a = 1:alg_count
         alg = genRunId(config, a);
-        medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'medSparsities'};
+        medSparsity = res{res.run == run & res.D == D & strcmp(res.alg, alg), 'medSparsities'};
         plot(medSparsity);
         legend_entries{a} = config.labels{a}; 
     
@@ -37,7 +37,7 @@ function plot_generational_info(res, config, run)
     % Plot each algorithm HV performance 
     for a = 1:alg_count
         alg = genRunId(config, a);
-        medSparsity = res{res.run == run & res.D == 400 & strcmp(res.alg, alg), 'HV'};
+        medSparsity = res{res.run == run & res.D == D & strcmp(res.alg, alg), 'HV'};
         plot(medSparsity);
         max_gen = max(max_gen, numel(medSparsity));
         hold on;
