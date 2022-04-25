@@ -24,7 +24,7 @@ resulting_sparsities = ones(reps,2)*-99;
 
 for r = 1:reps
 
-    new_pop = cropover_v2(pop.decs, prob.lower, prob.upper);
+    new_pop = cropover_v1(pop.decs, prob.lower, prob.upper);
 
     sparsities = sum(new_pop == 0,2)/D;
     resulting_sparsities(r,1) = sparsities(1);
