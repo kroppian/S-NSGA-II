@@ -6,11 +6,12 @@ addpath("../..");
 addpath("../../configs");
 addpath("../../utilities");
 
+sNSGA_eff_400;
 
-cropoverTest_comp;
-
-prob = SMOP1(100, 99, 2, 100);
-
+D = 100;
+prob = SMOP1('N', 100, 'D', D, 'FE', 200, 'maxFE', 20000, 'parameter', {0.15});
+% No clue why this is needed, but taken from ALGORITHM.Solve
+prob.Current(prob);
 
 pop = stripedSparseSampler(prob, 0.50, 1);
 

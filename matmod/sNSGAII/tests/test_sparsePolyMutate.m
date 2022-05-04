@@ -5,9 +5,10 @@ addpath("..");
 addpath("../..");
 addpath("../../configs");
 
-mutationTest;
+sNSGA_eff_400;
 
 prob = SMOP1(100, 99, 2, 100);
+prob.Current(prob);
 
 % Perform mutation
 newParent = sparsePolyMutate(Parent, prob.upper, prob.lower);
