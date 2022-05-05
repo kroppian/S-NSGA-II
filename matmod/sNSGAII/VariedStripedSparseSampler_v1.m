@@ -58,25 +58,35 @@ function Population = VariedStripedSparseSampler_v1(prob, sLower, sUpper)
             gapPosition = 1;
         end
 
-        gapSize = prob.D - sum(widths);
+        gapToFill = prob.D - sum(widths);
+        
+        gaps = zeros(1, numel(widths) + 1);
+
+        if gapToFill ~= 0
+            gaps = gaps + floor(gapToFill/numel(gaps));
+    
+            % next divy out the remainder 
+            leftOverGap = mod(gapToFill,numel(gaps));
+            toTopOff = randperm(numel(gaps),leftOverGap);
+            gaps(toTopOff) = gaps(toTopOff) + 1; 
+        end
+
 
         position = 1;
         for i = 1:numel(widths)
 
             width = widths(i);
 
-            if gapSize ~= 0 && gapPosition == i
-                position = position+gapSize;
-            end 
-            mask(currentIndv, position:position+width-1) = true; 
+            position = position + gaps(i);
 
+            mask(currentIndv, position:position+width-1) = true; 
 
             % Go to the next individual 
             position = position+width;
             currentIndv = currentIndv + 1;
         end
 
-        if gapSize ~= 0
+        if gapToFill ~= 0
             gapPosition = gapPosition + 1;
         end
     end
@@ -84,8 +94,8 @@ function Population = VariedStripedSparseSampler_v1(prob, sLower, sUpper)
     foo = zeros(size(mask));
     foo(mask) = 1;
     heatmap(foo);
-
-    a = 1;
+    figure; 
+    bar(sum(foo));
 
 %     shiftVector = (1:prob.N)';
 % 
