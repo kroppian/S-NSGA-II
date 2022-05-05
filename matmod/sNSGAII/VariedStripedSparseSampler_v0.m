@@ -1,5 +1,5 @@
 %% Randomly generate an initial population
-function Population = VariedStripedSparseSampler(prob, sLower, sUpper)
+function Population = VariedStripedSparseSampler_v0(prob, sLower, sUpper)
     
     pop = prob.Initialization();
     varCount = size(prob.lower,2);
