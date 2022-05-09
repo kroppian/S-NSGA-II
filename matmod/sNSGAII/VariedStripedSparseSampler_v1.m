@@ -91,11 +91,16 @@ function Population = VariedStripedSparseSampler_v1(prob, sLower, sUpper)
         end
     end
 
-    foo = zeros(size(mask));
-    foo(mask) = 1;
-    heatmap(foo);
-    figure; 
-    bar(sum(foo));
+%     foo = zeros(size(mask));
+%     foo(mask) = 1;
+%     heatmap(foo);
+%     figure; 
+%     bar(sum(foo));
+    sparse_pop = pop.decs;
+    sparse_pop(~mask) = 0;
+
+    Population = SOLUTION(sparse_pop);
+
 
 %     shiftVector = (1:prob.N)';
 % 
