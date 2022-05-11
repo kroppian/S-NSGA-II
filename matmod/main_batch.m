@@ -4,13 +4,13 @@ addpath("configs");
 addpath("utilities");
 addpath("plotting");
 
-problems = {@SMOP1, @SMOP2, SMOP3, SMOP4, SMOP5, SMOP6, SMOP7, SMOP8};
-
 %sNSGA_eff_400;
 %sNSGA_eff_sparsity;
 %sNSGA_comparative;
 sNSGA_eff_decVar;
 
+
+problems = {@SMOP1, @SMOP2, @SMOP3, @SMOP4, @SMOP5, @SMOP6, @SMOP7, @SMOP8};
 
 for p = 1:numel(problems)
 
