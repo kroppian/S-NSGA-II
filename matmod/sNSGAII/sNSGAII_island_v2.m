@@ -1,4 +1,4 @@
-classdef sNSGAII_island_v1 < ALGORITHM
+classdef sNSGAII_island_v2 < ALGORITHM
 % <multi> <real/binary/permutation> <constrained/none>
 % Nondominated sorting genetic algorithm II
 
