@@ -30,8 +30,13 @@ function plot_metric(metric, decVarName, config, res)
 
     repetition = 1:max(res.run);
     decVars = unique(res{:,decVarName});
-    algs = unique(res.alg)';
 
+    alg_count = numel(config.algorithms);
+    algs = cell(alg_count,1);
+    for a = 1:alg_count
+        algs{a} = genRunId(config, a);
+    end
+    
     numRepetitions = numel(repetition);
     numDependentVars = numel(decVars);
     numAlgorithms = numel(algs);
