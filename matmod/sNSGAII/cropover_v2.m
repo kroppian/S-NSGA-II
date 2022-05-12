@@ -33,8 +33,8 @@ function newPop = cropover_v2(Parent, lb, ub, Parameter)
 
     sbx_results = sbx([Parent1(matching)';Parent2(matching)'], lb(genes2sbx), ub(genes2sbx), {proC, disC});
 
-    Offspring1(matching) = sbx_results(1,:);
-    Offspring2(matching) = sbx_results(2,:);
+    Offspring1(matching) = sbx_results(1,:)';
+    Offspring2(matching) = sbx_results(2,:)';
 
     %% Step 2: swap values that are mismatches between zero and non-zero
     

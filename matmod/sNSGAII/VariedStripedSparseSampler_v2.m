@@ -83,19 +83,8 @@ function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
 
             % Determine the position of the stripe
             startPoint = position;
-%             if final_cycle 
-%                 % if the final cyle, fill gap with zero padding
-%                 endPoint = position+width-1; 
-%             else
-%                 % if not the final cycle, fill gap with non-zero padding
-%                 endPoint = position+width+gapWidth-1;
-%             end
 
             endPoint = position+width-1; 
- 
-            
-
-
 
             % Prevent overflow from a gap calculation
             if endPoint > prob.D 

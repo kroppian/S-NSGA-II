@@ -16,24 +16,17 @@ elseif comp == "GILG"
     sNSGAIIPath = '/home/ian/Projects/cropover/matmod/sNSGAII';
 end
 
-algorithms =   {@sNSGAII,    @sNSGAII,     @sNSGAII,          @sNSGAII,          @sNSGAII,          @sNSGAII_island  , @sNSGAII_island  };
-mutation_op =  {@polyMutate, @polyMutate,  @sparsePolyMutate, @sparsePolyMutate, @sparsePolyMutate, @sparsePolyMutate, @polyMutate      };
-crossover =    {@sbx,        @cropover_v1, @sbx,              @cropover_v1,      @cropover_v1,      @cropover_v1     , @cropover_v1     };
+algorithms =   {@sNSGAII_island_v1, @sNSGAII_island_v2};
+mutation_op =  {@sparsePolyMutate,  @sparsePolyMutate };
+crossover =    {@cropover_v2,       @cropover_v2      };
 
-pop_samplers = {{@sparseSampler,        0.5, 0.99}, ...
-                {@sparseSampler,        0.5, 0.99}, ...
-                {@sparseSampler,        0.5, 0.99}, ...
-                {@sparseSampler,        0.5, 0.99}, ...
-                {@stripedSparseSampler, 0.5, 0.99}, ...
-                {@stripedSparseSampler, 0.5, 0.99}, ...
-                {@stripedSparseSampler, 0.5, 0.99}};
+pop_samplers = {{@stripedSparseSampler, 0.5, 0.99}, ...
+                {@VariedStripedSparseSampler_v2, 0.5, 1}};
 
-labels = ["NSGA-II w/ SPS", "NSGA-II w/ SPS + S-SBX", ...
-          "NSGA-II w/ SPS + S-PM", "NSGA-II w/ SPS + S-SBX + S-PM", ...
-          "NSGA-II w/ SSPS + S-SBX + S-PM", ...
-          "Island NSGA-II w/ SSPS + S-SBX", ...
-          "Island NSGA-II w/ SSPS + S-SBX + S-PM"
+labels = ["Island NSGA-II v1 with SSPS", ...
+          "Island NSGA-II v2 VSSPS"
           ];
+
 
 config = run_config(platPath,                               ...    % platPath          
                     sNSGAIIPath,                            ...    % sNSGAIIPath       
@@ -53,7 +46,7 @@ config = run_config(platPath,                               ...    % platPath
                     [100, 200, 400, 800, 1600, 3200, 6400], ...    % Dz                          
                     linspace(0.05, 0.45,2),                 ...    % sparsities        (TODO revert)
                     "compDecVar",                           ...    % runType           
-                    true,                                   ...    % saveData
+                    false,                                   ...    % saveData
                     "/mnt/nas/kroppian/sNSGAIIRuns/",       ...    % savePath
                     false                                   ...    % saveAllGens
                      ); 

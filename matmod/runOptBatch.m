@@ -85,13 +85,13 @@ function results = runOptBatch(config)
         addpath(workingDir);
         
 
-        if raw_algorithm == "sNSGAII_island"
+        if raw_algorithm == "sNSGAII_island_v1" || raw_algorithm == "sNSGAII_island_v2"
             functionEvals = 20000/6;  % todo make this more elegant
         else
             functionEvals = 20000;
         end
 
-        if func2str(algorithm) == "sNSGAII" || raw_algorithm == "sNSGAII_island"
+        if func2str(algorithm) == "sNSGAII" || raw_algorithm == "sNSGAII_island_v1" || raw_algorithm == "sNSGAII_island_v2"
             platemo(                                             ...
                       'algorithm',  {algorithm, {sampling_method, sampling_lb, sampling_ub}, mutation_method, crossover_method} , ...
                       'problem'  ,  {config.prob , sparsity}             , ...

@@ -32,10 +32,7 @@ classdef sNSGAII_island_v2 < ALGORITHM
 
             targetSparsities = linspace(slb, sub, island_count);
 
-%             origMaxFE = Problem.maxFE;
-%             Problem.maxFE = Problem.maxFE / island_count;
-
-
+            step_margin = (sub - slb)/island_count*2; 
 
             for i = 1:island_count
 
@@ -47,7 +44,11 @@ classdef sNSGAII_island_v2 < ALGORITHM
                     %% Generate random population
         
                     sampler = sampling_method{1};
-                    Population = sampler(Problem, targetSparsities(i), targetSparsities(i));
+    
+                    current_slb = targetSparsities(i) - step_margin;
+                    current_sub = targetSparsities(i) + step_margin;
+
+                    Population = sampler(Problem, current_slb, current_sub);
         
                     [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Problem.N);
 
