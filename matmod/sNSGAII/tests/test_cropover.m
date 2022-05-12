@@ -32,10 +32,10 @@ for r = 1:reps
     resulting_sparsities(r,1) = sparsities(1);
     resulting_sparsities(r,2) = sparsities(2);
     
-    if mod(r,100) == 0
-        fprintf("%d\n", r);
-    end
-    
 end
 
+resulting_sparsities = reshape(resulting_sparsities, [], 1);
+
 histogram(resulting_sparsities,20);
+
+std(resulting_sparsities)
