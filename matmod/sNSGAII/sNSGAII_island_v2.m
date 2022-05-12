@@ -48,8 +48,17 @@ classdef sNSGAII_island_v2 < ALGORITHM
                     current_slb = targetSparsities(i) - step_margin;
                     current_sub = targetSparsities(i) + step_margin;
 
+                    if current_sub > 1
+                      current_sub = 1;
+                    end
+
+                    if current_slb < 0
+                      current_slb = 0;
+                    end
+                    
+
                     Population = sampler(Problem, current_slb, current_sub);
-        
+                    %fprintf("lb %f ub %f\n", current_slb, current_sub)        
                     [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Problem.N);
 
                     %% Optimization
