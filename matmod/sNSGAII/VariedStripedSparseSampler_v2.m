@@ -38,7 +38,14 @@ function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
 
     cumulativeWidths = cumsum(widthVector);
 
-    processedIndvs = 0;
+    % if all sparsities are 100%, then skip processing, since everything
+    % will be zeros 
+    if sum(widthVector == 0) == prob.N
+        processedIndvs = prob.N; 
+    else
+        processedIndvs = 0;
+    end
+
     cycle_count = 0;
     cycles = zeros(prob.N, prob.D);
     while processedIndvs < prob.N
@@ -47,6 +54,7 @@ function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
         spotsThatFitMask = cumulativeWidths <= prob.D & cumulativeWidths ~= 0;
         numThatFit = sum(spotsThatFitMask);
         largestFit = max(cumulativeWidths(spotsThatFitMask));
+
         cumulativeWidths = cumulativeWidths - largestFit; 
         cumulativeWidths(cumulativeWidths<0) = 0; 
         processedIndvs = processedIndvs + numThatFit;
