@@ -31,6 +31,11 @@ function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
     %% Determine the positioning of each stripe per individual
     densityVector = 1 - linspace(sLower, sUpper, prob.N);
     widthVector = round(densityVector.*prob.D);
+    
+    % Put widths back into bound if rounding error occurred
+    lb = floor((1- sLower)*prob.D);
+    widthVector(widthVector > lb) = lb;
+
     cumulativeWidths = cumsum(widthVector);
 
     processedIndvs = 0;
