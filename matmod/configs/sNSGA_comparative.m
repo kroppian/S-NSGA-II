@@ -1,33 +1,52 @@
 max_ref = 7; 
 
-comp = 'b';
+comp = "GILG";
 
-if comp == 'a'
+if comp == "EGR"
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
     sNSGAIIPath = 'M:\Projects\cropover\matmod\sNSGAII';
-elseif comp == 'b'
+elseif comp == "WORKPC"
     platPath = 'C:\Users\Ian Kropp\Projects\PlatEMO-3.4\PlatEMO';
     sNSGAIIPath = 'C:\Users\Ian Kropp\Projects\cropover\matmod\sNSGAII';
-elseif comp == 'c'
+elseif comp == "MAC"
     platPath = '/Users/iankropp/Projects/PlatEMO-3.4/PlatEMO';
     sNSGAIIPath = '/Users/iankropp/Projects/cropover/matmod/sNSGAII';
-elseif comp == 'd'
+elseif comp == "GILG"
     platPath = '/home/ian/Projects/PlatEMO-3.4/PlatEMO';
     sNSGAIIPath = '/home/ian/Projects/cropover/matmod/sNSGAII';
 end
 
+algorithms =   {@sNSGAII_island_v1, @sNSGAII_island_v2, @SparseEA, @SparseEA2, @MOEAPSL, @MPMMEA, @PMMOEA};
+mutation_op =  {@sparsePolyMutate,  @sparsePolyMutate , @nop     , @nop      , @nop    , @nop   , @nop   };
+crossover =    {@cropover_v2,       @cropover_v2      , @nop     , @nop      , @nop    , @nop   , @nop   };
+
+pop_samplers = {{@VariedStripedSparseSampler_v2, 0.5, 1}, ...
+                {@VariedStripedSparseSampler_v2, 0.5, 1}, ...
+                 @nop, @nop, @nop, @nop, @nop
+                 
+                 };
+
+labels = ["Island NSGA-II v1 with SSPS", ...
+          "Island NSGA-II v2 VSSPS", ...
+          "SparseEA", ...
+          "SparseEA2", ...
+          "MOEA-PSL", ...
+          "MP-MMEA", ...
+          "PM-MOEA"
+          ];
+
 config = run_config(platPath,                                                 ...    %   platPath          
                     sNSGAIIPath,                                              ...    %   sNSGAIIPath       
                     30,                                                       ...    %   repetitions    
-                    {@sNSGAII_island , @SparseEA, @SparseEA2},                ...    %   algorithms          
-                    {{@stripedSparseSampler, 0.5, 0.99}, @nop, @nop},         ...    %   sampling_method
-                    {@sparsePolyMutate, @nop, @nop},                          ...    %   mutation_method      
-                    {@cropover_v1, @nop, @nop},                               ...    %   crossover_method   
-                    ["sNSGA-II", "SparseEA", "SparseEA2"],                    ...    %   labels         
+                    algorithms,                                               ...    %   algorithms          
+                    pop_samplers,                                             ...    %   sampling_method
+                    mutation_op,                                              ...    %   mutation_method      
+                    crossover,                                                ...    %   crossover_method   
+                    labels,                                                   ...    %   labels         
                     "sNSGAIIComparative",                                     ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
-                    @SMOP1,                                                   ...    %   prob              
+                    @SMOP8,                                                   ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
                     100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
