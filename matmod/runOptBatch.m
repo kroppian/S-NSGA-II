@@ -61,26 +61,24 @@ function results = runOptBatch(config)
             sampling_ub = 1;
         end
         
+        if raw_algorithm == "sNSGAII" || raw_algorithm == "sNSGAII_island_v1"  || raw_algorithm == "sNSGAII_island_v2"
+            custom_alg = true;
+        else
+            custom_alg = false;
+        end
 
         rep = scenarios(s, 4);
 
         raw_algorithm = func2str(algorithm);
-        if raw_algorithm == "sNSGAII" || raw_algorithm == "sNSGAII_island_v1"  || raw_algorithm == "sNSGAII_island_v2"
+        if custom_alg
             annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
         else
             annotated_alg = raw_algorithm;
         end
 
-        if rep == 1 && func2str(algorithm) == "sNSGAII" || raw_algorithm == "sNSGAII_island_v1" ||  raw_algorithm == "sNSGAII_island_v2"
-            fprintf("Running algorithm %s with %d decision variables and sparsity %f\n", ...
-                     annotated_alg, decision_vars, sparsity);
-        elseif rep == 1
-            fprintf("Running algorithm %s with %d decision variables and sparsity %f\n", ...
-                     annotated_alg, decision_vars, sparsity);
-        end
-
-    
-                            
+        fprintf("Running algorithm %s with %d decision variables and sparsity %f\n", ...
+                 annotated_alg, decision_vars, sparsity);
+                         
         [workingDir, ~, ~]= fileparts(mfilename('fullpath'));
         addpath(workingDir);
         
@@ -91,7 +89,7 @@ function results = runOptBatch(config)
             functionEvals = 20000;
         end
 
-        if func2str(algorithm) == "sNSGAII" || raw_algorithm == "sNSGAII_island_v1" || raw_algorithm == "sNSGAII_island_v2"
+        if custom_alg
             platemo(                                             ...
                       'algorithm',  {algorithm, {sampling_method, sampling_lb, sampling_ub}, mutation_method, crossover_method} , ...
                       'problem'  ,  {config.prob , sparsity}             , ...
@@ -112,7 +110,9 @@ function results = runOptBatch(config)
                       'outputFcn',  @output                              , ...
                       'save'     ,  20000);
         end
-        
+
+        fprintf("Recording results of %s with %d decision variables and sparsity %f\n", ...
+                 annotated_alg, decision_vars, sparsity);
 
         % Read output      
         output_dir = fullfile(config.platPath, ...
@@ -181,7 +181,8 @@ function results = runOptBatch(config)
         end
 
         
-
+        fprintf("Completed: %s with %d decision variables and sparsity %f\n", ...
+                 annotated_alg, decision_vars, sparsity);
 
         cd(workingDir);
 
