@@ -61,6 +61,7 @@ function results = runOptBatch(config)
             sampling_ub = 1;
         end
         
+        raw_algorithm = func2str(algorithm);
         if raw_algorithm == "sNSGAII" || raw_algorithm == "sNSGAII_island_v1"  || raw_algorithm == "sNSGAII_island_v2"
             custom_alg = true;
         else
@@ -69,7 +70,6 @@ function results = runOptBatch(config)
 
         rep = scenarios(s, 4);
 
-        raw_algorithm = func2str(algorithm);
         if custom_alg
             annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
         else
