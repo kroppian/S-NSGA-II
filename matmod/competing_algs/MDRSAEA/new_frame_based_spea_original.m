@@ -112,7 +112,7 @@ else
     evaluation = evaluation + 40*num_temp;
 end
 % evaluation_time(evaluation_temp) = evaluation;
-saea_combination= combntns(dim_saea,num_temp);
+saea_combination= nchoosek(dim_saea,num_temp);
 saea_time = size(saea_combination,1);
 saea_obj = zeros(20*num_temp*saea_time,2);
 for krvea_time = 1:saea_time
