@@ -10,7 +10,6 @@ function [Population,Mask,FrontNo,CrowdDis,PopObj] = EnvironmentalSelection(Popu
 % Computational Intelligence Magazine, 2017, 12(4): 73-87".
 %--------------------------------------------------------------------------
 
-
     %% Delete duplicated solutions
     [~,uni] = unique(PopObj,'rows');
     Population = Population(uni,:);
