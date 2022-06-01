@@ -15,7 +15,7 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
     upper    = [zeros(1,M-1)+1,zeros(1,D-M+1)+2];
     global evaluation; % expensive function evaluations used
     evaluation = 0 ;
-    f = @CalObj;
+    f = problem.CalObj;
     [dim,~,~,TempPop_o,popobj_o] = dim_selection(f,sparsity,M,D,lower,upper);%3*D
     dim(dim==0)=[];
     
@@ -144,7 +144,15 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
         while size(A2,1)< 40*num_temp
             % Refresh the model and generate promising solutions
             A1Dec = A1;
-            A1Obj = CalObj_dim(A1,dim,sparsity);
+
+            % Start -- Modified by IMK to replace CalObj_dim
+            A1new = zeros(N,D);
+            for i = 1:N
+                A1new(i,dim) = A1(i,:);
+            end
+            A1Obj = f(A1new,sparsity);
+            % End -- Modified by IMK to replace CalObj_dim
+
             for i = 1 : M
                 % The parameter 'regpoly1' refers to one-order polynomial
                 % function, and 'regpoly0' refers to constant function. The
@@ -186,55 +194,21 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
             A2        = [A2;PopNew];%ÀúÊ·×Ü¸öÌå
             A1        = UpdataArchive(A1,PopNew,V,mu,NI);%µ±Ç°¼¯ºÏÖÐ¸öÌå 
         end
-        saea_obj((krvea_time-1)*20*num_temp+1:krvea_time*20*num_temp,:) = CalObj_dim(A1,dim,sparsity);
-    end
+
+        % Start -- Modified by IMK to replace CalObj_dim
+        A1new = zeros(N,D);
+        for i = 1:N  
+            A1new(i,dim) = A1(i,:);
+        end  
+        res = f(A1new,sparsity);
+        % End -- Modified by IMK to replace CalObj_dim
+
+        saea_obj((krvea_time-1)*20*num_temp+1:krvea_time*20*num_temp,:) = res;
+
+    end   
     chr_s = ['Proposed_SMOP1_',num2str(sparsity),'_',num2str(original_D),'.mat'];
     save(chr_s,'saea_obj');
-
-    %% Calculate objective values
-    %smop1
-    function PopObj = CalObj_dim(X,dim,sparsity)
-        [N,~] = size(X);
-        new = zeros(N,1000);
-        for i = 1:N
-            new(i,dim) = X(i,:);
-        end
-        X = new;
-        [N,D] = size(X);
-        M = 2;
-        K = ceil(sparsity*(D-M+1));
-        g = sum(g1(X(:,M:M+K-1),pi/3),2) + sum(g2(X(:,M+K:end),0),2);
-        PopObj = repmat(1+g/(D-M+1),1,M).*fliplr(cumprod([ones(N,1),X(:,1:M-1)],2)).*[ones(N,1),1-X(:,M-1:-1:1)];
-        function g = g1(x,t)
-            g = (x-t).^2;
-        end
     
-        function g = g2(x,t)
-            g = 2*(x-t).^2 + sin(2*pi*(x-t)).^2;
-        end
-
-    end
-    
-    %smop1
-    function PopObj = CalObj(X,sparsity)
-        global evaluation;
-        [N,D] = size(X);
-        evaluation = evaluation + N;
-        M = 2;
-        K = ceil(sparsity*(D-M+1));
-        g = sum(g1(X(:,M:M+K-1),pi/3),2) + sum(g2(X(:,M+K:end),0),2);
-        PopObj = repmat(1+g/(D-M+1),1,M).*fliplr(cumprod([ones(N,1),X(:,1:M-1)],2)).*[ones(N,1),1-X(:,M-1:-1:1)];
-        function g = g1(x,t)
-            g = (x-t).^2;
-        end
-    
-        function g = g2(x,t)
-            g = 2*(x-t).^2 + sin(2*pi*(x-t)).^2;
-        end
-        
-    end
-
-
 end
 
 
