@@ -1,21 +1,26 @@
+ 
+%   'problem' 
+%   'N'        
+%   'M'        
+%   'D'        
+%   'outputFcn'
+%   'save'     
 
-
-% function saea_obj = MDR_SAEA(sparsity,M,D)
-%% Based Dimension Selection
-    sparsity = 0.01;
-    D = 1000;
-    original_D = 1000;
-    M = 2;
+function result = runMDRSAEA(problem, N, M, D, sparsity)
+    
+    
+    % function saea_obj = MDR_SAEA(sparsity,M,D)
+    %% Based Dimension Selection
+    original_D = D;
     lower    = [zeros(1,M-1)+0,zeros(1,D-M+1)-1];
     upper    = [zeros(1,M-1)+1,zeros(1,D-M+1)+2];
-    global evaluation;% expensive function evaluations used
+    global evaluation; % expensive function evaluations used
     evaluation = 0 ;
     f = @CalObj;
-    [dim,TDec_o,TMask_o,TempPop_o,popobj_o] = dim_selection(f,sparsity,M,D,lower,upper);%3*D
+    [dim,~,~,TempPop_o,popobj_o] = dim_selection(f,sparsity,M,D,lower,upper);%3*D
     dim(dim==0)=[];
     
-%% Initialization
-    N = size(dim,2);
+    %% Initialization
     TempPop = zeros(3*N,D);
     TempPop(1:N,:) = TempPop_o(dim(1,1:N),:);
     TempPop(N+1:2*N,:) = TempPop_o(D+dim(1,1:N),:);
@@ -67,188 +72,187 @@
     end
     [population,mask_dim,FrontNo,CrowdDis,popobj] = EnvironmentalSelection([TempPop;Population],PopObj,[TMask;Mask_dim],num_e);
     num_time = 0;
-    
-%% Search Proper Dimension
-%¿ªÊ¼Ñ­»·
-non_zero_all = zeros(1,50);
-non_zero = zeros(50,100);
-for time = 1:50
-    MatingPool       = TournamentSelection(2,2*100,FrontNo,-CrowdDis);
-    mask_off = operate_spea(mask_dim(MatingPool,:),1,fitness);
-    Dec = lower+(upper-lower).*rand(100,D);
-    Mask = zeros(100,1000);
-    for i =1:100
-        Mask(i,dim(find(mask_off(i,:)))) = 1;
-    end
-    population_off = Dec.*Mask;
-    PopObj = [popobj;f(population_off,sparsity)];
-    [population,mask_dim,FrontNo,CrowdDis,popobj] = EnvironmentalSelection([population;population_off],PopObj,[mask_dim;mask_off],100);
-    for i =1:100
-        non_zero_temp = find(mask_dim(i,:));
-        non_zero(time,i) = size(non_zero_temp,2);
-    end
-    num_temp = mode(non_zero(time,:),2);
-    if time>1
-    if num_temp == dim_init
-        num_time = num_time+1;
-    else
-        num_time = 1;
-    end
-    end
-    dim_init = num_temp;
-    if num_time>4
-        break
-    end
-end
-
-%% Selection of Dimension on K-RVEA
-%Ñ­»·½áÊøÊä³ö
-dim_saea = dim_base(mask_dim,dim,num_temp);% b = zeros(1,30);
-result = saea_check(dim_saea,num_temp);
-if result>0
-    evaluation = evaluation + 40*num_temp;
-    dim_saea = dim_final_selection(dim_saea,f,sparsity,num_temp,M,D);
-else
-    evaluation = evaluation + 40*num_temp;
-end
-% evaluation_time(evaluation_temp) = evaluation;
-saea_combination= nchoosek(dim_saea,num_temp);
-saea_time = size(saea_combination,1);
-saea_obj = zeros(20*num_temp*saea_time,2);
-for krvea_time = 1:saea_time
-dim = saea_combination(krvea_time,:);
-%% Parameter setting
-    alpha = 2;
-    wmax = 20;
-    mu = 5;
-    M = 2;
-    D  = size(dim,2);
-    N1 = 20*D;
-    lower_o   = [zeros(1,2-1)+0,zeros(1,1000-2+1)-1];
-    upper_o    = [zeros(1,2-1)+1,zeros(1,1000-2+1)+2];
-    lower = lower_o(:,dim);
-    upper = upper_o(:,dim);
-    %% Generate the reference points and population
-    [V0,N1] = UniformPoint(20*D,M);
-	V     = V0;
-    NI    = 20*D;
-    P     = lhsdesign(NI,D);
-    A2    = repmat(upper-lower,NI,1).*P+repmat(lower,NI,1);
-    A1    = A2;  %µ±Ç°ÖÖÈº
-    THETA = 5.*ones(M,D);
-    Model = cell(1,M);
-    num = 0;
-    %% Optimization
-    while size(A2,1)< 40*num_temp
-        % Refresh the model and generate promising solutions
-        A1Dec = A1;
-        A1Obj = CalObj_dim(A1,dim,sparsity);
-        for i = 1 : M
-            % The parameter 'regpoly1' refers to one-order polynomial
-            % function, and 'regpoly0' refers to constant function. The
-            % former function has better fitting performance but lower
-            % efficiency than the latter one
-            dmodel     = dacefit(A1Dec,A1Obj(:,i),'regpoly0','corrgauss',THETA(i,:),1e-5.*ones(1,D),20*D.*ones(1,D));
-            Model{i}   = dmodel;
-            THETA(i,:) = dmodel.theta;
+        
+    %% Search Proper Dimension
+    non_zero = zeros(50,100);
+    for time = 1:50
+        MatingPool       = TournamentSelection(2,2*100,FrontNo,-CrowdDis);
+        mask_off = operate_spea(mask_dim(MatingPool,:),1,fitness);
+        Dec = lower+(upper-lower).*rand(100,D);
+        Mask = zeros(100,1000);
+        for i =1:100
+            Mask(i,dim(find(mask_off(i,:)))) = 1;
         end
-        PopDec = A1Dec;
-        w      = 1;
-        while w <= wmax
-            drawnow();
-            OffDec = GA(PopDec,lower,upper);
-            PopDec = [PopDec;OffDec];
-            [N,~]  = size(PopDec);
-            M =2;
-            PopObj = zeros(N,M);
-            MSE    = zeros(N,M);
-            for i = 1: N
-                for j = 1 : M
-                    [PopObj(i,j),~,MSE(i,j)] = predictor(PopDec(i,:),Model{j});
+        population_off = Dec.*Mask;
+        PopObj = [popobj;f(population_off,sparsity)];
+        [population,mask_dim,FrontNo,CrowdDis,popobj] = EnvironmentalSelection([population;population_off],PopObj,[mask_dim;mask_off],100);
+        for i =1:100
+            non_zero_temp = find(mask_dim(i,:));
+            non_zero(time,i) = size(non_zero_temp,2);
+        end
+        num_temp = mode(non_zero(time,:),2);
+        if time>1
+        if num_temp == dim_init
+            num_time = num_time+1;
+        else
+            num_time = 1;
+        end
+        end
+        dim_init = num_temp;
+        if num_time>4
+            break
+        end
+    end
+    
+    %% Selection of Dimension on K-RVEA
+    dim_saea = dim_base(mask_dim,dim,num_temp);% b = zeros(1,30);
+    result = saea_check(dim_saea,num_temp);
+    if result>0
+        evaluation = evaluation + 40*num_temp;
+        dim_saea = dim_final_selection(dim_saea,f,sparsity,num_temp,M,D);
+    else
+        evaluation = evaluation + 40*num_temp;
+    end
+    % evaluation_time(evaluation_temp) = evaluation;
+    saea_combination= nchoosek(dim_saea,num_temp);
+    saea_time = size(saea_combination,1);
+    saea_obj = zeros(20*num_temp*saea_time,2);
+    for krvea_time = 1:saea_time
+        dim = saea_combination(krvea_time,:);
+    
+        %% Parameter setting
+        alpha = 2;
+        wmax = 20;
+        mu = 5;
+        M = 2;
+        D  = size(dim,2);
+        N1 = 20*D;
+        lower_o   = [zeros(1,2-1)+0,zeros(1,1000-2+1)-1];
+        upper_o    = [zeros(1,2-1)+1,zeros(1,1000-2+1)+2];
+        lower = lower_o(:,dim);
+        upper = upper_o(:,dim);
+        %% Generate the reference points and population
+        [V0,N1] = UniformPoint(20*D,M);
+	    V     = V0;
+        NI    = 20*D;
+        P     = lhsdesign(NI,D);
+        A2    = repmat(upper-lower,NI,1).*P+repmat(lower,NI,1);
+        A1    = A2;  %µ±Ç°ÖÖÈº
+        THETA = 5.*ones(M,D);
+        Model = cell(1,M);
+        num = 0;
+        %% Optimization
+        while size(A2,1)< 40*num_temp
+            % Refresh the model and generate promising solutions
+            A1Dec = A1;
+            A1Obj = CalObj_dim(A1,dim,sparsity);
+            for i = 1 : M
+                % The parameter 'regpoly1' refers to one-order polynomial
+                % function, and 'regpoly0' refers to constant function. The
+                % former function has better fitting performance but lower
+                % efficiency than the latter one
+                dmodel     = dacefit(A1Dec,A1Obj(:,i),'regpoly0','corrgauss',THETA(i,:),1e-5.*ones(1,D),20*D.*ones(1,D));
+                Model{i}   = dmodel;
+                THETA(i,:) = dmodel.theta;
+            end
+            PopDec = A1Dec;
+            w      = 1;
+            while w <= wmax
+                drawnow();
+                OffDec = GA(PopDec,lower,upper);
+                PopDec = [PopDec;OffDec];
+                [N,~]  = size(PopDec);
+                M =2;
+                PopObj = zeros(N,M);
+                MSE    = zeros(N,M);
+                for i = 1: N
+                    for j = 1 : M
+                        [PopObj(i,j),~,MSE(i,j)] = predictor(PopDec(i,:),Model{j});
+                    end
                 end
+                index  = KEnvironmentalSelection(PopObj,V,(w/wmax)^alpha);
+                PopDec = PopDec(index,:);
+                PopObj = PopObj(index,:);
+                
+                % Adapt referece vectors
+                if ~mod(w,ceil(wmax*0.1))
+                    V(1:N1,:) = V0.*repmat(max(PopObj,[],1)-min(PopObj,[],1),size(V0,1),1);
+                end
+                w = w + 1; 
             end
-            index  = KEnvironmentalSelection(PopObj,V,(w/wmax)^alpha);
-            PopDec = PopDec(index,:);
-            PopObj = PopObj(index,:);
             
-            % Adapt referece vectors
-            if ~mod(w,ceil(wmax*0.1))
-                V(1:N1,:) = V0.*repmat(max(PopObj,[],1)-min(PopObj,[],1),size(V0,1),1);
-            end
-            w = w + 1; 
+            % Select mu solutions for re-evaluation
+            [NumVf,~] = NoActive(A1Obj,V0);
+            PopNew    = KrigingSelect(PopDec,PopObj,MSE,V,V0,NumVf,0.05*N,mu,(w/wmax)^alpha); 
+            A2        = [A2;PopNew];%ÀúÊ·×Ü¸öÌå
+            A1        = UpdataArchive(A1,PopNew,V,mu,NI);%µ±Ç°¼¯ºÏÖÐ¸öÌå 
+        end
+        saea_obj((krvea_time-1)*20*num_temp+1:krvea_time*20*num_temp,:) = CalObj_dim(A1,dim,sparsity);
+    end
+    chr_s = ['Proposed_SMOP1_',num2str(sparsity),'_',num2str(original_D),'.mat'];
+    save(chr_s,'saea_obj');
+
+    %% Calculate objective values
+    %smop1
+    function PopObj = CalObj_dim(X,dim,sparsity)
+        [N,~] = size(X);
+        new = zeros(N,1000);
+        for i = 1:N
+            new(i,dim) = X(i,:);
+        end
+        X = new;
+        [N,D] = size(X);
+        M = 2;
+        K = ceil(sparsity*(D-M+1));
+        g = sum(g1(X(:,M:M+K-1),pi/3),2) + sum(g2(X(:,M+K:end),0),2);
+        PopObj = repmat(1+g/(D-M+1),1,M).*fliplr(cumprod([ones(N,1),X(:,1:M-1)],2)).*[ones(N,1),1-X(:,M-1:-1:1)];
+        function g = g1(x,t)
+            g = (x-t).^2;
+        end
+    
+        function g = g2(x,t)
+            g = 2*(x-t).^2 + sin(2*pi*(x-t)).^2;
         end
         
-        % Select mu solutions for re-evaluation
-        [NumVf,~] = NoActive(A1Obj,V0);
-        PopNew    = KrigingSelect(PopDec,PopObj,MSE,V,V0,NumVf,0.05*N,mu,(w/wmax)^alpha); 
-        A2        = [A2;PopNew];%ÀúÊ·×Ü¸öÌå
-        A1        = UpdataArchive(A1,PopNew,V,mu,NI);%µ±Ç°¼¯ºÏÖÐ¸öÌå 
+        function g = g3(x,t)
+            g = 4-(x-t)-4./exp(100*(x-t).^2);
+        end
+        
+        function g = g4(x,t)
+            g = (x-pi/3).^2 + t.*sin(6*pi*(x-pi/3)).^2;
+        end
+
     end
-saea_obj((krvea_time-1)*20*num_temp+1:krvea_time*20*num_temp,:) = CalObj_dim(A1,dim,sparsity);
-end
-chr_s = ['Proposed_SMOP1_',num2str(sparsity),'_',num2str(original_D),'.mat'];
- save(chr_s,'saea_obj');
-% end
-% end
-        %% Calculate objective values
-        %smop1
-    function PopObj = CalObj_dim(X,dim,sparsity)
-    [N,~] = size(X);
-    new = zeros(N,1000);
-    for i = 1:N
-        new(i,dim) = X(i,:);
+    
+    %smop1
+    function PopObj = CalObj(X,sparsity)
+        global evaluation;
+        [N,D] = size(X);
+        evaluation = evaluation + N;
+        M = 2;
+        K = ceil(sparsity*(D-M+1));
+        g = sum(g1(X(:,M:M+K-1),pi/3),2) + sum(g2(X(:,M+K:end),0),2);
+        PopObj = repmat(1+g/(D-M+1),1,M).*fliplr(cumprod([ones(N,1),X(:,1:M-1)],2)).*[ones(N,1),1-X(:,M-1:-1:1)];
+        function g = g1(x,t)
+            g = (x-t).^2;
+        end
+    
+        function g = g2(x,t)
+            g = 2*(x-t).^2 + sin(2*pi*(x-t)).^2;
+        end
+        
+        function g = g3(x,t)
+            g = 4-(x-t)-4./exp(100*(x-t).^2);
+        end
+        
+        function g = g4(x,t)
+            g = (x-pi/3).^2 + t.*sin(6*pi*(x-pi/3)).^2;
+        end
+        
     end
-    X = new;
-    [N,D] = size(X);
-    M = 2;
-    K = ceil(sparsity*(D-M+1));
-    g = sum(g1(X(:,M:M+K-1),pi/3),2) + sum(g2(X(:,M+K:end),0),2);
-    PopObj = repmat(1+g/(D-M+1),1,M).*fliplr(cumprod([ones(N,1),X(:,1:M-1)],2)).*[ones(N,1),1-X(:,M-1:-1:1)];
-    function g = g1(x,t)
-    g = (x-t).^2;
-end
-
-function g = g2(x,t)
-    g = 2*(x-t).^2 + sin(2*pi*(x-t)).^2;
-end
-
-function g = g3(x,t)
-    g = 4-(x-t)-4./exp(100*(x-t).^2);
-end
-
-function g = g4(x,t)
-    g = (x-pi/3).^2 + t.*sin(6*pi*(x-pi/3)).^2;
-end
-end
-
-%smop1
-function PopObj = CalObj(X,sparsity)
-    global evaluation;
-    [N,D] = size(X);
-    evaluation = evaluation + N;
-    M = 2;
-    K = ceil(sparsity*(D-M+1));
-    g = sum(g1(X(:,M:M+K-1),pi/3),2) + sum(g2(X(:,M+K:end),0),2);
-    PopObj = repmat(1+g/(D-M+1),1,M).*fliplr(cumprod([ones(N,1),X(:,1:M-1)],2)).*[ones(N,1),1-X(:,M-1:-1:1)];
-    function g = g1(x,t)
-    g = (x-t).^2;
-end
-
-function g = g2(x,t)
-    g = 2*(x-t).^2 + sin(2*pi*(x-t)).^2;
-end
-
-function g = g3(x,t)
-    g = 4-(x-t)-4./exp(100*(x-t).^2);
-end
-
-function g = g4(x,t)
-    g = (x-pi/3).^2 + t.*sin(6*pi*(x-pi/3)).^2;
-end
-end
 
 
-
+end
 
 
 
