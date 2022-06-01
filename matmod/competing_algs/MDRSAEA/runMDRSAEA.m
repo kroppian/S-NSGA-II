@@ -8,7 +8,6 @@
 
 function result = runMDRSAEA(problem, N, M, D, sparsity)
     
-    
     % function saea_obj = MDR_SAEA(sparsity,M,D)
     %% Based Dimension Selection
     original_D = D;
@@ -213,14 +212,6 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
         function g = g2(x,t)
             g = 2*(x-t).^2 + sin(2*pi*(x-t)).^2;
         end
-        
-        function g = g3(x,t)
-            g = 4-(x-t)-4./exp(100*(x-t).^2);
-        end
-        
-        function g = g4(x,t)
-            g = (x-pi/3).^2 + t.*sin(6*pi*(x-pi/3)).^2;
-        end
 
     end
     
@@ -239,14 +230,6 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
     
         function g = g2(x,t)
             g = 2*(x-t).^2 + sin(2*pi*(x-t)).^2;
-        end
-        
-        function g = g3(x,t)
-            g = 4-(x-t)-4./exp(100*(x-t).^2);
-        end
-        
-        function g = g4(x,t)
-            g = (x-pi/3).^2 + t.*sin(6*pi*(x-pi/3)).^2;
         end
         
     end
