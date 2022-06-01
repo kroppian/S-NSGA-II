@@ -11,7 +11,7 @@
     global evaluation;% expensive function evaluations used
     evaluation = 0 ;
     f = @CalObj;
-    [dim,TDec_o,TMask_o,TempPop_o,popobj_o] = dim_selection(f,sparsity,M,D,lower,upper);%3*D
+    [dim,TDec_o,TMask_o,TempPop_o,popobj_o] = dim_selection_local(f,sparsity,M,D,lower,upper);%3*D
     dim(dim==0)=[];
     
 %% Initialization
@@ -107,7 +107,7 @@ dim_saea = dim_base(mask_dim,dim,num_temp);% b = zeros(1,30);
 result = saea_check(dim_saea,num_temp);
 if result>0
     evaluation = evaluation + 40*num_temp;
-    dim_saea = dim_final_selection(dim_saea,f,sparsity,num_temp,M,D);
+    dim_saea = dim_final_selection_local(dim_saea,f,sparsity,num_temp,M,D);
 else
     evaluation = evaluation + 40*num_temp;
 end
@@ -249,6 +249,95 @@ end
 
 
 
+function dim = dim_final_selection_local(dim_saea,f,sparsity,num_temp,M,D)
+    N = size(dim_saea,2);
+
+    lower    = [zeros(1,M-1)+0,zeros(1,D-M+1)-1];
+    upper    = [zeros(1,M-1)+1,zeros(1,D-M+1)+2];
+    Dec = lower+(upper-lower).*rand(N,D);
+        Mask = zeros(N,D);
+    for i =1:N
+        Mask(i,dim_saea(i)) = 1;
+    end
+    Population = Dec.*Mask;
+    popobj = f(Population,sparsity);
+    [FrontNo,~] = NDSort(popobj,N);
+    [B,I] = sort(FrontNo,'ascend');
+    dim = dim_saea(I(1:num_temp));
+end
+
+
+
+function [dim,Dec_return,Mask_return,Ind_return,Ind_obj] = dim_selection_local(f,sparsity,M,D,lower,upper)
+    base = zeros(1,D);
+    Dec = lower+(upper-lower).*rand(D,D);
+    Mask       = eye(D);
+    Population = Dec.*Mask;
+    ind = [base;Population];
+    ind_obj = f(ind,sparsity);
+    [FrontNo,~] = NDSort(ind_obj,D+1);
+    dim = find(FrontNo<=FrontNo(1,1))-1;
+    index = size(dim,2);
+    t = 1;
+    Dec_return = Dec;
+    Mask_return = Mask;
+    Ind_return = Population;
+    Ind_obj = ind_obj(2:end,:);
+    if index<=0.1*D
+        while t<3
+            base = zeros(1,D);
+            Dec = lower+(upper-lower).*rand(D,D);
+            Mask       = eye(D);
+            Population = Dec.*Mask;
+            ind = [base;Population];
+            ind_obj = f(ind,sparsity);
+            [FrontNo,~] = NDSort(ind_obj,D+1);
+            dim_temp = find(FrontNo<=FrontNo(1,1))-1;
+            dim = union(dim_temp,dim);
+            t = t + 1;
+            Dec_return = [Dec_return;Dec];
+            Mask_return = [Mask_return;Mask];
+            Ind_return = [Ind_return;Population];
+            Ind_obj = [Ind_obj;ind_obj(2:end,:)];
+        end
+    
+    else
+        while t<3
+            base = zeros(1,D);
+            Dec = lower+(upper-lower).*rand(D,D);
+            Mask       = eye(D);
+            Population = Dec.*Mask;
+            ind = [base;Population];
+            ind_obj = f(ind,sparsity);
+            indicator = zeros(1,1000);
+            for i=1:1000
+                indicator(i) = compare(ind_obj(i+1,1),ind_obj(1,1))+compare(ind_obj(i+1,2),ind_obj(1,2));
+            end
+            index_1 = find(indicator==0);
+            index_2 = find(indicator==-1);
+            dim_temp = union(index_1,index_2);
+            dim = intersect(dim_temp,dim);
+            t = t + 1;
+            Dec_return = [Dec_return;Dec];
+            Mask_return = [Mask_return;Mask];
+            Ind_return = [Ind_return;Population];
+            Ind_obj = [Ind_obj;ind_obj(2:end,:)];
+        end
+    end
+end
+
+
+function i = compare(a,b)
+    if a<b
+        i = -1;
+    end
+    if a>b
+        i=1;
+    end
+    if a==b
+        i=0;
+    end
+end
 
 
 
