@@ -77,19 +77,20 @@ function result = runMDRSAEA(problem, sparsity)
     num_time = 0;
         
     %% Search Proper Dimension
-    non_zero = zeros(50,100);
+    N_dim_search = 100;                                                       % Edited IMK 
+    non_zero = zeros(50,N_dim_search);                                        % Edited IMK 
     for time = 1:50
-        MatingPool       = TournamentSelection(2,2*100,FrontNo,-CrowdDis);
+        MatingPool       = TournamentSelection(2,2*N_dim_search,FrontNo,-CrowdDis);  % Edited IMK 
         mask_off = operate_spea(mask_dim(MatingPool,:),1,fitness);
-        Dec = lower+(upper-lower).*rand(100,D);
-        Mask = zeros(100,1000);
-        for i =1:100
+        Dec = lower+(upper-lower).*rand(N_dim_search,D);                      % Edited IMK 
+        Mask = zeros(N_dim_search,1000);                                      % Edited IMK 
+        for i =1:N_dim_search                                                 % Edited IMK 
             Mask(i,dim(find(mask_off(i,:)))) = 1;
         end
         population_off = Dec.*Mask;
-        PopObj = [popobj;problem.CalObj(population_off)];             % Edited IMK 
-        [population,mask_dim,FrontNo,CrowdDis,popobj] = EnvironmentalSelection([population;population_off],PopObj,[mask_dim;mask_off],100);
-        for i =1:100
+        PopObj = [popobj;problem.CalObj(population_off)];                     % Edited IMK 
+        [population,mask_dim,FrontNo,CrowdDis,popobj] = EnvironmentalSelection([population;population_off],PopObj,[mask_dim;mask_off],N_dim_search);  % Edited IMK 
+        for i =1:N_dim_search                                                 % Edited IMK 
             non_zero_temp = find(mask_dim(i,:));
             non_zero(time,i) = size(non_zero_temp,2);
         end
