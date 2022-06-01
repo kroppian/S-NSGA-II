@@ -6,20 +6,24 @@
 %   'outputFcn'
 %   'save'     
 
-function result = runMDRSAEA(problem, N, M, D, sparsity)
+function result = runMDRSAEA(problem, sparsity)
     
     % function saea_obj = MDR_SAEA(sparsity,M,D)
     %% Based Dimension Selection
+    M = problem.M; 
+    D = problem.D;
     original_D = D;
+
     lower    = [zeros(1,M-1)+0,zeros(1,D-M+1)-1];
     upper    = [zeros(1,M-1)+1,zeros(1,D-M+1)+2];
     global evaluation; % expensive function evaluations used
     evaluation = 0 ;
-    f = problem.CalObj;
-    [dim,~,~,TempPop_o,popobj_o] = dim_selection(f,sparsity,M,D,lower,upper);%3*D
+    [dim,~,~,TempPop_o,popobj_o] = dim_selection(problem);     % edited IMK 
     dim(dim==0)=[];
     
     %% Initialization
+    N = size(dim, 2);
+    problem.N = N; 
     TempPop = zeros(3*N,D);
     TempPop(1:N,:) = TempPop_o(dim(1,1:N),:);
     TempPop(N+1:2*N,:) = TempPop_o(D+dim(1,1:N),:);
@@ -40,14 +44,14 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
     init_time = floor(0.5*D/size(dim,2));
     end
     for i = 1 :init_time
-     Dec = lower+(upper-lower).*rand(N,D);
-    Mask_temp       = eye(N);
-    Mask = zeros(N,D);
-    for j =1:N
-        Mask(j,dim(find(Mask_temp(j,:)))) = 1;
-    end
-    population = Dec.*Mask;
-        PopObj     = f(population,sparsity);
+        Dec = lower+(upper-lower).*rand(N,D);
+        Mask_temp       = eye(N);
+        Mask = zeros(N,D);
+        for j =1:N
+            Mask(j,dim(find(Mask_temp(j,:)))) = 1;
+        end
+        population = Dec.*Mask;
+        PopObj     = problem.CalObj(population);             % Edited -- IMK 
         popobj     = [popobj;PopObj];
         TMask      = [TMask;Mask_temp];
         TempPop    = [TempPop;population];
@@ -61,7 +65,7 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
         Mask(i,dim(find(Mask_dim(i,:)))) = 1;
     end
     Population = Dec.*Mask;
-    PopObj_1     = f(Population,sparsity);
+    PopObj_1     = problem.CalObj(Population);          % Edited -- IMK 
     PopObj = [popobj;PopObj_1];
     num_e = 0;
     if init_time*N<100
@@ -83,7 +87,7 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
             Mask(i,dim(find(mask_off(i,:)))) = 1;
         end
         population_off = Dec.*Mask;
-        PopObj = [popobj;f(population_off,sparsity)];
+        PopObj = [popobj;problem.CalObj(population_off)];             % Edited IMK 
         [population,mask_dim,FrontNo,CrowdDis,popobj] = EnvironmentalSelection([population;population_off],PopObj,[mask_dim;mask_off],100);
         for i =1:100
             non_zero_temp = find(mask_dim(i,:));
@@ -108,7 +112,7 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
     result = saea_check(dim_saea,num_temp);
     if result>0
         evaluation = evaluation + 40*num_temp;
-        dim_saea = dim_final_selection(dim_saea,f,sparsity,num_temp,M,D);
+        dim_saea = dim_final_selection(dim_saea,problem,num_temp);          % edited IMK 
     else
         evaluation = evaluation + 40*num_temp;
     end
@@ -146,11 +150,13 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
             A1Dec = A1;
 
             % Start -- Modified by IMK to replace CalObj_dim
-            A1new = zeros(N,D);
-            for i = 1:N
+            [N_temp, ~] = size(A1);
+            A1new = zeros(N_temp,D);
+
+            for i = 1:N_temp
                 A1new(i,dim) = A1(i,:);
             end
-            A1Obj = f(A1new,sparsity);
+            A1Obj = problem.CalObj(A1new);                    
             % End -- Modified by IMK to replace CalObj_dim
 
             for i = 1 : M
@@ -196,11 +202,13 @@ function result = runMDRSAEA(problem, N, M, D, sparsity)
         end
 
         % Start -- Modified by IMK to replace CalObj_dim
-        A1new = zeros(N,D);
-        for i = 1:N  
+        [N_temp, ~] = size(A1);
+
+        A1new = zeros(N_temp,D);
+        for i = 1:N_temp  
             A1new(i,dim) = A1(i,:);
         end  
-        res = f(A1new,sparsity);
+        res = problem.CalObj(A1new);
         % End -- Modified by IMK to replace CalObj_dim
 
         saea_obj((krvea_time-1)*20*num_temp+1:krvea_time*20*num_temp,:) = res;

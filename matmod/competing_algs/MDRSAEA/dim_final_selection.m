@@ -1,5 +1,10 @@
-function dim = dim_final_selection(dim_saea,f,sparsity,num_temp,M,D)
+function dim = dim_final_selection(dim_saea, problem, num_temp) % function handle edited by IMK
     N = size(dim_saea,2);
+
+    % Start -- edited by IMK 
+    D = problem.D; 
+    M = problem.M; 
+    % End -- edited by IMK
 
     lower    = [zeros(1,M-1)+0,zeros(1,D-M+1)-1];
     upper    = [zeros(1,M-1)+1,zeros(1,D-M+1)+2];
@@ -9,7 +14,7 @@ function dim = dim_final_selection(dim_saea,f,sparsity,num_temp,M,D)
         Mask(i,dim_saea(i)) = 1;
     end
     Population = Dec.*Mask;
-    popobj = f(Population,sparsity);
+    popobj = problem.CalObj(Population);   % Edited by IMK 
     [FrontNo,~] = NDSort(popobj,N);
     [B,I] = sort(FrontNo,'ascend');
     dim = dim_saea(I(1:num_temp));
