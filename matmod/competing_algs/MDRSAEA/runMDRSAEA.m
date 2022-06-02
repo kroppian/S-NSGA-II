@@ -1,11 +1,3 @@
- 
-%   'problem' 
-%   'N'        
-%   'M'        
-%   'D'        
-%   'outputFcn'
-%   'save'     
-
 function result = runMDRSAEA(problem, sparsity)
     
     % function saea_obj = MDR_SAEA(sparsity,M,D)
@@ -82,7 +74,7 @@ function result = runMDRSAEA(problem, sparsity)
         MatingPool       = TournamentSelection(2,2*100,FrontNo,-CrowdDis);
         mask_off = operate_spea(mask_dim(MatingPool,:),1,fitness);
         Dec = lower+(upper-lower).*rand(100,D);
-        Mask = zeros(100,1000);
+        Mask = zeros(100,original_D);                                 % Edited by IMK 
         for i =1:100
             Mask(i,dim(find(mask_off(i,:)))) = 1;
         end
@@ -130,9 +122,9 @@ function result = runMDRSAEA(problem, sparsity)
         M = 2;
         D  = size(dim,2);
         N1 = 20*D;
-        lower_o   = [zeros(1,2-1)+0,zeros(1,1000-2+1)-1];
-        upper_o    = [zeros(1,2-1)+1,zeros(1,1000-2+1)+2];
-        lower = lower_o(:,dim);
+        lower_o   = [zeros(1,2-1)+0,zeros(1,original_D-2+1)-1];      % Edited by IMK
+        upper_o    = [zeros(1,2-1)+1,zeros(1,original_D-2+1)+2];     % Edited by IMK 
+        lower = lower_o(:,dim); 
         upper = upper_o(:,dim);
         %% Generate the reference points and population
         [V0,N1] = UniformPoint(20*D,M);
@@ -214,7 +206,7 @@ function result = runMDRSAEA(problem, sparsity)
         saea_obj((krvea_time-1)*20*num_temp+1:krvea_time*20*num_temp,:) = res;
 
     end   
-    chr_s = ['Proposed_SMOP1_',num2str(sparsity),'_',num2str(original_D),'.mat'];
+    chr_s = ['Proposed_', class(problem),'_',num2str(sparsity),'_',num2str(original_D),'.mat'];
     save(chr_s,'saea_obj');
     
 end
