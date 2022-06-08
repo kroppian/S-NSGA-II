@@ -13,7 +13,7 @@ prob = SMOP1('N', 100, 'D', D, 'FE', 200, 'maxFE', 20000, 'parameter', {0.15});
 % No clue why this is needed, but taken from ALGORITHM.Solve
 prob.Current(prob);
 
-pop = SamplerNouveau(prob, 0.75, 1);
+pop = VariedStripedSparseSampler_v2(prob, 0.75, 1);
 
 pop_genes = pop.decs;
 
@@ -28,6 +28,10 @@ bar(sum(nz_map));
 
 
 sparsities = sum(pop_genes == 0,2)/D;
-figure;
-histogram(sparsities, 100);
+% figure;
+% histogram(sparsities, 100);
 
+figure;
+scatter(linspace(0.75,1,numel(sparsities)), sparsities);
+hold on
+plot(linspace(0.75,1,numel(sparsities)),linspace(0.75,1,numel(sparsities)));
