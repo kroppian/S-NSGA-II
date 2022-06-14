@@ -71,8 +71,6 @@ function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
     for c = 1:cycle_count
         cycle = cycles(c, cycles(c, :) ~= 0);
 
-        final_cycle = c == cycle_count;
-
         widths = widthVector(cycle);
 
         gapToFill = prob.D - sum(widths);
