@@ -30,6 +30,7 @@ function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
 
     %% Determine the positioning of each stripe per individual
     densityVector = 1 - linspace(sLower, sUpper, prob.N);
+
     widthVector = round(densityVector.*prob.D);
     
     % Put widths back into bound if rounding error occurred
@@ -92,7 +93,11 @@ function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
             % Determine the position of the stripe
             startPoint = position;
 
-            endPoint = position+width-1+gapWidth; 
+            if c == cycle_count
+                endPoint = position+width-1; 
+            else
+                endPoint = position+width-1+gapWidth; 
+            end
 
             % Prevent overflow from a gap calculation
             if endPoint > prob.D 
