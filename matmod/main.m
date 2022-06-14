@@ -39,7 +39,7 @@ if config.saveData
 
 end
 
-run = 3;
+run = 1;
 
 %% Genome observation
 
@@ -56,7 +56,9 @@ run = 3;
 D = 100;
 
 figure;
-plot_generational_info(res, config, run, D);
+%plot_generational_info(res, config, run, D, getAlgIds(config));
+alg = getAlgIds(config);
+plot_generational_info(res, config, run, D, {alg{1}});
 
 figure;
 plot_final_pareto(res_final, config, run, D);
@@ -66,8 +68,14 @@ plot_strip_scatter(res_final, config, D);
 
 % Full metric plots
 % Example load command: 
-% load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\sNSGAIIComparative_compDecVar_SMOP1.mat')
-hh
+%load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIEffective_effDecVar_SMOP1.mat')
+%load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\classicLineup\sNSGAIIEffective_effDecVar_SMOP5.mat')
+
+figure;
+plot_metric("HV",   "D", config, res_final);
+
+
+
 
 
 
