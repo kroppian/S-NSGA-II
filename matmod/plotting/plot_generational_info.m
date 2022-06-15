@@ -10,7 +10,7 @@ function plot_generational_info(res, config, run, D, toInclude)
     % Plot each algorithm sparsity performance 
     for a = 1:alg_count
 
-        alg = genRunId(config, a);
+        alg = getAlgId(config, a);
         if numel(find(ismember(toInclude, alg))) == 0
             continue;
         end
@@ -45,7 +45,7 @@ function plot_generational_info(res, config, run, D, toInclude)
     
     % Plot each algorithm HV performance 
     for a = 1:alg_count
-        alg = genRunId(config, a);
+        alg = getAlgId(config, a);
         if numel(find(ismember(toInclude, alg))) == 0
             continue;
         end

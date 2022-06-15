@@ -57,8 +57,8 @@ D = 100;
 
 figure;
 %plot_generational_info(res, config, run, D, getAlgIds(config));
-alg = getAlgIds(config);
-plot_generational_info(res, config, run, D, {alg{1}});
+algs = getAlgIds(config);
+plot_generational_info(res, config, run, D, {algs{1}});
 
 figure;
 plot_final_pareto(res_final, config, run, D);
@@ -69,13 +69,12 @@ plot_strip_scatter(res_final, config, D);
 % Full metric plots
 % Example load command: 
 %load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIEffective_effDecVar_SMOP1.mat')
-%load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\classicLineup\sNSGAIIEffective_effDecVar_SMOP5.mat')
+load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP1.mat')
+
+algs = getAlgIds(config);
+
+toInclude = ~strcmp(algs,'sNSGAII_island_v2-VariedStripedSparseSampler_v2-sparsePolyMutate-cropover_v2') & ~strcmp(algs,'sNSGAII_island_v1-VariedStripedSparseSampler_v2-sparsePolyMutate-cropover_v2') & ~strcmp(algs,'sNSGAII-VariedStripedSparseSampler_v2-sparsePolyMutate-cropover_v2');
 
 figure;
-plot_metric("HV",   "D", config, res_final);
-
-
-
-
-
+plot_metric("HV",   "D", config, res_final, algs(toInclude));
 

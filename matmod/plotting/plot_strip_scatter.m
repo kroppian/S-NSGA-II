@@ -6,7 +6,7 @@ function plot_strip_scatter(res, config, D)
         
     % Plot each algorithm sparsity performance 
     for a = 1:alg_count
-        alg = genRunId(config, a);
+        alg = getAlgId(config, a);
         hvs = res{res.D == D & strcmp(res.alg, alg), 'HV'};
 
         jitters = ones(size(hvs))*a + unifrnd(-0.1,0.1,size(hvs));

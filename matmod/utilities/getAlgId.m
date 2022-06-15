@@ -1,4 +1,4 @@
-function id = genRunId(config, runNo)
+function id = getAlgId(config, runNo)
 
     raw_algorithm = func2str(config.algorithms{runNo});
 
