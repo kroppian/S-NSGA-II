@@ -1,11 +1,12 @@
 
 
-function plot_metric(metric, decVarName, config, res)
+function plot_metric(metric, decVarName, config, res, algs)
 
     %% Global controls
-    LABEL_FONT_SIZE = 16; 
-    LEGEND_FONT_SIZE = 12; 
-    SUBTITLE_FONT_SIZE = 14;
+    LABEL_FONT_SIZE = 20; 
+    LEGEND_FONT_SIZE = 12;
+    TICK_SIZE = 14;
+    SUBTITLE_FONT_SIZE = 20;
     TITLE_FONT_SIZE = 22;
 
     available_colors = [230, 25 , 75 ; 60 , 180, 75 ; ...
@@ -31,13 +32,6 @@ function plot_metric(metric, decVarName, config, res)
     repetition = 1:max(res.run);
     decVars = unique(res{:,decVarName});
 
-    alg_count = numel(config.algorithms);
-    algs = cell(alg_count,1);
-    for a = 1:alg_count
-        algs{a} = genRunId(config, a);
-    end
-    
-    numRepetitions = numel(repetition);
     numDependentVars = numel(decVars);
     numAlgorithms = numel(algs);
     
@@ -69,8 +63,8 @@ function plot_metric(metric, decVarName, config, res)
     % Add the various algorithms to the legend 
     for a = 1:numAlgorithms
         % Offset 
-        legend_entries{a*2 - offset} = config.labels{a};
-        legend_entries{a*2+1 - offset} = config.labels{a} + " CI";
+        legend_entries{a*2 - offset} = ""; % Ignore CIs
+        legend_entries{a*2+1 - offset} = cleanLegend(algs{a});
     end
 
     if indep_var_dec_vars
@@ -84,7 +78,8 @@ function plot_metric(metric, decVarName, config, res)
     %% Calculate optimal HV
     if metric == "HV"
         ref_front = config.prob('M',2).GetPF();
-        optimal_hv = CalcHV(ref_front, [1, 1]);
+        foo = config.prob();
+        optimal_hv = CalcHV(foo.optimum, foo.optimum);
     end
 
     %% Plotting
@@ -180,7 +175,7 @@ function plot_metric(metric, decVarName, config, res)
 
         % Make song distinguishing difference between with/without SPS in
         % effective runs
-        if mod(alg, 2) == 0 
+        if contains(algs{alg}, 'sNSGA')
            plot(dependentVars, y, 'Color', color, 'LineWidth', 2);
         else
            plot(dependentVars, y, 'Color', color, 'LineStyle', ':', 'LineWidth', 2);
@@ -207,9 +202,19 @@ function plot_metric(metric, decVarName, config, res)
 
 
     end
-    title(func2str(config.prob));
-    legend(legend_entries);
-    
+    l = legend(legend_entries);
+    l.FontSize = LEGEND_FONT_SIZE;
+    fontname(gca, "Times");
+    ax = gca;
+    ax.FontSize = TICK_SIZE; 
+
 end
 
+function cleanEntry = cleanLegend(rawEntry)
+    if  contains(rawEntry, "sNSGA")
+        cleanEntry = "sNSGA-II";
+    else
+        cleanEntry = rawEntry;
+    end
 
+end
