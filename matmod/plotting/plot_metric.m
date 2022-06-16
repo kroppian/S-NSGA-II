@@ -16,6 +16,8 @@ function plot_metric(metric, decVarName, config, res, algs)
          170, 255, 195; 128, 128, 0  ; 255, 215, 180; 0  , 0  , 128; ...
          128, 128, 128; 255, 255, 255 ];
     
+    HVS = {0.586735, 0.586735, 0.586735, 0.822101, 0.822101, 0.822101, 0.350874, 0.350874};
+
     %% Configuration
     if config.runType == "compDecVar" || config.runType == "effDecVar"
         indep_var_dec_vars = true;
@@ -77,9 +79,8 @@ function plot_metric(metric, decVarName, config, res, algs)
 
     %% Calculate optimal HV
     if metric == "HV"
-        ref_front = config.prob('M',2).GetPF();
-        foo = config.prob();
-        optimal_hv = CalcHV(foo.optimum, foo.optimum);
+        func_name = func2str(config.prob);
+        optimal_hv = HVS{str2num(func_name(end))};
     end
 
     %% Plotting
@@ -214,7 +215,12 @@ function cleanEntry = cleanLegend(rawEntry)
     if  contains(rawEntry, "sNSGA")
         cleanEntry = "sNSGA-II";
     else
-        cleanEntry = rawEntry;
+        cleanEntry = strrep(rawEntry, 'PMMOEA', 'PM-MOEA');
+        cleanEntry = strrep(cleanEntry, 'MOEAPSL', 'MOEA/PSL');
+        cleanEntry = strrep(cleanEntry, 'MPMMEA', 'MP-MMEA');
+
     end
+
+
 
 end
