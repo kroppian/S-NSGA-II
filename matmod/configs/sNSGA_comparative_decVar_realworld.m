@@ -1,3 +1,4 @@
+
 max_ref = 7; 
 
 comp = "GILG";
@@ -46,7 +47,7 @@ config = run_config(platPath,                                                 ..
                     "sNSGAIIComparative",                                     ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
-                    @SMOP1,                                                   ...    %   prob              
+                    @Sparse_NN,                                               ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
                     100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
@@ -57,6 +58,8 @@ config = run_config(platPath,                                                 ..
                     "/mnt/nas/kroppian/sNSGAIIRuns/",                         ...    %   savePath
                     false                                                     ...    %   saveAllGens
                     ); 
+
+
 
 
 
