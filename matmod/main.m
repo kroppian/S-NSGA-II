@@ -7,7 +7,7 @@ addpath("plotting");
 
 
 %sNSGA_eff_sparsity;
-sNSGA_eff_400;
+sNSGA_comparative_decVar_realworld
 %sNSGA_comparative;
 
 if config.saveData
@@ -57,8 +57,8 @@ D = 100;
 
 figure;
 %plot_generational_info(res, config, run, D, getAlgIds(config));
-algs = getAlgIds(config);
-plot_generational_info(res, config, run, D, {algs{1}});
+alg = getAlgIds(config);
+plot_generational_info(res, config, run, D, {alg{1}});
 
 figure;
 plot_final_pareto(res_final, config, run, D);
@@ -69,14 +69,13 @@ plot_strip_scatter(res_final, config, D);
 % Full metric plots
 % Example load command: 
 %load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIEffective_effDecVar_SMOP1.mat')
-load('C:\Users\Ian Kropp\Desktop\sNSGAII\sNSGAIIComparative_compDecVar_SMOP4.mat')
-
-algs = getAlgIds(config);
-
-toInclude = ~strcmp(algs,'sNSGAII_island_v2-VariedStripedSparseSampler_v2-sparsePolyMutate-cropover_v2') & ~strcmp(algs,'sNSGAII_island_v1-VariedStripedSparseSampler_v2-sparsePolyMutate-cropover_v2') & ~strcmp(algs,'sNSGAII-VariedStripedSparseSampler_v2-sparsePolyMutate-cropover_v2');
-%toInclude = ~strcmp(algs,'sNSGAII_island_v2-VariedStripedSparseSampler_v2-sparsePolyMutate-cropover_v2') & ~strcmp(algs,'sNSGAII_island_v1-VariedStripedSparseSampler_v2-sparsePolyMutate-cropover_v2');
-
+%load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\classicLineup\sNSGAIIEffective_effDecVar_SMOP5.mat')
 
 figure;
-plot_metric("HV",   "D", config, res_final, algs(toInclude));
+plot_metric("HV",   "D", config, res_final);
+
+
+
+
+
 

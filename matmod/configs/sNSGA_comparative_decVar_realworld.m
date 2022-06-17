@@ -23,17 +23,15 @@ algorithms =   {@SparseEA, @SparseEA2, @MOEAPSL, @MPMMEA, @PMMOEA,  @sNSGAII    
 mutation_op =  {@nop     , @nop      , @nop    , @nop   , @nop   ,  @sparsePolyMutate};
 crossover =    {@nop     , @nop      , @nop    , @nop   , @nop   ,  @cropover_v2     };
 
-pop_samplers = {@nop, @nop, @nop, @nop, @nop,
-                 {@VariedStripedSparseSampler_v3, 0.75, 1}
-                 };
+pop_samplers = {@nop, @nop, @nop, @nop, @nop, ...
+                 {@VariedStripedSparseSampler_v3, 0.75, 1}};
 
 labels = ["SparseEA", ...
           "SparseEA2", ...
           "MOEA-PSL", ...
           "MP-MMEA", ...
           "PM-MOEA", ...
-          "sNSGA-II with VSSPS"
-          ];
+          "sNSGA-II with VSSPS" ];
 
 
 config = run_config(platPath,                                                 ...    %   platPath          
