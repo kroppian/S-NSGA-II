@@ -76,8 +76,7 @@ function results = runOptBatch(config)
             annotated_alg = raw_algorithm;
         end
 
-        fprintf("%d Running algorithm %s with %d decision variables and sparsity %f\n", ...
-                 s, annotated_alg, decision_vars, sparsity);
+
                          
         [workingDir, ~, ~]= fileparts(mfilename('fullpath'));
         addpath(workingDir);
@@ -92,8 +91,14 @@ function results = runOptBatch(config)
         if contains(func2str(config.prob), "SMOP") 
             problem_params = {config.prob, sparsity};
         else 
-            problem_params = config.prob;
+            problem_params = {config.prob, config.subproblem, decision_vars};
+
+            dummy_prob = config.prob('parameter', problem_params(2:3));
+            decision_vars = dummy_prob.D;
         end
+
+        fprintf("%d Running algorithm %s with %d decision variables and sparsity %f\n", ...
+            s, annotated_alg, decision_vars, sparsity);
 
         if custom_alg
             platemo(                                             ...

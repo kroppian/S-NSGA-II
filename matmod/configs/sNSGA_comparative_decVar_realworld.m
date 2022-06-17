@@ -1,9 +1,9 @@
 
 max_ref = 7; 
 
-comp = "GILG";
+comp = "WORKPC";
 
-if comp == "EGR"
+if comp == "DECS"
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
     sNSGAIIPath = 'M:\Projects\cropover\matmod\sNSGAII';
 elseif comp == "WORKPC"
@@ -49,12 +49,13 @@ config = run_config(platPath,                                                 ..
                     true,                                                     ...    %   indep_var_dec_vars
                     100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   
-                    [100, 200, 400, 800, 1600, 3200, 6400],                   ...    %   Dz                          
+                    [40],                                                     ...    %   (Really size of hidden layer)                          
                     linspace(0.05, 0.45,2),                                   ...    %   sparsities        (TODO revert)
                     "compDecVar",                                             ...    %   runType           
                     true,                                                     ...    %   saveData
-                    "/mnt/nas/kroppian/sNSGAIIRuns/",                         ...    %   savePath
-                    false                                                     ...    %   saveAllGens
+                    "C:\Users\Ian Kropp\Desktop",                             ...    %   savePath
+                    false,                                                    ...    %   saveAllGens
+                    1                                                         ...    %   subproblem 
                     ); 
 
 

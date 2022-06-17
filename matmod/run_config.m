@@ -24,13 +24,14 @@ classdef run_config
         saveData
         savePath
         saveAllGens
+        subproblem
     end
     
     methods
         function obj = run_config(platPath, sNSGAIIPath, repetitions, ...
                 algorithms, sampling_method, mutation_method, crossover_method, labels, run_label, max_ref, ...
                 refPoints, prob, indep_var_dec_vars, defaultDecVar, ...
-                defaultSparsity, Dz, sparsities, runType, saveData, savePath, saveAllGens)
+                defaultSparsity, Dz, sparsities, runType, saveData, savePath, saveAllGens, subproblem)
             
             %RESULT Construct an instance of this class
             %   Detailed explanation goes here
@@ -55,6 +56,7 @@ classdef run_config
             obj.saveData           = saveData;
             obj.savePath           = savePath;
             obj.saveAllGens        = saveAllGens;
+            obj.subproblem         = subproblem;
             
             addpath(genpath(obj.platPath));
 
