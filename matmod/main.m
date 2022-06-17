@@ -11,7 +11,7 @@ sNSGA_eff_400;
 %sNSGA_comparative;
 
 if config.saveData
-    file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '.mat');
+    file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '_new.mat');
     fullSavePath = strcat(config.savePath, file_name);
     if ~exist(config.savePath, 'dir')
         error("Output path does not exist.");
