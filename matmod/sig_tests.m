@@ -281,50 +281,70 @@ end % End - for every metric
 %% Print median results in LaTeX
 if print_latex_table
     disp("*********************************************************");
-    for row = 1:numRows
-        % decision variables
-        if include_dep_var
-            if usesDecVar
-                fprintf("%d & ", sigTable(row,:).numDecVars);  
-            else
-                fprintf("%d & ", sigTable(row,:).sparsities);  
-            end
-        end
-        
-        % test problem
-        if include_test_prob
-            fprintf("%s & ", sigTable(row,:).testProb{1});  
-        end
-        
-        % HV      
-        if include_hv 
-            fprintf("%.2f(%.2f)%s & ", round(sigTable(row,:).median_HV_prop,  2), ...
-                    round(sigTable(row,:).median_HV_base, 2), ...
-                    sig_number_2_char(sigTable(row,:).sig_HV));
-        end
-        
-        % Run times
-        if include_runTime 
-            fprintf("%.2f(%.2f)%s & ", round(sigTable(row,:).median_time_prop, 2), ...
-                       round(sigTable(row,:).median_time_base, 2), ...
-                       sig_number_2_char_opp(sigTable(row,:).sig_time));
-        end
 
-        if include_nds
-            fprintf("%d(%d)%s", sigTable(row,:).median_nds_prop, ...
-                 round(sigTable(row,:).median_nds_base), ...
-                 sig_number_2_char(sigTable(row,:).sig_nds));
-        end
-        % Number of non-dominated points 
+
+    %                      ROW
+    % Each row is a DECISION VARIABLE and a TEST PROBLEM
+    for d = 1:numDependentVar
+
+        numDecVars = config.Dz(d);
+
+
+        for test_prob_i = 1:numTestProbs
+
+            currentTestProb = testProblemsUsed{test_prob_i};
+
+            fprintf("%d & %s & ", numDecVars, currentTestProb);
+
+            %                      COL
+            % Each column is a BASE METHOD and a METRIC
+    
+            % For every base method
+            for m_baseMethods = 1:numel(baseMethods)
+
+                currentBaseMethod = baseMethods{m_baseMethods};
+    
+                row_mask = sigTable.numDecVars == numDecVars & ...
+                           strcmp(sigTable.testProb, currentTestProb) & ...
+                           strcmp(sigTable.baseMethod, currentBaseMethod);
+                    
+                % HV      
+                if include_hv 
+                    fprintf("%.2f(%.2f)%s & ", round(sigTable(row_mask,:).median_HV_prop,  2), ...
+                            round(sigTable(row_mask,:).median_HV_base, 2), ...
+                            sig_number_2_char(sigTable(row_mask,:).sig_HV));
+                end
+
+
+                % Run times
+                if include_runTime 
+                    fprintf("%.2f(%.2f)%s & ", round(sigTable(row_mask,:).median_time_prop, 2), ...
+                               round(sigTable(row_mask,:).median_time_base, 2), ...
+                               sig_number_2_char_opp(sigTable(row_mask,:).sig_time));
+                end
         
-                        
-        if include_backslash
-            fprintf(" \\\\\n"); 
-        else
-            fprintf(" \n"); 
+                % NDS
+                if include_nds
+                    fprintf("%d(%d)%s & ", sigTable(row_mask,:).median_nds_prop, ...
+                         round(sigTable(row_mask,:).median_nds_base), ...
+                         sig_number_2_char(sigTable(row_mask,:).sig_nds));
+                end
+
+
+
+            end
+
+            if include_backslash
+                fprintf(" \\\\\n"); 
+            else
+                fprintf(" \n"); 
+            end
+
         end
-        
+   
+
     end
+
 end
 
 %% Print out pvals in LaTeX
