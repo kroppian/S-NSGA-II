@@ -280,7 +280,6 @@ for m_metric = 1:numel(metrics)
   
 end % End - for every metric
 
-%% Figure out 
 
 
 %% Print median results in LaTeX
@@ -348,7 +347,7 @@ if print_latex_table
                         fprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
                             sig_number_2_char(sigTable(row_mask,:).sig_time));
                     else
-                        if sigTable(row_mask,:).sig_time == 1
+                        if sigTable(row_mask,:).sig_time == -1
                             fprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
                                        sig_number_2_char_opp(sigTable(row_mask,:).sig_time));
                         else
@@ -397,6 +396,37 @@ if print_latex_table
     end
 
 end
+
+% Figure out overall performance 
+
+fprintf("\\multicolumn{2}{c}{($+/-/\\approx$)} & " )
+
+for m_baseMethods = 1:numel(baseMethods)
+    
+    for m_metric = 1:numel(metrics)
+    
+        currentBaseMethod = baseMethods{m_baseMethods};
+        metric = metrics{m_metric};
+        baseMethodMask = strcmp(sigTable.baseMethod, currentBaseMethod);
+
+        sig_vals = sigTable{baseMethodMask, ['sig_', metric]};
+
+        if metric == "time"
+            better = sum(sig_vals == -1);
+            same = sum(sig_vals == 0);
+            worse = sum(sig_vals == 1);
+        else
+            better = sum(sig_vals == 1);
+            same = sum(sig_vals == 0);
+            worse = sum(sig_vals == -1);
+        end
+
+        fprintf("$%d/%d/%d$ & ", better, worse, same);
+
+    end
+end
+fprintf("\n");
+
 
 %% Print out pvals in LaTeX
 if print_pval_latex_table 
