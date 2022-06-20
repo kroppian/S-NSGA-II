@@ -1,10 +1,14 @@
 %% Setup 
 clear
 
+addpath("configs");
+addpath("utilities");
+addpath("plotting");
+
 %% Run setup 
 plotting_on = false;
-print_latex_table = false;
-print_pval_latex_table = true;
+print_latex_table = true;
+print_pval_latex_table = false;
 
 % Analysis metrics
 metrics = {'HV', 'time', 'nds'};
@@ -35,13 +39,13 @@ testProblemsUsed = { ...
     };
 
 
-baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'MPMMEA'};
+baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'MPMMEA', 'PMMOEA'};
 proposedMethod = 'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-cropover_v2';
 include_dep_var = true;
 include_test_prob = true;
 include_hv = true;
 include_runTime = true;
-include_numNonDom = true;
+include_nds = true;
 include_backslash = true;
 usesDecVar = true;
 sNSGA_comparative_decVar_realworld;
@@ -83,7 +87,7 @@ disp('Done.');
 % include_test_prob = false;
 % include_hv = true;
 % include_runTime = false;
-% include_numNonDom = true;
+% include_nds = true;
 % include_backslash = false;
 % usesDecVar = true;
 % end -- effective decision variable runs
@@ -96,7 +100,7 @@ disp('Done.');
 % include_test_prob = false;
 % include_hv = true;
 % include_runTime = false;
-% include_numNonDom = true;
+% include_nds = true;
 % include_backslash = true;
 % usesDecVar = false;
 % end -- effective sparsity runs
@@ -205,8 +209,12 @@ for m_metric = 1:numel(metrics)
                 baseMethRaw = resultsTable.(metric);
                 baseMethRaw = baseMethRaw(mask,:);
 
-                alpha = 0.025; % test_prob_i == 3 && strcmp(metric, 'numNonDom')
-                pVal = ranksum(propMethRaw, baseMethRaw); % test_prob_i == 3 && m_metric == 3
+                alpha = 0.025; 
+                if numel(baseMethRaw) == 0
+                    pVal = -99; 
+                else
+                    pVal = ranksum(propMethRaw, baseMethRaw); % test_prob_i == 3 && m_metric == 3
+                end
                 
                 % Value is sometimes nan if the population is identical 
                 % I think this is a bug
@@ -219,7 +227,7 @@ for m_metric = 1:numel(metrics)
                 % If there's a population difference, test whether it's
                 % better or worse
                 if difference
-                    if mean(baseMethRaw) > mean(propMethRaw)
+                    if numel(propMethRaw) == 0 || mean(baseMethRaw) > mean(propMethRaw)
                         result = -1;
                     else
                         result = 1;
@@ -235,8 +243,12 @@ for m_metric = 1:numel(metrics)
                 sigTable.(strcat('sig_',metric))(row) = result;
                 sigTable.(strcat('pval_',metric))(row) = pVal;
 
-                
-                sigTable.(strcat('median_', metric,'_base'))(row) = median(baseMethRaw);
+                if numel(baseMethRaw) == 0
+                    sigTable.(strcat('median_', metric,'_base'))(row) = -99;
+                else
+                    sigTable.(strcat('median_', metric,'_base'))(row) = median(baseMethRaw);
+                end
+    
                 sigTable.(strcat('median_', metric,'_prop'))(row) = median(propMethRaw);
                 
                 %% Plot outcome
@@ -266,7 +278,7 @@ for m_metric = 1:numel(metrics)
   
 end % End - for every metric
 
-
+%% Print median results in LaTeX
 if print_latex_table
     disp("*********************************************************");
     for row = 1:numRows
@@ -298,10 +310,10 @@ if print_latex_table
                        sig_number_2_char_opp(sigTable(row,:).sig_time));
         end
 
-        if include_numNonDom
-            fprintf("%d(%d)%s", sigTable(row,:).median_numNonDom_prop, ...
-                 round(sigTable(row,:).median_numNonDom_base), ...
-                 sig_number_2_char(sigTable(row,:).sig_numNonDom));
+        if include_nds
+            fprintf("%d(%d)%s", sigTable(row,:).median_nds_prop, ...
+                 round(sigTable(row,:).median_nds_base), ...
+                 sig_number_2_char(sigTable(row,:).sig_nds));
         end
         % Number of non-dominated points 
         
@@ -315,6 +327,7 @@ if print_latex_table
     end
 end
 
+%% Print out pvals in LaTeX
 if print_pval_latex_table 
     disp("*********************************************************");
     for row = 1:numRows
@@ -358,7 +371,7 @@ if print_pval_latex_table
         end
 
 
-        if include_numNonDom
+        if include_nds
             if sigTable(row,:).pval_nds == 1
                 fprintf("%d%s", sigTable(row,:).pval_nds, ...
                     sig_number_2_char(sigTable(row,:).sig_nds));                  
