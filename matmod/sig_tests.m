@@ -270,6 +270,8 @@ for m_metric = 1:numel(metrics)
 
         end % End
 
+
+
     end % Decision var
 
     if plotting_on
@@ -278,7 +280,13 @@ for m_metric = 1:numel(metrics)
   
 end % End - for every metric
 
+%% Figure out 
+
+
 %% Print median results in LaTeX
+
+
+
 if print_latex_table
     disp("*********************************************************");
 
@@ -310,24 +318,67 @@ if print_latex_table
                     
                 % HV      
                 if include_hv 
-                    fprintf("%.2f(%.2f)%s & ", round(sigTable(row_mask,:).median_HV_prop,  2), ...
-                            round(sigTable(row_mask,:).median_HV_base, 2), ...
+                    
+                    proposed = round(sigTable(row_mask,:).median_HV_prop,  2);
+                    base = round(sigTable(row_mask,:).median_HV_base, 2);
+
+                    if base == -99
+                        fprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
                             sig_number_2_char(sigTable(row_mask,:).sig_HV));
+                    else
+                        if sigTable(row_mask,:).sig_HV == 1
+                            fprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
+                                sig_number_2_char(sigTable(row_mask,:).sig_HV));
+                        else
+                            fprintf("%.2f(%.2f)%s & ", proposed, base, ...
+                                sig_number_2_char(sigTable(row_mask,:).sig_HV));                            
+                        end
+                    end
+
                 end
 
 
                 % Run times
                 if include_runTime 
-                    fprintf("%.2f(%.2f)%s & ", round(sigTable(row_mask,:).median_time_prop, 2), ...
-                               round(sigTable(row_mask,:).median_time_base, 2), ...
-                               sig_number_2_char_opp(sigTable(row_mask,:).sig_time));
+
+                    proposed = round(sigTable(row_mask,:).median_time_prop, 2);
+                    base = round(sigTable(row_mask,:).median_time_base, 2);
+
+                    if base == -99
+                        fprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
+                            sig_number_2_char(sigTable(row_mask,:).sig_time));
+                    else
+                        if sigTable(row_mask,:).sig_time == 1
+                            fprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
+                                       sig_number_2_char_opp(sigTable(row_mask,:).sig_time));
+                        else
+                            fprintf("%.2f(%.2f)%s & ", proposed, base, ...
+                                       sig_number_2_char_opp(sigTable(row_mask,:).sig_time));                            
+                        end
+                    end
+
                 end
         
                 % NDS
                 if include_nds
-                    fprintf("%d(%d)%s & ", sigTable(row_mask,:).median_nds_prop, ...
-                         round(sigTable(row_mask,:).median_nds_base), ...
-                         sig_number_2_char(sigTable(row_mask,:).sig_nds));
+
+                    proposed = sigTable(row_mask,:).median_nds_prop;
+                    base = round(sigTable(row_mask,:).median_nds_base);
+
+                    if base == -99
+                        fprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
+                            sig_number_2_char(sigTable(row_mask,:).sig_nds));
+                    else
+                        if sigTable(row_mask,:).sig_nds == 1
+                            fprintf("\\textbf{%d(%d)%s} & ", proposed, base, ...
+                                sig_number_2_char(sigTable(row_mask,:).sig_nds));
+                        else
+                            fprintf("%d(%d)%s & ", proposed, base, ...
+                                sig_number_2_char(sigTable(row_mask,:).sig_nds));
+                        end
+
+                    end
+
                 end
 
 
