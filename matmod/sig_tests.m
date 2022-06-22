@@ -39,7 +39,7 @@ testProblemsUsed = { ...
     };
 
 
-baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'MPMMEA', 'PMMOEA'};
+baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'};
 proposedMethod = 'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-cropover_v2';
 include_dep_var = true;
 include_test_prob = true;
@@ -289,6 +289,8 @@ end % End - for every metric
 if print_latex_table
     disp("*********************************************************");
 
+    % To help determine where to put \hline 
+    row_counter = 1; 
 
     %                      ROW
     % Each row is a DECISION VARIABLE and a TEST PROBLEM
@@ -380,14 +382,18 @@ if print_latex_table
 
                 end
 
-
-
             end
 
+            row_counter = row_counter + 1; 
+             
             if include_backslash
                 fprintf(" \\\\\n"); 
             else
                 fprintf(" \n"); 
+            end
+
+            if mod(row_counter-1, numel(testProblemsUsed)) == 0
+                fprintf("\\hline\n");
             end
 
         end
@@ -425,7 +431,7 @@ for m_baseMethods = 1:numel(baseMethods)
 
     end
 end
-fprintf("\n");
+fprintf("\n\\hline\n");
 
 
 %% Print out pvals in LaTeX
