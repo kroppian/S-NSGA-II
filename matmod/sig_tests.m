@@ -308,6 +308,8 @@ if print_latex_table
             %                      COL
             % Each column is a BASE METHOD and a METRIC
     
+            row_str = '';
+
             % For every base method
             for m_baseMethods = 1:numel(baseMethods)
 
@@ -316,7 +318,8 @@ if print_latex_table
                 row_mask = sigTable.numDecVars == numDecVars & ...
                            strcmp(sigTable.testProb, currentTestProb) & ...
                            strcmp(sigTable.baseMethod, currentBaseMethod);
-                    
+                
+
                 % HV      
                 if include_hv 
                     
@@ -324,17 +327,19 @@ if print_latex_table
                     base = round(sigTable(row_mask,:).median_HV_base, 2);
 
                     if base == -99
-                        fprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
+                        new_str = sprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
                             sig_number_2_char(sigTable(row_mask,:).sig_HV));
+
                     else
                         if sigTable(row_mask,:).sig_HV == 1
-                            fprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
+                            new_str = sprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
                                 sig_number_2_char(sigTable(row_mask,:).sig_HV));
                         else
-                            fprintf("%.2f(%.2f)%s & ", proposed, base, ...
+                            new_str = sprintf("%.2f(%.2f)%s & ", proposed, base, ...
                                 sig_number_2_char(sigTable(row_mask,:).sig_HV));                            
                         end
                     end
+                    row_str = row_str + new_str;
 
                 end
 
@@ -346,17 +351,18 @@ if print_latex_table
                     base = round(sigTable(row_mask,:).median_time_base, 2);
 
                     if base == -99
-                        fprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
+                        new_str = sprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
                             sig_number_2_char(sigTable(row_mask,:).sig_time));
                     else
                         if sigTable(row_mask,:).sig_time == -1
-                            fprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
+                            new_str = sprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
                                        sig_number_2_char_opp(sigTable(row_mask,:).sig_time));
                         else
-                            fprintf("%.2f(%.2f)%s & ", proposed, base, ...
+                            new_str = sprintf("%.2f(%.2f)%s & ", proposed, base, ...
                                        sig_number_2_char_opp(sigTable(row_mask,:).sig_time));                            
                         end
                     end
+                    row_str = row_str + new_str;
 
                 end
         
@@ -367,22 +373,31 @@ if print_latex_table
                     base = round(sigTable(row_mask,:).median_nds_base);
 
                     if base == -99
-                        fprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
+                        new_str = sprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
                             sig_number_2_char(sigTable(row_mask,:).sig_nds));
                     else
                         if sigTable(row_mask,:).sig_nds == 1
-                            fprintf("\\textbf{%d(%d)%s} & ", proposed, base, ...
+                            new_str = sprintf("\\textbf{%d(%d)%s} & ", proposed, base, ...
                                 sig_number_2_char(sigTable(row_mask,:).sig_nds));
                         else
-                            fprintf("%d(%d)%s & ", proposed, base, ...
+                            new_str = sprintf("%d(%d)%s & ", proposed, base, ...
                                 sig_number_2_char(sigTable(row_mask,:).sig_nds));
                         end
 
                     end
 
+                    row_str = row_str + new_str;
+                    
+
                 end
 
+
+
             end
+
+            row_str = convertStringsToChars(row_str);
+            row_str = row_str(1:numel(row_str)-3);
+            fprintf("%s", row_str);
 
             row_counter = row_counter + 1; 
              
@@ -407,6 +422,8 @@ end
 
 fprintf("\\multicolumn{2}{c}{($+/-/\\approx$)} & " )
 
+row_str = '';
+
 for m_baseMethods = 1:numel(baseMethods)
     
     for m_metric = 1:numel(metrics)
@@ -427,11 +444,18 @@ for m_baseMethods = 1:numel(baseMethods)
             worse = sum(sig_vals == -1);
         end
 
-        fprintf("$%d/%d/%d$ & ", better, worse, same);
+        row_str = row_str + sprintf("$%d/%d/%d$ & ", better, worse, same);
+    
 
     end
 end
-fprintf("\n\\hline\n");
+
+row_str = convertStringsToChars(row_str);
+row_str = row_str(1:numel(row_str)-3);
+fprintf("%s \\\\\n", row_str);
+
+
+fprintf("\\hline\n");
 
 
 %% Print out pvals in LaTeX
