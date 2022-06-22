@@ -43,9 +43,12 @@ baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'};
 proposedMethod = 'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-cropover_v2';
 include_dep_var = true;
 include_test_prob = true;
-include_hv = true;
-include_runTime = true;
-include_nds = true;
+
+
+metrics = ["HV", "time", "nds"];
+include_metric = {true, true, true};
+
+
 include_backslash = true;
 usesDecVar = true;
 sNSGA_comparative_decVar_realworld;
@@ -319,79 +322,32 @@ if print_latex_table
                            strcmp(sigTable.testProb, currentTestProb) & ...
                            strcmp(sigTable.baseMethod, currentBaseMethod);
                 
+                for m_metric = 1:numel(metrics)
+                    if include_metric{m_metric}
 
-                % HV      
-                if include_hv 
-                    
-                    proposed = round(sigTable(row_mask,:).median_HV_prop,  2);
-                    base = round(sigTable(row_mask,:).median_HV_base, 2);
-
-                    if base == -99
-                        new_str = sprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
-                            sig_number_2_char(sigTable(row_mask,:).sig_HV));
-
-                    else
-                        if sigTable(row_mask,:).sig_HV == 1
-                            new_str = sprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
-                                sig_number_2_char(sigTable(row_mask,:).sig_HV));
+                        metric = metrics(m_metric);
+    
+                        proposed = round(sigTable{row_mask,'median_' + metric + '_prop'},  2);
+                        base = round(sigTable{row_mask,'median_' + metric + '_base'}, 2);
+    
+                        sig = sigTable{row_mask,"sig_" + metric};
+    
+                        if base == -99
+                            new_str = sprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
+                                sig_number_2_char(sig));
+    
                         else
-                            new_str = sprintf("%.2f(%.2f)%s & ", proposed, base, ...
-                                sig_number_2_char(sigTable(row_mask,:).sig_HV));                            
+                            if sig == 1
+                                new_str = sprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
+                                    sig_number_2_char(sig));
+                            else
+                                new_str = sprintf("%.2f(%.2f)%s & ", proposed, base, ...
+                                    sig_number_2_char(sig));                            
+                            end
                         end
+                        row_str = row_str + new_str;
                     end
-                    row_str = row_str + new_str;
-
                 end
-
-
-                % Run times
-                if include_runTime 
-
-                    proposed = round(sigTable(row_mask,:).median_time_prop, 2);
-                    base = round(sigTable(row_mask,:).median_time_base, 2);
-
-                    if base == -99
-                        new_str = sprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
-                            sig_number_2_char(sigTable(row_mask,:).sig_time));
-                    else
-                        if sigTable(row_mask,:).sig_time == -1
-                            new_str = sprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
-                                       sig_number_2_char_opp(sigTable(row_mask,:).sig_time));
-                        else
-                            new_str = sprintf("%.2f(%.2f)%s & ", proposed, base, ...
-                                       sig_number_2_char_opp(sigTable(row_mask,:).sig_time));                            
-                        end
-                    end
-                    row_str = row_str + new_str;
-
-                end
-        
-                % NDS
-                if include_nds
-
-                    proposed = sigTable(row_mask,:).median_nds_prop;
-                    base = round(sigTable(row_mask,:).median_nds_base);
-
-                    if base == -99
-                        new_str = sprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
-                            sig_number_2_char(sigTable(row_mask,:).sig_nds));
-                    else
-                        if sigTable(row_mask,:).sig_nds == 1
-                            new_str = sprintf("\\textbf{%d(%d)%s} & ", proposed, base, ...
-                                sig_number_2_char(sigTable(row_mask,:).sig_nds));
-                        else
-                            new_str = sprintf("%d(%d)%s & ", proposed, base, ...
-                                sig_number_2_char(sigTable(row_mask,:).sig_nds));
-                        end
-
-                    end
-
-                    row_str = row_str + new_str;
-                    
-
-                end
-
-
 
             end
 
