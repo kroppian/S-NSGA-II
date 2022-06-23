@@ -70,9 +70,10 @@ plot_strip_scatter(res_final, config, D);
 % Example load command: 
 %load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIEffective_effDecVar_SMOP1.mat')
 %load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\classicLineup\sNSGAIIEffective_effDecVar_SMOP5.mat')
+load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\Comparative_compDecVar_Sparse_NN_new.mat')
 
 figure;
-plot_metric("HV",   "D", config, res_final);
+plot_metric("HV",   "D", config, res_final, alg);
 
 
 
