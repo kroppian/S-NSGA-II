@@ -37,6 +37,7 @@ function plot_metric(metric, decVarName, config, res, algs)
     numDependentVars = numel(decVars);
     numAlgorithms = numel(algs);
     
+    isSparseNN = strcmp(func2str(config.prob), 'Sparse_NN');
     
     %% Legend logic
 
@@ -48,7 +49,7 @@ function plot_metric(metric, decVarName, config, res, algs)
 
     %% legend logic 
     % Add perfect reference lines if needed
-    if metric == "HV"
+    if metric == "HV" && ~ isSparseNN
         legend_entries = cell(numAlgorithms*2+1,1);
         legend_entries{1} = 'Perfect HV';    
         offset = 0; 
@@ -71,16 +72,20 @@ function plot_metric(metric, decVarName, config, res, algs)
 
     if indep_var_dec_vars
         dependentVars = config.Dz;
-        x_label = 'Decision variables';
+        if isSparseNN
+            x_label = 'Size of hidden layer';
+        else
+            x_label = 'Decision variables';
+        end
     else
         dependentVars = config.sparsities;
         x_label = 'Sparsity (%)';
     end
 
     %% Calculate optimal HV
-    if metric == "HV"
+    if metric == "HV" && ~ isSparseNN
         func_name = func2str(config.prob);
-        optimal_hv = HVS{str2num(func_name(end))};
+        optimal_hv =  HVS{str2num(func_name(end))};
     end
 
     %% Plotting
@@ -122,7 +127,7 @@ function plot_metric(metric, decVarName, config, res, algs)
     y_max = -5000000;
 
     %% Print out perfect results if applicable
-    if metric == "HV"
+    if metric == "HV" && ~ isSparseNN
         x = dependentVars;
         y = ones(1, numel(x))*optimal_hv;
         plot(x,y, ':k', 'LineWidth', 4);
