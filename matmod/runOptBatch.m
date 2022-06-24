@@ -64,14 +64,18 @@ function results = runOptBatch(config)
         raw_algorithm = func2str(algorithm);
         if raw_algorithm == "sNSGAII" || raw_algorithm == "sNSGAII_island_v1"  || raw_algorithm == "sNSGAII_island_v2"
             custom_alg = true;
-        else
+        else 
             custom_alg = false;
         end
 
         rep = scenarios(s, 4);
 
         if custom_alg
-            annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
+            if raw_algorithm == "Sparse_NN"
+                annotated_alg = [raw_algorithm, '-', config.subproblem];
+            else
+                annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
+            end
         else
             annotated_alg = raw_algorithm;
         end
