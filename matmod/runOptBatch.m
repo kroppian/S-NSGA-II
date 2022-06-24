@@ -71,11 +71,7 @@ function results = runOptBatch(config)
         rep = scenarios(s, 4);
 
         if custom_alg
-            if raw_algorithm == "Sparse_NN"
-                annotated_alg = [raw_algorithm, '-', config.subproblem];
-            else
-                annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
-            end
+            annotated_alg = [raw_algorithm, '-', func2str(sampling_method), '-', func2str(mutation_method), '-', func2str(crossover_method)];
         else
             annotated_alg = raw_algorithm;
         end
