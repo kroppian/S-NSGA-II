@@ -16,27 +16,38 @@ metrics = {'HV', 'time', 'nds'};
 
 
 %% Uncomment for comparative decision variable runs
-output_files = { ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP1.mat', ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP2.mat', ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP3.mat', ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP4.mat', ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP5.mat', ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP6.mat', ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP7.mat', ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP8.mat'  ...
-    };
+% output_files = { ...
+%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP1.mat', ...
+%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP2.mat', ...
+%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP3.mat', ...
+%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP4.mat', ...
+%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP5.mat', ...
+%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP6.mat', ...
+%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP7.mat', ...
+%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP8.mat'  ...
+%     };
+% 
+% testProblemsUsed = { ...
+%     'SMOP1', ...
+%     'SMOP2', ...
+%     'SMOP3', ...
+%     'SMOP4', ...
+%     'SMOP5', ...
+%     'SMOP6', ...
+%     'SMOP7', ...
+%     'SMOP8'  ... 
+%     };
 
-testProblemsUsed = { ...
-    'SMOP1', ...
-    'SMOP2', ...
-    'SMOP3', ...
-    'SMOP4', ...
-    'SMOP5', ...
-    'SMOP6', ...
-    'SMOP7', ...
-    'SMOP8'  ... 
-    };
+output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_1.mat'};
+testProblemsUsed = { 'Sparse_NN_1' };
+
+% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_2.mat'};
+%testProblemsUsed = { 'Sparse_NN_2' };
+
+% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_3.mat'};
+%testProblemsUsed = { 'Sparse_NN_3' };
+
+
 
 
 baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'};
@@ -51,7 +62,7 @@ include_metric = {true, true, true};
 
 include_backslash = true;
 usesDecVar = true;
-sNSGA_comparative_decVar_realworld;
+sNSGA_comparative_Sparse_NN;
 
 % compile into a single table
 
@@ -65,48 +76,25 @@ test_prob = cell(size(res_final,1), 1);
 [test_prob{:}] = deal(testProblemsUsed{1});
 resultsTable.testProbs = test_prob;
 
-% concatenate the rest of the files
-for t = 2:numel(output_files)
-    load(output_files{t});
-
-    % add test problem
-    test_prob = cell(size(res_final,1), 1);
-    [test_prob{:}] = deal(testProblemsUsed{t});
-    res_final.testProbs = test_prob;
-
-    % concatenate on master list
-    resultsTable = [resultsTable; res_final];
-
+if numel(output_files) >= 2
+    % concatenate the rest of the files
+    for t = 2:numel(output_files)
+        load(output_files{t});
+    
+        % add test problem
+        test_prob = cell(size(res_final,1), 1);
+        [test_prob{:}] = deal(testProblemsUsed{t});
+        res_final.testProbs = test_prob;
+        
+        % concatenate on master list
+        resultsTable = [resultsTable; res_final];
+    
+    end
 end
+
 disp('Done.');
 
 % end -- comparative decision variable runs
-
-%% Uncomment for effective decision variable runs
-% load('effective_decVar_resultsTable.mat')
-% baseMethods = {'MOEADDE'};      % Toggle between the different algorithms
-% proposedMethod = 'MOEADDE-SPS'; % on this line 
-% include_dep_var = false;
-% include_test_prob = false;
-% include_hv = true;
-% include_runTime = false;
-% include_nds = true;
-% include_backslash = false;
-% usesDecVar = true;
-% end -- effective decision variable runs
-
-%% Uncomment for effective sparsity runs
-% load('effective_sparsity_resultsTable.mat')
-% baseMethods = {'MOEADDE'};
-% proposedMethod = 'MOEADDE-SPS';
-% include_dep_var = false;
-% include_test_prob = false;
-% include_hv = true;
-% include_runTime = false;
-% include_nds = true;
-% include_backslash = true;
-% usesDecVar = false;
-% end -- effective sparsity runs
 
 
 %% Result set up
@@ -163,6 +151,14 @@ plot_no = 1;
 row = 1;
 %% Iterate through every decision variable, test prob, and performance metric
 
+isSparseNN =  strcmp(func2str(config.prob), 'Sparse_NN');
+
+if isSparseNN
+    decVars = unique(resultsTable.D)';
+else                        
+    decVars = config.Dz;
+end
+
 % For every metric
 for m_metric = 1:numel(metrics)
 
@@ -184,7 +180,7 @@ for m_metric = 1:numel(metrics)
                 currentTestProb = testProblemsUsed{test_prob_i};
                 
                 if usesDecVar
-                    current_dep_var = config.Dz(d);
+                    current_dep_var = decVars(d);
                     sigTable.numDecVars(row) = current_dep_var;
                     dep_var_mask = resultsTable.D == current_dep_var;
                 else
@@ -299,14 +295,20 @@ if print_latex_table
     % Each row is a DECISION VARIABLE and a TEST PROBLEM
     for d = 1:numDependentVar
 
-        numDecVars = config.Dz(d);
-
+        numDecVars = decVars(d);
 
         for test_prob_i = 1:numTestProbs
 
             currentTestProb = testProblemsUsed{test_prob_i};
 
-            fprintf("%d & %s & ", numDecVars, currentTestProb);
+            data_set = str2num(currentTestProb(numel(currentTestProb)));
+
+            if isSparseNN
+                fprintf("NN & %d & %d & %d & ", data_set, config.Dz(d), numDecVars);
+            else
+                fprintf("%d & %s & ", numDecVars, currentTestProb);
+            end
+
 
             %                      COL
             % Each column is a BASE METHOD and a METRIC
@@ -323,6 +325,7 @@ if print_latex_table
                            strcmp(sigTable.baseMethod, currentBaseMethod);
                 
                 for m_metric = 1:numel(metrics)
+                    
                     if include_metric{m_metric}
 
                         metric = metrics(m_metric);
@@ -418,6 +421,7 @@ fprintf("\\hline\n");
 if print_pval_latex_table 
     disp("*********************************************************");
     for row = 1:numRows
+
         % decision variables
         if include_dep_var
             if usesDecVar
