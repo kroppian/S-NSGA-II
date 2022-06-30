@@ -38,14 +38,14 @@ metrics = {'HV', 'time', 'nds'};
 %     'SMOP8'  ... 
 %     };
 
-output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_1.mat'};
-testProblemsUsed = { 'Sparse_NN_1' };
+% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_1.mat'};
+% testProblemsUsed = { 'Sparse_NN_1' };
 
 % output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_2.mat'};
-%testProblemsUsed = { 'Sparse_NN_2' };
+% testProblemsUsed = { 'Sparse_NN_2' };
 
-% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_3.mat'};
-%testProblemsUsed = { 'Sparse_NN_3' };
+output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_3.mat'};
+testProblemsUsed = { 'Sparse_NN_3' };
 
 
 
@@ -337,15 +337,16 @@ if print_latex_table
     
                         if base == -99
                             new_str = sprintf("\\textbf{%.2f(---)%s} & ", proposed,  ...
-                                sig_number_2_char(sig));
+                                sig_number_2_char(sig, metric));
     
                         else
-                            if sig == 1
+
+                            if (~strcmp(metric, 'time') && sig == 1) || (strcmp(metric, 'time') && sig == -1)
                                 new_str = sprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
-                                    sig_number_2_char(sig));
+                                    sig_number_2_char(sig, metric));
                             else
                                 new_str = sprintf("%.2f(%.2f)%s & ", proposed, base, ...
-                                    sig_number_2_char(sig));                            
+                                    sig_number_2_char(sig, metric));                            
                             end
                         end
                         row_str = row_str + new_str;
@@ -366,7 +367,7 @@ if print_latex_table
                 fprintf(" \n"); 
             end
 
-            if mod(row_counter-1, numel(testProblemsUsed)) == 0
+            if mod(row_counter-1, numel(testProblemsUsed)) == 0 && ~isSparseNN
                 fprintf("\\hline\n");
             end
 
@@ -483,14 +484,20 @@ if print_pval_latex_table
     end
 end
 
-function new_character = sig_number_2_char(sig_num)
-    if sig_num == -1 
-        new_character = '$^-$';
-    elseif sig_num == 1
-        new_character = '$^+$'; 
+function new_character = sig_number_2_char(sig_num, metric)
+
+    if strcmp(metric, "time")
+        new_character = sig_number_2_char_opp(sig_num);
     else
-        new_character = '$^\approx$';
+        if sig_num == -1 
+            new_character = '$^-$';
+        elseif sig_num == 1
+            new_character = '$^+$'; 
+        else
+            new_character = '$^\approx$';
+        end
     end
+
 end
 
 
