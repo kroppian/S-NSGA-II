@@ -343,17 +343,11 @@ if print_latex_table
                         sig = sigTable{row_mask,"sig_" + metric};
     
                         if base == -99
-                            new_str = sprintf("\\textbf{%.2f(---)$^+$} & ", proposed);
-    
+                            new_str = sprintf("\\cellcolor{better}%.2f(---)$^+$ & ",  proposed);
+   
                         else
-
-                            if (~strcmp(metric, 'time') && sig == 1) || (strcmp(metric, 'time') && sig == -1)
-                                new_str = sprintf("\\textbf{%.2f(%.2f)%s} & ", proposed, base, ...
-                                    sig_number_2_char(sig, metric));
-                            else
-                                new_str = sprintf("%.2f(%.2f)%s & ", proposed, base, ...
-                                    sig_number_2_char(sig, metric));                            
-                            end
+                            new_str = sprintf("%s%.2f(%.2f)%s & ", sig_number_2_color(sig, metric), proposed, base, ...
+                                sig_number_2_char(sig, metric));
                         end
                         row_str = row_str + new_str;
                     end
@@ -517,4 +511,30 @@ function new_character = sig_number_2_char_opp(sig_num)
     end
 end
 
+function new_character = sig_number_2_color(sig_num, metric)
+
+    if strcmp(metric, "time")
+        new_character = sig_number_2_color_opp(sig_num);
+    else
+        if sig_num == -1 
+            new_character = '\cellcolor{worse}';
+        elseif sig_num == 1 || (strcmp(metric, "nds") && sig_num == 0)
+            new_character = '\cellcolor{better}'; 
+        else
+            new_character = '\cellcolor{same}';
+        end
+    end
+
+end
+
+
+function new_character = sig_number_2_color_opp(sig_num)
+    if sig_num == -1 
+        new_character = '\cellcolor{better}';
+    elseif sig_num == 1
+        new_character = '\cellcolor{worse}'; 
+    else
+        new_character = '\cellcolor{same}';
+    end
+end
 
