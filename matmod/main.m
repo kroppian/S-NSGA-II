@@ -7,8 +7,9 @@ addpath("plotting");
 
 
 %sNSGA_eff_sparsity;
-sNSGA_comparative_decVar_realworld
+%sNSGA_comparative_Sparse_NN
 %sNSGA_comparative;
+sNSGA_ablation;
 
 if config.saveData
     file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '_new.mat');
@@ -70,8 +71,10 @@ plot_strip_scatter(res_final, config, D);
 % Example load command: 
 %load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIEffective_effDecVar_SMOP1.mat')
 %load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\classicLineup\sNSGAIIEffective_effDecVar_SMOP5.mat')
-load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\Comparative_compDecVar_Sparse_NN_new.mat')
+load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_3.mat')
+load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP7.mat')
 
+algs =    {'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-cropover_v2', 'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'};
 figure;
 plot_metric("HV",   "D", config, res_final, alg);
 

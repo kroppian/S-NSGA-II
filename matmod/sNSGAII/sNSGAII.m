@@ -24,8 +24,15 @@ classdef sNSGAII < ALGORITHM
             
             %% Generate random population
 
-            sampler = sampling_method{1};
-            Population = sampler(Problem, sampling_method{2}, sampling_method{3});
+
+
+            if class(sampling_method{1}) == "function_handle" && func2str(sampling_method{1}) == "nop"
+                Population = Problem.Initialization();
+            else
+                sampler = sampling_method{1};
+                Population = sampler(Problem, sampling_method{2}, sampling_method{3});
+            end
+
 
             [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Problem.N);
 
