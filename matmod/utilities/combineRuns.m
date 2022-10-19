@@ -6,12 +6,12 @@ addpath("../configs");
 addpath("../utilities");
 
 INPUT_FILES = {
-    '/Volumes/Gilgamesh/kroppian/sNSGAIIRuns/sNSGAIIComparative_compDecVar_SMOP8_MOEAPSL', ...
-    '/Volumes/Gilgamesh/kroppian/sNSGAIIRuns/sNSGAIIComparative_compDecVar_SMOP8_MPMMEA', ...
-    '/Volumes/Gilgamesh/kroppian/sNSGAIIRuns/sNSGAIIComparative_compDecVar_SMOP8_sparseEA'    
+    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP4.mat', ...
+    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\originalRuns\sNSGAIIComparative_compDecVar_SMOP4_VSSPS_csv3.mat'
+
 };
 
-OUTPUT_FILE = '/Volumes/Gilgamesh/kroppian/sNSGAIIRuns/sNSGAIIComparative_compDecVar_SMOP8.mat';
+OUTPUT_FILE = 'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP4.mat';
 
 sNSGA_eff_400;
 
@@ -44,5 +44,5 @@ res_final = res;
 config = config_core;
 
 disp("Saving results...");
-save(OUTPUT_FILE, 'res_final', 'config');
+save(OUTPUT_FILE, 'res_final', 'config', '-v7.3');
 disp("Done.");

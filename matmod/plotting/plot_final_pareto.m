@@ -6,7 +6,7 @@ function plot_final_pareto(res, config, run, D)
         
     % Plot each algorithm sparsity performance 
     for a = 1:alg_count
-        alg = genRunId(config, a);
+        alg = genAlgId(config, a);
         final_pop = res{res.run == run & res.D == D & strcmp(res.alg, alg), 'population'};
 
         y = final_pop{1}.best.objs;

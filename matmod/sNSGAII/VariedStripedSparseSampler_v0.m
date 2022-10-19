@@ -45,7 +45,7 @@ function Population = VariedStripedSparseSampler_v0(prob, sLower, sUpper)
     end
 
     sparse_pop = pop.decs;
-    sparse_pop(mask) = 0;
+    sparse_pop(~mask) = 0;
 
     Population = SOLUTION(sparse_pop);
 

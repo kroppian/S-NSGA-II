@@ -9,7 +9,7 @@ function plot_metric(metric, decVarName, config, res, algs)
     SUBTITLE_FONT_SIZE = 20;
     TITLE_FONT_SIZE = 22;
 
-    available_colors = [230, 25 , 75 ; 60 , 180, 75 ; ...
+    available_colors = [60 , 180, 75 ; 230, 25 , 75 ; ...
          0  , 130, 200; 245, 130, 48 ; 145, 30 , 180; 70 , 240, 240; ...
          240, 50 , 230; 210, 245, 60 ; 250, 190, 212; 0  , 128, 128; ...
          220, 190, 255; 170, 110, 40 ; 255, 250, 200; 128, 0  , 0  ; ...
@@ -38,7 +38,7 @@ function plot_metric(metric, decVarName, config, res, algs)
     numAlgorithms = numel(algs);
     
     isSparseNN = strcmp(func2str(config.prob), 'Sparse_NN');
-    
+  
     %% Legend logic
 
     % Generate the number of colors needed automatically 
@@ -71,12 +71,14 @@ function plot_metric(metric, decVarName, config, res, algs)
     end
 
     if indep_var_dec_vars
-        dependentVars = config.Dz;
         if isSparseNN
-            x_label = 'Size of hidden layer';
+            dependentVars = decVars';
         else
-            x_label = 'Decision variables';
+            dependentVars = config.Dz;
+
         end
+        x_label = 'Decision Variables';
+
     else
         dependentVars = config.sparsities;
         x_label = 'Sparsity (%)';
@@ -218,7 +220,7 @@ end
 
 function cleanEntry = cleanLegend(rawEntry)
     if  contains(rawEntry, "sNSGA")
-        cleanEntry = "sNSGA-II";
+        cleanEntry = "S-NSGA-II";
     else
         cleanEntry = strrep(rawEntry, 'PMMOEA', 'PM-MOEA');
         cleanEntry = strrep(cleanEntry, 'MOEAPSL', 'MOEA/PSL');
