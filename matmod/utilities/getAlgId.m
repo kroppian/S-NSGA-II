@@ -5,7 +5,7 @@ function id = getAlgId(config, runNo)
     if raw_algorithm == "sNSGAII" || raw_algorithm == "sNSGAII_island_v1" || raw_algorithm == "sNSGAII_island_v2"
         
         if class(config.sampling_method{runNo}) == "function_handle" && func2str(config.sampling_method{runNo}) == "nop"
-            sampling_method = "uniform";
+            sampling_method = 'uniform';
         else
             sampling_method = func2str(config.sampling_method{runNo}{1});
         end
