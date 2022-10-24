@@ -1,4 +1,4 @@
-classdef Sparse_SR < PROBLEM
+classdef Sparse_SR_simple < PROBLEM
 % <multi> <real> <large/none> <expensive/none> <sparse/none>
 % The sparse signal reconstruction problem
 % lenSig   --- 1024 --- Length of signal 
@@ -34,17 +34,27 @@ classdef Sparse_SR < PROBLEM
 
             switch dataNo
                 case 1
-                    [lenSig,lenObs,sparsity,sigma] = deal([1024,  480,  260,  0]);
+                    lenSig   = 1024;
+                    lenObs   = 480;
+                    sparsity = 260;
+                    sigma    = 0;
                 case 2
-                    [lenSig,lenObs,sparsity,sigma] = deal([5120,  2400, 1300, 0]);
+                    lenSig   = 5120;
+                    lenObs   = 2400;
+                    sparsity = 1300;
+                    sigma    = 0;
                 case 3
-                    [lenSig,lenObs,sparsity,sigma] = deal([10240, 4800, 2600, 0]);
+                    lenSig   = 10240;
+                    lenObs   = 800;
+                    sparsity = 2600;
+                    sigma    = 0;
                 otherwise
                     error("Datset " + dataNo + " not supported.");
             end
 
-            N = lenSig;
+            N = lenSig; 
             M = lenObs;
+            N = lenSig;
             K = sparsity;
             fileName = fullfile(fileparts(mfilename('fullpath')),sprintf('Dataset_SR-N%d-M%d-K%d-sigma%.2f.mat',N,M,K,sigma));
             if exist(fileName,'file') == 2
