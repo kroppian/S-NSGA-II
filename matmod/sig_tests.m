@@ -52,14 +52,15 @@ testProblemsUsed = { ...
     };
 
 output_files = { ...
-    '/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP1_new.mat', ...
-    '/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP2_new.mat', ...
-    '/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP3_new.mat', ...
-    '/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP4_new.mat', ...
-    '/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP5_new.mat', ...
-    '/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP6_new.mat', ...
-    '/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP7_new.mat', ...
-    '/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP8_new.mat'  ...
+   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP1_new.mat', ...
+  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP2_new.mat', ...
+  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP3_new.mat', ...
+  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP4_new.mat', ...
+  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP5_new.mat', ...
+  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP6_new.mat', ...
+  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP7_new.mat', ...
+  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP8_new.mat'  ...
+
     };
 
 
@@ -181,6 +182,61 @@ end
 plot_no = 1;
 
 row = 1;
+%% Make comparative histograms
+metric = "time";
+problem = {'SMOP1'};
+D = 6400;
+
+bins = 10;
+totalMethods = numel(baseMethods) + 1;
+
+% Get plot lower and upper bounds
+all_data = resultsTable{:, metric};
+lowerBounds = min(all_data);
+upperBounds = max(all_data);
+
+binWidth = 1;
+
+lowerBounds = double(idivide(int64(lowerBounds), int64(binWidth)) - 1)*binWidth
+upperBounds = double(idivide(int64(upperBounds), int64(binWidth)) + 1)*binWidth
+
+edges = linspace(lowerBounds, upperBounds, ((upperBounds - lowerBounds)/binWidth)+1);
+
+
+% Do the plotting 
+figure;
+subplot(totalMethods, 1, 1);
+
+for m = 1:numel(baseMethods)
+    subplot(totalMethods, 1, m)
+    baseMethod = baseMethods(m);
+
+    rowMask = strcmp(resultsTable.alg, baseMethod) & ...
+              strcmp(resultsTable.testProbs, problem) & ...
+              resultsTable.D == D;
+
+
+    simulations = resultsTable{rowMask, metric};
+    histogram(simulations, edges);
+    title(baseMethod);
+
+    xlim([lowerBounds, upperBounds]);
+end
+
+subplot(totalMethods, 1, totalMethods)
+
+rowMask = strcmp(resultsTable.alg, proposedMethod) & ...
+          strcmp(resultsTable.testProbs, problem) & ...
+          resultsTable.D == D;
+
+
+simulations = resultsTable{rowMask, metric};
+histogram(simulations, edges);
+title(proposedMethod);
+
+xlim([lowerBounds, upperBounds]);
+
+
 %% Iterate through every decision variable, test prob, and performance metric
 
 isSparseNN = strcmp(func2str(config.prob), 'Sparse_NN');
