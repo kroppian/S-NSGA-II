@@ -4,7 +4,7 @@ clear
 addpath("configs");
 addpath("utilities");
 addpath("plotting");
-
+addpath("problems")
 
 %sNSGA_eff_sparsity;
 %sNSGA_comparative_Sparse_NN
@@ -72,7 +72,7 @@ plot_strip_scatter(res_final, config, D);
 %load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIEffective_effDecVar_SMOP1.mat')
 %load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\classicLineup\sNSGAIIEffective_effDecVar_SMOP5.mat')
 load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_3.mat')
-load('Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP7.mat')
+load('/mnt/nas/kroppian/sNSGAIIRuns/ablationRuns/sNSGAIIAblation_compDecVar_SMOP1_new.mat');
 
 algs =    {'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-cropover_v2', 'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'};
 figure;
