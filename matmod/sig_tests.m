@@ -5,6 +5,9 @@ addpath("configs");
 addpath("utilities");
 addpath("plotting");
 
+sNSGA_comparative_decVar_sparseSR
+
+
 %% Run setup 
 plotting_on = false;
 print_latex_table = true;
@@ -39,30 +42,37 @@ metrics = {'HV', 'time', 'nds'};
 %     };
 
 %% Uncomment for ablation study 
+% 
+% testProblemsUsed = { ...
+%     'SMOP1', ...
+%     'SMOP2', ...
+%     'SMOP3', ...
+%     'SMOP4', ...
+%     'SMOP5', ...
+%     'SMOP6', ...
+%     'SMOP7', ...
+%     'SMOP8'  ... 
+%     };
+% 
+% output_files = { ...
+%   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP1_new.mat', ...
+%   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP2_new.mat', ...
+%   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP3_new.mat', ...
+%   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP4_new.mat', ...
+%   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP5_new.mat', ...
+%   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP6_new.mat', ...
+%   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP7_new.mat', ...
+%   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP8_new.mat'  ...
+% 
+%     };
+% 
+% baseMethods = {'sNSGAII-VariedStripedSparseSampler_v3-polyMutate-cropover_v2', ... 
+%                'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-sbx', ...
+%                'sNSGAII-nop-sparsePolyMutate-cropover_v2'};
+% 
+% proposedMethod = 'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-cropover_v2';
 
-testProblemsUsed = { ...
-    'SMOP1', ...
-    'SMOP2', ...
-    'SMOP3', ...
-    'SMOP4', ...
-    'SMOP5', ...
-    'SMOP6', ...
-    'SMOP7', ...
-    'SMOP8'  ... 
-    };
-
-output_files = { ...
-   'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP1_new.mat', ...
-  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP2_new.mat', ...
-  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP3_new.mat', ...
-  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP4_new.mat', ...
-  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP5_new.mat', ...
-  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP6_new.mat', ...
-  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP7_new.mat', ...
-  'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIAblation_compDecVar_SMOP8_new.mat'  ...
-
-    };
-
+%% Uncomment for any of the real-world problems
 
 %output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_1.mat'};
 %testProblemsUsed = { 'Sparse_NN_1' };
@@ -79,12 +89,23 @@ output_files = { ...
 % output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_PO_2.mat'};
 % testProblemsUsed = { 'Sparse_PO_2' };
 
+% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_PO_2.mat'};
+% testProblemsUsed = { 'Sparse_PO_2' };
 
-baseMethods = {'sNSGAII-VariedStripedSparseSampler_v3-polyMutate-cropover_v2', ... 
-               'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-sbx', ...
-               'sNSGAII-nop-sparsePolyMutate-cropover_v2'};
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIComparative_compDecVar_Sparse_SR_simple1.mat'};
+% testProblemsUsed = {'Sparse_SR_simple'};
 
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIComparative_compDecVar_Sparse_SR_simple2.mat'};
+% testProblemsUsed = {'Sparse_SR_simple'};
+
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIComparative_compDecVar_Sparse_SR_simple3.mat'};
+% testProblemsUsed = {'Sparse_SR_simple'};
+
+baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'};
 proposedMethod = 'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-cropover_v2';
+
+%% Set up
+
 include_dep_var = true;
 include_test_prob = true;
 
@@ -183,66 +204,73 @@ plot_no = 1;
 
 row = 1;
 %% Make comparative histograms
-metric = "time";
-problem = {'SMOP1'};
-D = 6400;
-
-bins = 10;
-totalMethods = numel(baseMethods) + 1;
-
-% Get plot lower and upper bounds
-all_data = resultsTable{:, metric};
-lowerBounds = min(all_data);
-upperBounds = max(all_data);
-
-binWidth = 1;
-
-lowerBounds = double(idivide(int64(lowerBounds), int64(binWidth)) - 1)*binWidth
-upperBounds = double(idivide(int64(upperBounds), int64(binWidth)) + 1)*binWidth
-
-edges = linspace(lowerBounds, upperBounds, ((upperBounds - lowerBounds)/binWidth)+1);
 
 
-% Do the plotting 
-figure;
-subplot(totalMethods, 1, 1);
-
-for m = 1:numel(baseMethods)
-    subplot(totalMethods, 1, m)
-    baseMethod = baseMethods(m);
-
-    rowMask = strcmp(resultsTable.alg, baseMethod) & ...
+if plotting_on
+    metric = "time";
+    problem = {'SMOP1'};
+    D = 6400;
+    
+    bins = 10;
+    totalMethods = numel(baseMethods) + 1;
+    
+    % Get plot lower and upper bounds
+    all_data = resultsTable{:, metric};
+    lowerBounds = min(all_data);
+    upperBounds = max(all_data);
+    
+    binWidth = 1;
+    
+    lowerBounds = double(idivide(int64(lowerBounds), int64(binWidth)) - 1)*binWidth
+    upperBounds = double(idivide(int64(upperBounds), int64(binWidth)) + 1)*binWidth
+    
+    edges = linspace(lowerBounds, upperBounds, ((upperBounds - lowerBounds)/binWidth)+1);
+    
+    
+    % Do the plotting 
+    figure;
+    subplot(totalMethods, 1, 1);
+    
+    for m = 1:numel(baseMethods)
+        subplot(totalMethods, 1, m)
+        baseMethod = baseMethods(m);
+    
+        rowMask = strcmp(resultsTable.alg, baseMethod) & ...
+                  strcmp(resultsTable.testProbs, problem) & ...
+                  resultsTable.D == D;
+    
+    
+        simulations = resultsTable{rowMask, metric};
+        histogram(simulations, edges);
+        title(baseMethod);
+    
+        xlim([lowerBounds, upperBounds]);
+    end
+    
+    subplot(totalMethods, 1, totalMethods)
+    
+    rowMask = strcmp(resultsTable.alg, proposedMethod) & ...
               strcmp(resultsTable.testProbs, problem) & ...
               resultsTable.D == D;
-
-
+    
+    
     simulations = resultsTable{rowMask, metric};
     histogram(simulations, edges);
-    title(baseMethod);
-
+    title(proposedMethod);
+    
     xlim([lowerBounds, upperBounds]);
 end
 
-subplot(totalMethods, 1, totalMethods)
-
-rowMask = strcmp(resultsTable.alg, proposedMethod) & ...
-          strcmp(resultsTable.testProbs, problem) & ...
-          resultsTable.D == D;
-
-
-simulations = resultsTable{rowMask, metric};
-histogram(simulations, edges);
-title(proposedMethod);
-
-xlim([lowerBounds, upperBounds]);
 
 
 %% Iterate through every decision variable, test prob, and performance metric
 
 isSparseNN = strcmp(func2str(config.prob), 'Sparse_NN');
 isSparsePO = strcmp(func2str(config.prob), 'Sparse_PO');
+isSparseSR = strcmp(func2str(config.prob), 'Sparse_SR_simple');
 
-if isSparseNN || isSparsePO
+
+if isSparseNN || isSparsePO || isSparseSR
     decVars = unique(resultsTable.D)';
 else                        
     decVars = config.Dz;

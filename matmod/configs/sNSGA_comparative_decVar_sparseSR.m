@@ -1,14 +1,14 @@
 
 max_ref = 7; 
 
-comp = "GILG";
+comp = "WORKPC";
 
 if comp == "DECS"
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
     sNSGAIIPath = 'M:\Projects\cropover\matmod\sNSGAII';
 elseif comp == "WORKPC"
-    platPath = 'C:\Users\Ian Kropp\Projects\PlatEMO-3.4\PlatEMO';
-    sNSGAIIPath = 'C:\Users\Ian Kropp\Projects\cropover\matmod\sNSGAII';
+    platPath = 'C:\Users\i-kropp\Projects\PlatEMO-3.4\PlatEMO';
+    sNSGAIIPath = 'C:\Users\i-kropp\Projects\cropover\matmod\sNSGAII';
 elseif comp == "MAC"
     platPath = '/Users/iankropp/Projects/PlatEMO-3.4/PlatEMO';
     sNSGAIIPath = '/Users/iankropp/Projects/cropover/matmod/sNSGAII';
