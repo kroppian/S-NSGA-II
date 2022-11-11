@@ -4,8 +4,8 @@ clear
 addpath("configs");
 addpath("utilities");
 addpath("plotting");
-
-sNSGA_comparative_decVar_sparseSR
+sNSGA_comparative
+%sNSGA_comparative_decVar_sparseNN
 
 
 %% Run setup 
@@ -19,27 +19,28 @@ metrics = {'HV', 'time', 'nds'};
 
 
 %% Uncomment for comparative decision variable runs
-% output_files = { ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP1.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP2.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP3.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP4.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP5.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP6.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP7.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP8.mat'  ...
-%     };
-% 
-% testProblemsUsed = { ...
-%     'SMOP1', ...
-%     'SMOP2', ...
-%     'SMOP3', ...
-%     'SMOP4', ...
-%     'SMOP5', ...
-%     'SMOP6', ...
-%     'SMOP7', ...
-%     'SMOP8'  ... 
-%     };
+output_files = { ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP1.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP2.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP3.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP4.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP5.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP6.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP7.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP8.mat'  ...
+    };
+
+testProblemsUsed = { ...
+    'SMOP1', ...
+    'SMOP2', ...
+    'SMOP3', ...
+    'SMOP4', ...
+    'SMOP5', ...
+    'SMOP6', ...
+    'SMOP7', ...
+    'SMOP8'  ... 
+    };
+
 
 %% Uncomment for ablation study 
 % 
@@ -74,31 +75,28 @@ metrics = {'HV', 'time', 'nds'};
 
 %% Uncomment for any of the real-world problems
 
-%output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_1.mat'};
-%testProblemsUsed = { 'Sparse_NN_1' };
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\realworld_NN_1.mat'};
+% testProblemsUsed = { 'Sparse_NN_1' };
 
-% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_2.mat'};
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\realworld_NN_2.mat'};
 % testProblemsUsed = { 'Sparse_NN_2' };
 
-% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_NN_3.mat'};
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\realworld_NN_3.mat'};
 % testProblemsUsed = { 'Sparse_NN_3' };
  
-% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_PO_1.mat'};
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\realworld_PO_1.mat'};
 % testProblemsUsed = { 'Sparse_PO_1' };
 
-% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_PO_2.mat'};
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\realworld_PO_2.mat'};
 % testProblemsUsed = { 'Sparse_PO_2' };
 
-% output_files = {'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\Comparative_compDecVar_Sparse_PO_2.mat'};
-% testProblemsUsed = { 'Sparse_PO_2' };
-
-% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIComparative_compDecVar_Sparse_SR_simple1.mat'};
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\realworld_SR_1.mat'};
 % testProblemsUsed = {'Sparse_SR_simple'};
 
-% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIComparative_compDecVar_Sparse_SR_simple2.mat'};
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\realworld_SR_2.mat'};
 % testProblemsUsed = {'Sparse_SR_simple'};
 
-% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIComparative_compDecVar_Sparse_SR_simple3.mat'};
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\realworld_SR_3.mat'};
 % testProblemsUsed = {'Sparse_SR_simple'};
 
 baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'};
@@ -110,19 +108,21 @@ include_dep_var = true;
 include_test_prob = true;
 
 
-metrics = ["HV", "time", "nds"];
+%metrics = ["HV", "time"];
+metrics = ["igd"];
+
 include_metric = {true, true, true};
 
 
 include_backslash = true;
 usesDecVar = true;
-sNSGA_comparative_Sparse_NN;
 
 % compile into a single table
 
 % load first table to start things off
-disp('Loading tables...');
+disp('Loading tables... ');
 
+fprintf("1...");
 load(output_files{1});
 resultsTable = res_final;
 
@@ -133,6 +133,8 @@ resultsTable.testProbs = test_prob;
 if numel(output_files) >= 2
     % concatenate the rest of the files
     for t = 2:numel(output_files)
+        fprintf("%d...", t);
+
         load(output_files{t});
     
         % add test problem
@@ -506,7 +508,7 @@ for m_baseMethods = 1:numel(baseMethods)
 
         sig_vals = sigTable{baseMethodMask, ['sig_', metric]};
 
-        if metric == "time"
+        if metric == "time" || metric == "igd"
             better = sum(sig_vals == -1);
             same = sum(sig_vals == 0);
             worse = sum(sig_vals == 1);
@@ -598,7 +600,7 @@ end
 
 function new_character = sig_number_2_char(sig_num, metric)
 
-    if strcmp(metric, "time")
+    if strcmp(metric, "time") || strcmp(metric, "igd")
         new_character = sig_number_2_char_opp(sig_num);
     else
         if sig_num == -1 
@@ -625,7 +627,7 @@ end
 
 function new_character = sig_number_2_color(sig_num, metric)
 
-    if strcmp(metric, "time")
+    if strcmp(metric, "time") || strcmp(metric, "igd")
         new_character = sig_number_2_color_opp(sig_num);
     else
         if sig_num == -1 
