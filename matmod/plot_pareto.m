@@ -7,39 +7,32 @@ addpath("plotting");
 
 sNSGA_comparative_decVar_sparseSR
 
-
-%% Run setup 
-plotting_on = false;
-print_latex_table = true;
-print_pval_latex_table = false;
-
-% Analysis metrics
-metrics = {'HV', 'time', 'nds'};
-
-
+LABEL_FONT_SIZE = 20; 
+LEGEND_FONT_SIZE = 12;
+TICK_SIZE = 14;
 
 %% Uncomment for comparative decision variable runs
-% output_files = { ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP1.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP2.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP3.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP4.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP5.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP6.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP7.mat', ...
-%     'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP8.mat'  ...
-%     };
-% 
-% testProblemsUsed = { ...
-%     'SMOP1', ...
-%     'SMOP2', ...
-%     'SMOP3', ...
-%     'SMOP4', ...
-%     'SMOP5', ...
-%     'SMOP6', ...
-%     'SMOP7', ...
-%     'SMOP8'  ... 
-%     };
+output_files = { ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP1.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP2.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP3.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP4.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP5.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP6.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP7.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\comparative_SMOP8.mat'  ...
+    };
+
+testProblemsUsed = { ...
+    'SMOP1', ...
+    'SMOP2', ...
+    'SMOP3', ...
+    'SMOP4', ...
+    'SMOP5', ...
+    'SMOP6', ...
+    'SMOP7', ...
+    'SMOP8'  ... 
+    };
 
 % output_files = { ...
 %     'C:\Users\i-kropp\Projects\cropover\matmod\data\sNSGAIIComparative_compDecVar_SMOP8.mat'
@@ -82,8 +75,8 @@ metrics = {'HV', 'time', 'nds'};
 
 %% Uncomment for any of the real-world problems
 
-output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\Comparative_compDecVar_Sparse_NN_1.mat'};
-testProblemsUsed = { 'Sparse_NN_1' };
+% output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\Comparative_compDecVar_Sparse_NN_1.mat'};
+% testProblemsUsed = { 'Sparse_NN_1' };
 
 % output_files = {'C:\Users\i-kropp\Projects\cropover\matmod\data\Comparative_compDecVar_Sparse_NN_2.mat'};
 % testProblemsUsed = { 'Sparse_NN_2' };
@@ -113,14 +106,14 @@ testProblemsUsed = { 'Sparse_NN_1' };
 baseMethods = {'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'};
 proposedMethod = 'sNSGAII-VariedStripedSparseSampler_v3-sparsePolyMutate-cropover_v2';
 
-
+method_markers = {'o', '+', 's', 'd', '^'};
 
 load(output_files{1});
 
-decVars = 5121;
+decVars = 6400;
 
 %% Plot
-run_no = 5; 
+run_no = 4; 
 method_count = numel(baseMethods) + 1;
 
 figure; 
@@ -128,10 +121,10 @@ figure;
 % Loop through and plot all of the fronts for given run
 for m = 1:method_count
 
-    if m == method_count
+    if m == 1
         current_method = proposedMethod;
     else
-        current_method = baseMethods{m};
+        current_method = baseMethods{m-1};
     end
 
     run_mask = res_final.run == run_no;
@@ -142,10 +135,10 @@ for m = 1:method_count
 
     objs = solutions.best.objs;
     
-    if m == method_count
-        scatter(objs(:,1), objs(:,2), 'filled');
+    if m == 1
+        scatter(objs(:,1), objs(:,2), method_markers{m}, 'filled' ,'SizeData', 200);
     else
-        scatter(objs(:,1), objs(:,2));
+        scatter(objs(:,1), objs(:,2), method_markers{m},'SizeData', 200);
 
     end
 
@@ -153,10 +146,14 @@ for m = 1:method_count
 
 end
 
-legend({'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA', 'S-NSGA-II'});
+xlabel('Objective 1', 'FontSize', LABEL_FONT_SIZE);
+ylabel('Objective 2', 'FontSize', LABEL_FONT_SIZE);
+legend({'S-NSGA-II', 'SparseEA', 'SparseEA2', 'MOEAPSL', 'PMMOEA'});
 
 
-
+fontname(gca, "Times");
+ax = gca;
+ax.FontSize = TICK_SIZE; 
 
 
 
