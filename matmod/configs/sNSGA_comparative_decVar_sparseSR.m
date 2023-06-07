@@ -44,7 +44,7 @@ config = run_config(platPath,                                                 ..
                     "sNSGAIIComparative",                                     ...    %   run_label         
                     max_ref,                                                  ...    %   max_ref           
                     1:max_ref,                                                ...    %   refPoints         
-                    @Sparse_SR,                                               ...    %   prob              
+                    @Sparse_SR_simple,                                        ...    %   prob              
                     true,                                                     ...    %   indep_var_dec_vars
                     100,                                                      ...    %   defaultDecVar     
                     0.1,                                                      ...    %   defaultSparsity   

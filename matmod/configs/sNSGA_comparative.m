@@ -1,13 +1,13 @@
 max_ref = 7; 
 
-comp = "GILG";
+comp = "WORKPC";
 
 if comp == "EGR"
     platPath = 'M:\Projects\PlatEMO_3.4.0\PlatEMO\';
     sNSGAIIPath = 'M:\Projects\cropover\matmod\sNSGAII';
 elseif comp == "WORKPC"
-    platPath = 'C:\Users\Ian Kropp\Projects\PlatEMO-3.4\PlatEMO';
-    sNSGAIIPath = 'C:\Users\Ian Kropp\Projects\cropover\matmod\sNSGAII';
+    platPath = 'C:\Users\i-kropp\Projects\PlatEMO-3.4\PlatEMO';
+    sNSGAIIPath = 'C:\Users\i-kropp\Projects\cropover\matmod\sNSGAII';
 elseif comp == "MAC"
     platPath = '/Users/iankropp/Projects/PlatEMO-3.4/PlatEMO';
     sNSGAIIPath = '/Users/iankropp/Projects/cropover/matmod/sNSGAII';
@@ -22,7 +22,7 @@ algorithms =   {@SparseEA, @SparseEA2, @MOEAPSL, @MPMMEA, @PMMOEA,  @sNSGAII    
 mutation_op =  {@nop     , @nop      , @nop    , @nop   , @nop   ,  @sparsePolyMutate};
 crossover =    {@nop     , @nop      , @nop    , @nop   , @nop   ,  @cropover_v2     };
 
-pop_samplers = {@nop, @nop, @nop, @nop, @nop,
+pop_samplers = {@nop, @nop, @nop, @nop, @nop, ...
                  {@VariedStripedSparseSampler_v3, 0.75, 1}
                  };
 
@@ -31,7 +31,7 @@ labels = ["SparseEA", ...
           "MOEA-PSL", ...
           "MP-MMEA", ...
           "PM-MOEA", ...
-          "sNSGA-II with VSSPS"
+          "sNSGA-II with VSSPS" ...
           ];
 
 
@@ -55,7 +55,8 @@ config = run_config(platPath,                                                 ..
                     "compDecVar",                                             ...    %   runType           
                     true,                                                     ...    %   saveData
                     "/mnt/nas/kroppian/sNSGAIIRuns/",                         ...    %   savePath
-                    false                                                     ...    %   saveAllGens
+                    false,                                                    ...    %   saveAllGens
+                    -99                                                       ...    %   subproblem
                     ); 
 
 

@@ -6,14 +6,14 @@ addpath("../configs");
 addpath("../utilities");
 
 INPUT_FILES = {
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP4.mat', ...
-    'Z:\Gilgamesh\kroppian\sNSGAIIRuns\originalRuns\sNSGAIIComparative_compDecVar_SMOP4_VSSPS_csv3.mat'
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\rawoutputs\timetrial_NSGA_only_SMOP8.mat', ...
+    'C:\Users\i-kropp\Projects\cropover\matmod\data\rawoutputs\comparative_SMOP8.mat'
 
 };
 
-OUTPUT_FILE = 'Z:\Gilgamesh\kroppian\sNSGAIIRuns\finalVersions\sNSGAIIComparative_compDecVar_SMOP4.mat';
+OUTPUT_FILE = 'C:\Users\i-kropp\Projects\cropover\matmod\data\time_trial_SMOP8.mat';
 
-sNSGA_eff_400;
+NSGA_TIME_RUN;
 
 % Establish base variables
 disp("Loading file 1...");
