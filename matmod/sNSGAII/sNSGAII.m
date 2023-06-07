@@ -18,9 +18,12 @@ classdef sNSGAII < ALGORITHM
     methods
         function main(Algorithm, Problem)
             
-            [ sampling_method, mutation_method, crossover_method ] = Algorithm.ParameterSet({@VariedStripedSparseSampler_v3, 0.75, 1}, @spm, @ssbx);
-            
-
+            [ sampling_method, mutation_method, crossover_method ] = ...
+               Algorithm.ParameterSet( ...
+                 {@vssps, 0.75, 1}, ...
+                 @spm, ...
+                 @ssbx ...
+               );
             
             %% Generate random population
 
@@ -28,7 +31,6 @@ classdef sNSGAII < ALGORITHM
             lowerBound = sampling_method{2};
             upperBound = sampling_method{3};
             Population = sampler(Problem, lowerBound, upperBound);
-
 
             [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Problem.N);
 

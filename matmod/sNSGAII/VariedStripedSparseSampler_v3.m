@@ -1,5 +1,5 @@
 %% Randomly generate an initial population
-function Population = VariedStripedSparseSampler_v3(prob, sLower, sUpper)
+function Population = vssps(prob, sLower, sUpper)
     
 
     %  Nomenclature example
