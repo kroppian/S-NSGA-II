@@ -1,3 +1,6 @@
+
+% Written by Ian Meyer Kropp 2022
+
 function newPop = ssbx(Parent, lb, ub, Parameter)
     %% Fetch paramters/setup
 
@@ -25,7 +28,6 @@ function newPop = ssbx(Parent, lb, ub, Parameter)
     % empty template for results 
     Offspring1 = ones(size(Parent1))*-99;
     Offspring2 = ones(size(Parent2))*-99;
-
 
     %% Step 1: crossover on positions are both non-zero or both zero
     

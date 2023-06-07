@@ -1,3 +1,6 @@
+
+% Written by Ian Meyer Kropp, 2022
+
 function newPop = sm2target(Pop, lb, ub, newSparsities)
 
     % Sparse Mutate to a target

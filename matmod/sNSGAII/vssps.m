@@ -1,4 +1,6 @@
 %% Randomly generate an initial population
+% Written by Ian Meyer Kropp, 2022
+
 function Population = vssps(prob, sLower, sUpper)
     
 

@@ -1,9 +1,10 @@
+
+% Written by Ian Meyer Kropp, 2022
+
 function newPop = spm(Pop, lb, ub, Parameter)
 
-    % Pop 
     % Each row is a different population member
     % Each column is a different genome
-    
     
     if nargin > 3
         [probMut,distrMut, probSMut, distrSMut] = deal(Parameter{:});
@@ -13,10 +14,6 @@ function newPop = spm(Pop, lb, ub, Parameter)
 
     [N,D] = size(Pop);
     
-    %% Determine where to do which mutations
-    % Determine where to mutate
-    % mutateMask = rand(N,D) < probMut/D;    
-   
     % Determine where the zeros are
     nonZeroMask = Pop ~= 0;
    

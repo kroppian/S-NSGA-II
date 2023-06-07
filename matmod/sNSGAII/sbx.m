@@ -1,3 +1,5 @@
+% Migrated from the PlatEMO OperatorGA module for convenience
+
 function Offspring = sbx(Parent, lb, ub, Parameter)
     
     [proC,disC] = deal(Parameter{:});
