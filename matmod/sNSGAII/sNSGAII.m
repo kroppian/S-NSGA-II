@@ -18,7 +18,7 @@ classdef sNSGAII < ALGORITHM
     methods
         function main(Algorithm, Problem)
             
-            [ sampling_method, mutation_method, crossover_method ] = Algorithm.ParameterSet({@VariedStripedSparseSampler_v3, 0.75, 1}, @sparsePolyMutate, @cropover_v2);
+            [ sampling_method, mutation_method, crossover_method ] = Algorithm.ParameterSet({@VariedStripedSparseSampler_v3, 0.75, 1}, @spm, @ssbx);
             
 
             

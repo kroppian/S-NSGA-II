@@ -1,4 +1,4 @@
-function newPop = sparsePolyMutate(Pop, lb, ub, Parameter)
+function newPop = spm(Pop, lb, ub, Parameter)
 
     % Pop 
     % Each row is a different population member

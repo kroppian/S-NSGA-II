@@ -1,4 +1,4 @@
-function newPop = cropover_v2(Parent, lb, ub, Parameter)
+function newPop = ssbx(Parent, lb, ub, Parameter)
     %% Fetch paramters/setup
 
 
