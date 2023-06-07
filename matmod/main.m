@@ -10,7 +10,8 @@ addpath("problems")
 %sNSGA_comparative_Sparse_NN
 %sNSGA_comparative;
 %sNSGA_ablation;
-sNSGA_comparative_decVar_sparseSR
+%sNSGA_comparative_decVar_sparseSR
+NSGA_TIME_RUN
 
 if config.saveData
     file_name = strcat(config.run_label, '_', config.runType, '_', strrep(char(config.prob),'@(x)',''), '_new.mat');
