@@ -1,38 +1,29 @@
-classdef sNSGAII < ALGORITHM
-% <multi> <real/binary/permutation> <constrained/none>
-% Nondominated sorting genetic algorithm II
+classdef SNSGAII < ALGORITHM
+% <multi> <real> <large/none> <constrained/none> <sparse>
+% Sparse Nondominated sorting genetic algorithm II
 
 %------------------------------- Reference --------------------------------
-% K. Deb, A. Pratap, S. Agarwal, and T. Meyarivan, A fast and elitist
-% multiobjective genetic algorithm: NSGA-II, IEEE Transactions on
-% Evolutionary Computation, 2002, 6(2): 182-197.
-%------------------------------- Copyright --------------------------------
-% Copyright (c) 2022 BIMK Group. You are free to use the PlatEMO for
-% research purposes. All publications which use this platform or any code
-% in the platform should acknowledge the use of "PlatEMO" and reference "Ye
-% Tian, Ran Cheng, Xingyi Zhang, and Yaochu Jin, PlatEMO: A MATLAB platform
-% for evolutionary multi-objective optimization [educational forum], IEEE
-% Computational Intelligence Magazine, 2017, 12(4): 73-87".
+% I. Kropp, A. Pouyan Nejadhashemi, and K. Deb, Improved Evolutionary 
+% Operators for Sparse Large-Scale Multiobjective Optimization Problems
+% IEEE Transactions on Evolutionary Computation, 2023, (Early access) 
 %--------------------------------------------------------------------------
 
     methods
-        function main(Algorithm,Problem)
-            
-            [ sampling_method, mutation_method, crossover_method ] = Algorithm.ParameterSet({@sparseSampler, 0.5, 1}, @sparsePolyMutate, @cropover_v1);
-            
+        function main(Algorithm, Problem)
 
+            [ sampling_method, mutation_method, crossover_method ] = ...
+               Algorithm.ParameterSet( ...
+                 {@vssps, 0.75, 1}, ...
+                 @spm, ...
+                 @ssbx ...
+               );
             
             %% Generate random population
 
-
-
-            if class(sampling_method{1}) == "function_handle" && func2str(sampling_method{1}) == "nop"
-                Population = Problem.Initialization();
-            else
-                sampler = sampling_method{1};
-                Population = sampler(Problem, sampling_method{2}, sampling_method{3});
-            end
-
+            sampler = sampling_method{1};
+            lowerBound = sampling_method{2};
+            upperBound = sampling_method{3};
+            Population = sampler(Problem, lowerBound, upperBound);
 
             [~,FrontNo,CrowdDis] = EnvironmentalSelection(Population,Problem.N);
 
@@ -40,7 +31,7 @@ classdef sNSGAII < ALGORITHM
             while Algorithm.NotTerminated(Population)
                 MatingPool = TournamentSelection(2,Problem.N,FrontNo,-CrowdDis);
 
-                Offspring  = sparseOperatorGA(Population(MatingPool), ...
+                Offspring  = sparseOperatorGA(Problem, Population(MatingPool), ...
                                         {1,20,1,20,1,20,mutation_method,crossover_method});
 
                 [Population,FrontNo,CrowdDis] = EnvironmentalSelection([Population,Offspring],Problem.N);
