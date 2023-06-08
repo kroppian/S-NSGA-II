@@ -1,3 +1,6 @@
+
+% Ported from the polynomial mutation in Pymoo, circa early 2022
+
 function result = polyMutateCore(genome, lb, ub, eta)
 
     delta1 = (genome - lb) / (ub - lb);    % Should be between 0 and 1
@@ -5,7 +8,7 @@ function result = polyMutateCore(genome, lb, ub, eta)
 
     exp = (eta + 1) ^ -1;
     
-    ran = rand(size(genome));              % Could be an issue
+    ran = rand(size(genome));              
     deltaq = zeros(size(genome));
     
     leftMask = ran < 0.5;
@@ -27,7 +30,5 @@ function result = polyMutateCore(genome, lb, ub, eta)
     
     result = muted_genome;
 
-    
-    
 end
 

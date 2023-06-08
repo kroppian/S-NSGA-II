@@ -1,5 +1,7 @@
 %% Randomly generate an initial population
-function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
+% Written by Ian Meyer Kropp, 2022
+
+function Population = vssps(prob, sLower, sUpper)
     
 
     %  Nomenclature example
@@ -121,7 +123,13 @@ function Population = VariedStripedSparseSampler_v2(prob, sLower, sUpper)
     sparse_pop = pop.decs;
     sparse_pop(~mask) = 0;
 
-    Population = SOLUTION(sparse_pop);
+    % Recalculate objective and constraints
+    popDec = prob.CalDec(sparse_pop);
+    popObj = prob.CalObj(sparse_pop);
+    popCon = prob.CalCon(sparse_pop);
+
+
+    Population = SOLUTION(popDec, popObj, popCon);
 
 
 end
