@@ -1,4 +1,4 @@
-classdef sNSGAII < ALGORITHM
+classdef SNSGAII < ALGORITHM
 % <multi> <real> <large/none> <constrained/none> <sparse>
 % Sparse Nondominated sorting genetic algorithm II
 
@@ -10,7 +10,7 @@ classdef sNSGAII < ALGORITHM
 
     methods
         function main(Algorithm, Problem)
-            
+
             [ sampling_method, mutation_method, crossover_method ] = ...
                Algorithm.ParameterSet( ...
                  {@vssps, 0.75, 1}, ...
